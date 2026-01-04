@@ -40,8 +40,8 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
 
     return (
         <div className="flex flex-col h-full bg-white border-r border-gray-100">
-            {/* Logo Area - Hidden on Desktop as requested by user, visible on Mobile Drawer */}
-            <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100 md:!hidden">
+            {/* Logo Area - Visible on both Mobile (drawer) and Desktop (sidebar header) */}
+            <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
                     <span className="text-xl font-black text-gray-900 tracking-tight">
                         Explorar<span className="text-primary">RD</span>
