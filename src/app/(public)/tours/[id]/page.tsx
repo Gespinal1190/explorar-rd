@@ -15,17 +15,22 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const tour = await prisma.tour.findUnique({
-        where: { id },
-        include: {
-            images: true,
-            agency: {
-                include: {
-                    user: true
+    let tour;
+    try {
+        tour = await prisma.tour.findUnique({
+            where: { id },
+            include: {
+                images: true,
+                agency: {
+                    include: {
+                        user: true
+                    }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error("TourDetail Fetch Error:", error);
+    }
 
     if (!tour) {
         notFound();
@@ -39,13 +44,12 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
         includesList = [tour.includes || ''];
     }
 
-    const whatsappMessage = `Hola, vengo de DescubreRD y me interesa el tour: ${tour.title} `;
-    const whatsappLink = `https://wa.me/${tour.agency.whatsapp}?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappMessage = `Hola, vengo de DescubreRD y me interesa el tour: ${tour.title || ''} `;
+    const whatsappLink = `https://wa.me/${tour.agency?.whatsapp || ''}?text=${encodeURIComponent(whatsappMessage)}`;
 
     // Cast latitude/longitude from DB (fields added in recent schema update)
-    // Note: Assuming prisma client is regenerated. If not, casting as any to avoid build errors temporarily.
-    const lat = (tour as any).latitude;
-    const lng = (tour as any).longitude;
+    const lat = (tour as any)?.latitude;
+    const lng = (tour as any)?.longitude;
 
     return (
         <div className="min-h-screen bg-[#FBFBF8]">

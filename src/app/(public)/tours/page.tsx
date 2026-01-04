@@ -27,48 +27,52 @@ export default async function ToursPage(props: {
         ]
     } : {};
 
-    // Sort priority for plans
     const planPriority: Record<string, number> = {
         'ad_premium_1m': 3,
-        'ad_standard_2w': 2,
+        'ad_medium_2w': 2,
         'ad_basic_1w': 1,
     };
 
-    const featuredTours = (await prisma.tour.findMany({
-        where: {
-            featuredExpiresAt: { gt: now },
-            ...searchFilter
-        } as any,
-        include: { images: true, agency: true },
-        orderBy: [
-            { agency: { tier: 'desc' } },
-            { createdAt: 'desc' }
-        ] as any,
-        take: 20
-    })) as any[];
+    let featuredTours = [];
+    let regularTours = [];
 
-    // Sort featured tours by plan priority
-    featuredTours.sort((a, b) => {
-        const priorityA = planPriority[a.featuredPlan || ''] || 0;
-        const priorityB = planPriority[b.featuredPlan || ''] || 0;
-        if (priorityA !== priorityB) return priorityB - priorityA;
-        return 0; // fallback to prisma order
-    });
+    try {
+        featuredTours = (await prisma.tour.findMany({
+            where: {
+                featuredExpiresAt: { gt: now },
+                ...searchFilter
+            } as any,
+            include: { images: true, agency: true },
+            orderBy: [
+                { createdAt: 'desc' }
+            ] as any,
+            take: 20
+        })) as any[];
 
-    const regularTours = (await prisma.tour.findMany({
-        where: {
-            OR: [
-                { featuredExpiresAt: null },
-                { featuredExpiresAt: { lte: now } }
-            ],
-            ...searchFilter
-        } as any,
-        include: { images: true, agency: true },
-        orderBy: [
-            { agency: { tier: 'desc' } }, // PRO agencies first
-            { createdAt: 'desc' }
-        ] as any
-    })) as any[];
+        // Sort featured tours by plan priority manually to be safe
+        featuredTours.sort((a, b) => {
+            const priorityA = planPriority[a.featuredPlan || ''] || 0;
+            const priorityB = planPriority[b.featuredPlan || ''] || 0;
+            if (priorityA !== priorityB) return priorityB - priorityA;
+            return 0;
+        });
+
+        regularTours = (await prisma.tour.findMany({
+            where: {
+                OR: [
+                    { featuredExpiresAt: null },
+                    { featuredExpiresAt: { lte: now } }
+                ],
+                ...searchFilter
+            } as any,
+            include: { images: true, agency: true },
+            orderBy: [
+                { createdAt: 'desc' }
+            ] as any
+        })) as any[];
+    } catch (error) {
+        console.error("Tours Query Error:", error);
+    }
 
     return (
         <div className="min-h-screen bg-[#FBFBF8]">
@@ -176,12 +180,12 @@ export default async function ToursPage(props: {
                                     key={tour.id}
                                     id={tour.id}
                                     title={tour.title}
-                                    price={tour.price}
-                                    location={tour.location}
-                                    image={tour.images[0]?.url}
-                                    agencyName={tour.agency.name}
-                                    isAgencyPro={tour.agency.tier === 'PRO'}
-                                    currency={tour.currency}
+                                    price={tour.price || 0}
+                                    location={tour.location || 'RD'}
+                                    image={tour.images?.[0]?.url}
+                                    agencyName={tour.agency?.name || 'Agencia Local'}
+                                    isAgencyPro={tour.agency?.tier === 'PRO'}
+                                    currency={tour.currency || 'DOP'}
                                 />
                             ))}
                         </div>

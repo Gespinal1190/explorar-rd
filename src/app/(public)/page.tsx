@@ -10,26 +10,30 @@ export default async function Home() {
   // Sort priority for plans
   const planPriority: Record<string, number> = {
     'ad_premium_1m': 3,
-    'ad_standard_2w': 2,
+    'ad_medium_2w': 2,
     'ad_basic_1w': 1,
   };
 
-  const allTours = (await prisma.tour.findMany({
-    include: { agency: true, images: true },
-    orderBy: [
-      { agency: { tier: 'desc' } },
-      { createdAt: 'desc' }
-    ] as any
-  })) as any[];
+  let allTours = [];
+  try {
+    allTours = (await prisma.tour.findMany({
+      include: { agency: true, images: true },
+      orderBy: [
+        { createdAt: 'desc' }
+      ] as any
+    })) as any[];
+  } catch (e) {
+    console.error("Home query error:", e);
+  }
 
   // Separate into featured and regular for manual sorting
-  const featured = allTours.filter(t => t.featuredExpiresAt && new Date(t.featuredExpiresAt) > now);
-  const regular = allTours.filter(t => !t.featuredExpiresAt || new Date(t.featuredExpiresAt) <= now);
+  const featured = allTours.filter(t => t?.featuredExpiresAt && new Date(t.featuredExpiresAt) > now);
+  const regular = allTours.filter(t => !t?.featuredExpiresAt || new Date(t.featuredExpiresAt) <= now);
 
   // Sort featured by plan priority
   featured.sort((a, b) => {
-    const pA = planPriority[a.featuredPlan || ''] || 0;
-    const pB = planPriority[b.featuredPlan || ''] || 0;
+    const pA = planPriority[a?.featuredPlan || ''] || 0;
+    const pB = planPriority[b?.featuredPlan || ''] || 0;
     return pB - pA;
   });
 
