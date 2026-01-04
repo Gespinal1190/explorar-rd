@@ -8,10 +8,10 @@ async function main() {
 
     // 1. Create Admin User
     await prisma.user.upsert({
-        where: { email: 'admin@test.com' },
+        where: { email: 'adalg.design@gmail.com' },
         update: {},
         create: {
-            email: 'admin@test.com',
+            email: 'adalg.design@gmail.com',
             name: 'Super Admin',
             password: hashedPassword,
             role: 'ADMIN',
@@ -19,7 +19,7 @@ async function main() {
     })
 
     // 2. Create Agency User & Profile (agencia@test.com)
-    const agencyUser = await prisma.user.upsert({
+    const agencyUserRequest = await prisma.user.upsert({
         where: { email: 'agencia@test.com' },
         update: {},
         create: {
@@ -35,12 +35,31 @@ async function main() {
                     whatsapp: '18095550101',
                     instagram: 'exploravidard',
                     isVerified: true,
-                    tier: 'PRO'
+                    // @ts-ignore - tier is valid in schema
+                    tier: 'PRO',
+                    bankAccounts: {
+                        create: [
+                            {
+                                bankName: 'Banco Popular',
+                                accountNumber: '7894561230',
+                                accountType: 'CORRIENTE',
+                                beneficiaryName: 'Explora Vida SRL'
+                            },
+                            {
+                                bankName: 'Banreservas',
+                                accountNumber: '1112223334',
+                                accountType: 'AHORROS',
+                                beneficiaryName: 'Juan Pérez'
+                            }
+                        ]
+                    }
                 },
             },
         },
         include: { agencyProfile: true },
     })
+
+    const agencyUser = agencyUserRequest as any;
 
     // 3. Create Tours for Agency
     if (agencyUser.agencyProfile) {
@@ -50,12 +69,12 @@ async function main() {
             {
                 title: 'Isla Saona VIP - Catamarán y Lanchas',
                 description: 'La excursión más popular de RD. Navega en catamarán con fiesta, visita la piscina natural con estrellas de mar y almuerza en la isla Saona.',
-                location: 'Punta Cana', // mapped to Bayahibe usually but sticking to popular zones
+                location: 'Punta Cana',
                 price: 4500,
                 duration: '10 horas',
                 includes: JSON.stringify(['Transporte Ida/Vuelta', 'Almuerzo Buffet', 'Barra Libre Nacional', 'Guía']),
                 images: ['https://images.unsplash.com/photo-1590523741831-ab7f291db9f7?q=80&w=800'],
-                dates: ['2024-02-14', '2024-02-18', '2024-02-25']
+                dates: ['2026-02-14', '2026-02-18', '2026-02-25', '2026-03-01']
             },
             {
                 title: 'Salto del Limón a Caballo',
@@ -65,7 +84,7 @@ async function main() {
                 duration: '6 horas',
                 includes: JSON.stringify(['Caballos', 'Guía Local', 'Almuerzo Típico', 'Entrada al Parque']),
                 images: ['https://images.unsplash.com/photo-1623164348562-q3245235235?q=80&w=800'],
-                dates: ['2024-02-15', '2024-02-20']
+                dates: ['2026-02-15', '2026-02-20', '2026-03-05']
             },
             {
                 title: 'Buggy Macao Extreme',
@@ -74,8 +93,8 @@ async function main() {
                 price: 2800,
                 duration: '4 horas',
                 includes: JSON.stringify(['Buggy Polaris', 'Casco', 'Degustación', 'Agua']),
-                images: ['https://images.unsplash.com/photo-1534954471963-3d4432174c0c?q=80&w=800']
-                // No specific dates (daily)
+                images: ['https://images.unsplash.com/photo-1534954471963-3d4432174c0c?q=80&w=800'],
+                dates: ['2026-01-20', '2026-01-25', '2026-01-28']
             },
             {
                 title: 'Zona Colonial Histórica',
@@ -84,7 +103,8 @@ async function main() {
                 price: 1500,
                 duration: '3 horas',
                 includes: JSON.stringify(['Guía Certificado', 'Entradas a Museos', 'Agua']),
-                images: ['https://images.unsplash.com/photo-1548690321-fb8bcc61b99c?q=80&w=800']
+                images: ['https://images.unsplash.com/photo-1548690321-fb8bcc61b99c?q=80&w=800'],
+                dates: ['2026-01-15', '2026-01-22', '2026-01-29']
             },
             {
                 title: '27 Charcos de Damajagua',
@@ -93,7 +113,8 @@ async function main() {
                 price: 3800,
                 duration: '7 horas',
                 includes: JSON.stringify(['Equipo de Seguridad', 'Guías', 'Almuerzo', 'Transporte']),
-                images: ['https://images.unsplash.com/photo-1589802829985-817e51171b92?q=80&w=800']
+                images: ['https://images.unsplash.com/photo-1589802829985-817e51171b92?q=80&w=800'],
+                dates: ['2026-03-10', '2026-03-15']
             }
         ]
 
@@ -113,11 +134,28 @@ async function main() {
                         images: {
                             create: tour.images.map(url => ({ url }))
                         },
+                        // @ts-ignore - dates relation is valid
                         dates: tour.dates ? {
                             create: tour.dates.map(d => ({ date: new Date(d) }))
                         } : undefined
                     }
                 })
+            } else {
+                // Optimization: Update dates if tour exists to ensure we have future dates
+                if (tour.dates) {
+                    // Clean up old dates and re-add new ones to ensure freshness
+                    // @ts-ignore - tourDate model exists
+                    await prisma.tourDate.deleteMany({ where: { tourId: exists.id } })
+                    await prisma.tour.update({
+                        where: { id: exists.id },
+                        data: {
+                            // @ts-ignore - dates relation update is valid
+                            dates: {
+                                create: tour.dates.map(d => ({ date: new Date(d) }))
+                            }
+                        }
+                    })
+                }
             }
         }
     }
@@ -136,8 +174,6 @@ async function main() {
 
     console.log('Seeding finished. Accounts: admin@test.com, agencia@test.com, usuario@test.com (pass: password123)')
 }
-
-main()
 
 main()
     .then(async () => {

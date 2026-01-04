@@ -6,9 +6,10 @@ import { DashboardSidebar } from "./dashboard-sidebar";
 interface DashboardMobileNavProps {
     userRole: string;
     userName?: string | null;
+    userPhone?: string | null;
 }
 
-export function DashboardMobileNav({ userRole, userName }: DashboardMobileNavProps) {
+export function DashboardMobileNav({ userRole, userName, userPhone }: DashboardMobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -42,6 +43,7 @@ export function DashboardMobileNav({ userRole, userName }: DashboardMobileNavPro
                 <DashboardSidebar
                     userRole={userRole}
                     userName={userName}
+                    userPhone={userPhone}
                     closeMenu={() => setIsOpen(false)}
                 />
             </div>

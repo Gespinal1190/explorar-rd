@@ -19,7 +19,7 @@ interface TourFormProps {
         longitude?: number | null;
         instagramUrl?: string | null;
         images?: { url: string }[];
-        dates?: { date: Date | string }[]; // Updated type
+        dates?: { date: Date | string }[] | null; // Updated type
     };
     isEditing?: boolean;
 }

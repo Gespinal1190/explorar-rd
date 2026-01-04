@@ -245,6 +245,7 @@ export async function updateTour(
         if (availableDates) {
             const datesToCreate = (JSON.parse(availableDates) as string[]).map(dateStr => ({ date: new Date(dateStr) }));
 
+            // Delete existing dates
             await prisma.tourDate.deleteMany({ where: { tourId: id } });
 
             if (datesToCreate.length > 0) {

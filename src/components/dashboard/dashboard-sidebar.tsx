@@ -18,10 +18,11 @@ import {
 interface DashboardSidebarProps {
     userRole: string;
     userName?: string | null;
+    userPhone?: string | null; // Added prop
     closeMenu?: () => void; // Optional prop to close mobile menu on click
 }
 
-export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSidebarProps) {
+export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: DashboardSidebarProps) {
     const pathname = usePathname();
     const isAgency = userRole === 'AGENCY';
     const isAdmin = userRole === 'ADMIN';
@@ -39,8 +40,8 @@ export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSid
 
     return (
         <div className="flex flex-col h-full bg-white border-r border-gray-100">
-            {/* Logo Area (Desktop only usually, but kept for structure) */}
-            <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
+            {/* Logo Area - Hidden on Desktop as requested by user, visible on Mobile Drawer */}
+            <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100 md:!hidden">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
                     <span className="text-xl font-black text-gray-900 tracking-tight">
                         Explorar<span className="text-primary">RD</span>
@@ -58,6 +59,9 @@ export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSid
                     </button>
                 )}
             </div>
+
+            {/* Desktop Spacing if Logo is hidden */}
+            <div className="hidden md:block h-6"></div>
 
             <nav className="flex-1 overflow-y-auto p-4 space-y-8">
                 {/* General Section */}
@@ -135,7 +139,9 @@ export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSid
                     </div>
                     <div className="overflow-hidden">
                         <p className="text-sm font-bold text-gray-900 truncate">{userName}</p>
-                        <p className="text-[10px] text-gray-500 uppercase font-black">{userRole}</p>
+                        <p className="text-[10px] text-gray-500 uppercase font-black">
+                            {userPhone || userRole}
+                        </p>
                     </div>
                 </div>
                 <SignOut />
