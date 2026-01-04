@@ -1,16 +1,14 @@
-import { signOut } from "@/lib/auth"
+"use client";
+
+import { signOut } from "next-auth/react"
 
 export function SignOut() {
     return (
-        <form
-            action={async () => {
-                "use server"
-                await signOut({ redirectTo: "/" })
-            }}
+        <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="w-full py-3 bg-red-50 text-red-600 rounded-2xl text-center font-bold hover:bg-red-100 transition-colors"
         >
-            <button type="submit" className="text-sm font-medium hover:text-primary transition-colors">
-                Cerrar Sesión
-            </button>
-        </form>
+            Cerrar Sesión
+        </button>
     )
 }
