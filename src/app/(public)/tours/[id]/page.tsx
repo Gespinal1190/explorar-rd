@@ -141,26 +141,26 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                     )}
 
                     {/* Agency Info */}
-                    <div className={`p-8 rounded-[2.5rem] flex items-center justify-between border transition-all ${tour.agency.tier === 'PRO' ? 'bg-gradient-to-br from-teal-50 to-blue-50 border-teal-100 shadow-sm' : 'bg-gray-50 border-gray-100'}`}>
-                        <div className="flex items-center gap-5">
-                            <div className={`w-20 h-20 shadow-lg rounded-3xl flex items-center justify-center font-black text-3xl border ${tour.agency.tier === 'PRO' ? 'bg-white text-teal-600 border-white' : 'bg-white text-gray-400 border-gray-100'}`}>
+                    <div className={`p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] flex flex-col md:flex-row md:items-center justify-between gap-6 border transition-all ${(tour.agency as any).tier === 'PRO' ? 'bg-gradient-to-br from-teal-50 to-blue-50 border-teal-100 shadow-sm' : 'bg-gray-50 border-gray-100'}`}>
+                        <div className="flex items-center gap-4 md:gap-5">
+                            <div className={`w-16 h-16 md:w-20 md:h-20 shadow-lg rounded-2xl md:rounded-3xl flex items-center justify-center font-black text-2xl md:text-3xl border ${(tour.agency as any).tier === 'PRO' ? 'bg-white text-teal-600 border-white' : 'bg-white text-gray-400 border-gray-100'}`}>
                                 {tour.agency.name.substring(0, 1).toUpperCase()}
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${tour.agency.tier === 'PRO' ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
-                                        {tour.agency.tier === 'PRO' ? 'Socio Verificado 🏆' : 'Agencia Local'}
+                                    <span className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${(tour.agency as any).tier === 'PRO' ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                                        {(tour.agency as any).tier === 'PRO' ? 'Socio Verificado 🏆' : 'Agencia Local'}
                                     </span>
                                 </div>
-                                <p className="font-black text-gray-900 text-2xl tracking-tight">{tour.agency.name}</p>
-                                {tour.agency.tier === 'PRO' && (
-                                    <p className="text-teal-600 text-xs font-bold mt-1">
+                                <p className="font-black text-gray-900 text-xl md:text-2xl tracking-tight">{tour.agency.name}</p>
+                                {(tour.agency as any).tier === 'PRO' && (
+                                    <p className="text-teal-600 text-[10px] md:text-xs font-bold mt-1">
                                         🛡️ Miembro Premium de Explorar RD
                                     </p>
                                 )}
                             </div>
                         </div>
-                        <Link href={`/agencies/${tour.agency.id}`} className={`px-8 py-3 font-bold rounded-full transition-all shadow-sm hover:shadow-md ${tour.agency.tier === 'PRO' ? 'bg-teal-600 text-white hover:bg-teal-700' : 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50'}`}>
+                        <Link href={`/agencies/${tour.agency.id}`} className={`w-full md:w-auto text-center px-8 py-3 font-bold rounded-2xl md:rounded-full transition-all shadow-sm hover:shadow-md ${(tour.agency as any).tier === 'PRO' ? 'bg-teal-600 text-white hover:bg-teal-700' : 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50'}`}>
                             Ver Perfil
                         </Link>
                     </div>
@@ -168,7 +168,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Sidebar Actions */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 sticky top-28">
+                    <div className="hidden lg:block bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 sticky top-28">
                         <div className="mb-8 pb-8 border-b border-gray-100">
                             <span className="text-sm text-gray-400 font-bold uppercase tracking-wide">Precio Total</span>
                             <div className="flex items-end gap-1 mt-2">
@@ -187,8 +187,42 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             whatsappLink={whatsappLink}
                         />
                     </div>
+
+                    {/* Mobile Only: Inline Booking Form (Alternative to Floating Bar or complement) */}
+                    <div className="lg:hidden bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                        <BookingForm
+                            tourId={tour.id}
+                            price={tour.price}
+                            currency={tour.currency || 'DOP'}
+                            whatsappLink={whatsappLink}
+                        />
+                    </div>
                 </div>
             </div>
+
+            {/* Mobile Sticky Footer CTA */}
+            <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 z-50 flex items-center justify-between animate-in slide-in-from-bottom-full duration-500">
+                <div>
+                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Reserva desde</p>
+                    <p className="text-2xl font-black text-gray-900">
+                        {tour.currency === 'USD' ? '$' : tour.currency === 'EUR' ? '€' : 'RD$'}
+                        {tour.price.toLocaleString()}
+                    </p>
+                </div>
+                <Link
+                    href="#booking-section"
+                    className="bg-primary text-white px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg shadow-primary/30 active:scale-95 transition-transform"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById('booking-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                >
+                    Reservar Ahora
+                </Link>
+            </div>
+
+            {/* Anchor for mobile scroll */}
+            <div id="booking-section" className="lg:hidden h-20" />
         </div>
     );
 }

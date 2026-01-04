@@ -75,13 +75,13 @@ export function SearchOverlay() {
                         <div className="p-8 space-y-8">
                             {/* Categories */}
                             <div>
-                                <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-4">¿Qué te apetece hoy?</h3>
-                                <div className="flex flex-wrap gap-2">
+                                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 ml-1">¿Qué te apetece hoy?</h3>
+                                <div className="flex flex-wrap gap-2.5">
                                     {['🏖️ Playas', '⛰️ Montaña', '🏎️ Buggies', '⛵ Catamarán', '🎭 Cultural'].map(cat => (
                                         <button
                                             key={cat}
                                             onClick={() => { setSearch(cat.split(' ')[1]); router.push(`/tours?search=${cat.split(' ')[1]}`); setIsOpen(false); }}
-                                            className="px-4 py-2 bg-gray-50 hover:bg-primary/10 hover:text-primary rounded-xl transition-all text-sm font-bold border border-transparent hover:border-primary/20"
+                                            className="px-5 py-3 bg-gray-50 active:bg-primary/20 hover:bg-primary/10 hover:text-primary rounded-2xl transition-all text-sm font-bold border border-transparent hover:border-primary/20"
                                         >
                                             {cat}
                                         </button>
@@ -91,7 +91,7 @@ export function SearchOverlay() {
 
                             {/* Popular Destinations */}
                             <div>
-                                <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Destinos Top</h3>
+                                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 ml-1">Destinos Top</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {[
                                         { name: 'Punta Cana', icon: '🌴', desc: 'Sol, playa y arena' },
@@ -102,12 +102,12 @@ export function SearchOverlay() {
                                         <button
                                             key={dest.name}
                                             onClick={() => { setSearch(dest.name); router.push(`/tours?search=${dest.name}`); setIsOpen(false); }}
-                                            className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 rounded-2xl transition-all text-left border border-transparent hover:border-gray-100 group"
+                                            className="flex items-center gap-4 p-4 bg-gray-50 active:bg-white active:shadow-lg hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 rounded-[1.5rem] transition-all text-left border border-transparent hover:border-gray-100 group"
                                         >
-                                            <span className="text-2xl bg-white w-12 h-12 flex items-center justify-center rounded-xl shadow-sm group-hover:scale-110 transition-transform">{dest.icon}</span>
+                                            <span className="text-2xl bg-white w-12 h-12 flex items-center justify-center rounded-2xl shadow-sm group-hover:scale-110 transition-transform">{dest.icon}</span>
                                             <div>
                                                 <p className="font-bold text-gray-900 leading-none">{dest.name}</p>
-                                                <p className="text-xs text-gray-500 mt-1">{dest.desc}</p>
+                                                <p className="text-[11px] text-gray-500 mt-1.5">{dest.desc}</p>
                                             </div>
                                         </button>
                                     ))}
