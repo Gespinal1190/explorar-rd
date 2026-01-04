@@ -57,7 +57,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
             {/* Premium Gallery Section */}
             <div className="container mx-auto px-4 pt-8 pb-4">
-                <GalleryGrid images={tour.images} title={tour.title} />
+                <GalleryGrid
+                    images={tour.images?.map(img => ({ id: img.id, url: img.url })) || []}
+                    title={tour.title}
+                />
 
                 {/* Title Overlay in Desktop (optional) or below */}
                 <div className="mt-8 mb-4">
