@@ -2,25 +2,25 @@ import Navbar from "@/components/ui/navbar";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-// import { GalleryGrid } from "@/components/ui/gallery-grid";
+import { GalleryGrid } from "@/components/ui/gallery-grid";
 import { BookingForm } from "@/components/tours/booking-form";
 
 export const dynamic = "force-dynamic";
 
-// export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-//     try {
-//         const { id } = await params;
-//         const tour = await prisma.tour.findUnique({ 
-//             where: { id },
-//              select: { title: true }
-//         });
-//         if (!tour) return { title: 'Tour no encontrado' };
-//         return { title: `${tour.title} | DescubreRD` };
-//     } catch (e) {
-//         console.error("Metadata error:", e);
-//         return { title: 'Explorar RD' };
-//     }
-// }
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { id } = await params;
+        const tour = await prisma.tour.findUnique({
+            where: { id },
+            select: { title: true }
+        });
+        if (!tour) return { title: 'Tour no encontrado' };
+        return { title: `${tour.title} | DescubreRD` };
+    } catch (e) {
+        console.error("Metadata error:", e);
+        return { title: 'Explorar RD' };
+    }
+}
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -61,13 +61,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
             {/* Premium Gallery Section */}
             <div className="container mx-auto px-4 pt-8 pb-4">
-                <div className="bg-gray-200 rounded-3xl h-64 md:h-[60vh] flex items-center justify-center">
-                    <p className="text-gray-500 font-bold">Galería de Imágenes (Mantenimiento)</p>
-                    {/* <GalleryGrid 
-                    images={tour.images?.map(img => ({ id: img.id, url: img.url })) || []} 
-                    title={tour.title} 
-                   /> */}
-                </div>
+                <GalleryGrid
+                    images={tour.images?.map(img => ({ id: img.id, url: img.url })) || []}
+                    title={tour.title}
+                />
 
                 {/* Title Overlay in Desktop (optional) or below */}
                 <div className="mt-8 mb-4">
