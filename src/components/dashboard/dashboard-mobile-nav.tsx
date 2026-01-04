@@ -17,7 +17,7 @@ export function DashboardMobileNav({ userRole, userName, userPhone }: DashboardM
             {/* Mobile Header Bar */}
             <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 sticky top-0 z-30">
                 <span className="font-black text-lg text-gray-900 tracking-tight">
-                    Explorar<span className="text-primary">RD</span>
+                    Descubre<span className="text-primary">RD</span>
                 </span>
 
                 <button

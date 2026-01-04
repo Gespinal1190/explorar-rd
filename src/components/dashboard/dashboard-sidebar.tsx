@@ -44,7 +44,7 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
             <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
                     <span className="text-xl font-black text-gray-900 tracking-tight">
-                        Explorar<span className="text-primary">RD</span>
+                        Descubre<span className="text-primary">RD</span>
                     </span>
                     <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">PANEL</span>
                 </Link>
