@@ -99,6 +99,8 @@ export async function register(prevState: string | undefined, formData: FormData
 
 // Tour Actions
 
+// Tour Actions
+
 const TourSchema = z.object({
     title: z.string().min(5),
     description: z.string().min(20),
@@ -112,6 +114,7 @@ const TourSchema = z.object({
     longitude: z.coerce.number().optional(),
     instagramUrl: z.string().optional(),
     imageUrls: z.string().optional(),
+    availableDates: z.string().optional(), // JSON string of dates
 });
 
 export async function createTour(prevState: string | undefined, formData: FormData) {
@@ -123,7 +126,7 @@ export async function createTour(prevState: string | undefined, formData: FormDa
     const parsed = TourSchema.safeParse(Object.fromEntries(formData));
     if (!parsed.success) return `Datos inválidos: ${JSON.stringify(parsed.error.flatten())}`;
 
-    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls } = parsed.data;
+    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
 
     // Convert comma separated string to JSON array
     const includesArray = includes ? JSON.stringify(includes.split(',').map(s => s.trim())) : JSON.stringify([]);
@@ -132,6 +135,11 @@ export async function createTour(prevState: string | undefined, formData: FormDa
     const imagesToCreate = imageUrls
         ? imageUrls.split(/\r?\n/).map(url => ({ url: url.trim() })).filter(img => img.url.length > 0)
         : [{ url: 'https://placehold.co/600x400?text=Tour' }];
+
+    // Process dates
+    const datesToCreate = availableDates
+        ? (JSON.parse(availableDates) as string[]).map(dateStr => ({ date: new Date(dateStr) }))
+        : [];
 
     try {
         const agency = await prisma.agencyProfile.findUnique({ where: { userId: session.user.id } });
@@ -154,6 +162,9 @@ export async function createTour(prevState: string | undefined, formData: FormDa
                 instagramUrl,
                 images: {
                     create: imagesToCreate
+                },
+                dates: {
+                    create: datesToCreate
                 }
             }
         });
@@ -180,7 +191,7 @@ export async function updateTour(
     const parsed = TourSchema.safeParse(Object.fromEntries(formData));
     if (!parsed.success) return "Datos inválidos";
 
-    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls } = parsed.data;
+    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
 
     const includesArray = includes ? JSON.stringify(includes.split(',').map(s => s.trim())) : JSON.stringify([]);
 
@@ -212,7 +223,7 @@ export async function updateTour(
             }
         });
 
-        // If new images provided, replace existing (simplest logic for the carousel state)
+        // Update Images
         if (imageUrls && imageUrls.trim().length > 0) {
             const imagesToCreate = imageUrls.split(/\r?\n/).map(url => ({ url: url.trim() })).filter(img => img.url.length > 0);
 
@@ -224,6 +235,24 @@ export async function updateTour(
                     data: {
                         images: {
                             create: imagesToCreate
+                        }
+                    }
+                });
+            }
+        }
+
+        // Update Dates (Replace Strategy)
+        if (availableDates) {
+            const datesToCreate = (JSON.parse(availableDates) as string[]).map(dateStr => ({ date: new Date(dateStr) }));
+
+            await prisma.tourDate.deleteMany({ where: { tourId: id } });
+
+            if (datesToCreate.length > 0) {
+                await prisma.tour.update({
+                    where: { id },
+                    data: {
+                        dates: {
+                            create: datesToCreate
                         }
                     }
                 });

@@ -89,6 +89,7 @@ model Tour {
   duration    String?
   
   images      TourImage[]
+  dates       TourDate[]  // New relation for specific available dates
   
   includes    String? // JSON string or text list
   notIncludes String?
@@ -113,6 +114,18 @@ model TourImage {
   tourId    String
   tour      Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
   url       String
+}
+
+model TourDate {
+  id        String   @id @default(cuid())
+  tourId    String
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  date      DateTime
+  availableSlots Int? @default(20) // Optional capacity limit per date
+  
+  createdAt DateTime @default(now())
+
+  @@index([tourId, date])
 }
 
 model Booking {

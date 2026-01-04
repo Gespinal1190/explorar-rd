@@ -19,6 +19,7 @@ interface TourFormProps {
         longitude?: number | null;
         instagramUrl?: string | null;
         images?: { url: string }[];
+        dates?: { date: Date | string }[]; // Updated type
     };
     isEditing?: boolean;
 }
@@ -37,12 +38,17 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
     );
 
     const [previews, setPreviews] = useState<string[]>([]);
+    const [selectedDates, setSelectedDates] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Initial State load
     useEffect(() => {
         if (initialData?.images && initialData.images.length > 0) {
             setPreviews(initialData.images.map(img => img.url));
+        }
+        if (initialData?.dates && initialData.dates.length > 0) {
+            // Convert dates to YYYY-MM-DD string for consistency with date input
+            setSelectedDates(initialData.dates.map(d => new Date(d.date).toISOString().split('T')[0]));
         }
     }, [initialData]);
 
@@ -270,6 +276,55 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
                         className="hidden"
                         onChange={handleImageUpload}
                     />
+                </div>
+
+                {/* Available Dates Section */}
+                <div className="md:col-span-2 space-y-4 pt-4 border-t border-gray-100">
+                    <label className="block text-sm font-bold text-gray-700">Fechas Disponibles del Tour</label>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                            type="date"
+                            className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                            id="date-picker-input"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const input = document.getElementById('date-picker-input') as HTMLInputElement;
+                                if (input.value) {
+                                    if (!selectedDates.includes(input.value)) {
+                                        setSelectedDates([...selectedDates, input.value].sort());
+                                    }
+                                    input.value = '';
+                                }
+                            }}
+                            className="px-4 py-2 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition-colors"
+                        >
+                            + Agregar Fecha
+                        </button>
+                    </div>
+
+                    {/* Hidden input for server submission */}
+                    <input type="hidden" name="availableDates" value={JSON.stringify(selectedDates)} />
+
+                    {selectedDates.length > 0 ? (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {selectedDates.map((date) => (
+                                <span key={date} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-primary/10 text-primary border border-primary/20">
+                                    {new Date(date).toLocaleDateString()}
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedDates(selectedDates.filter(d => d !== date))}
+                                        className="hover:text-red-600 transition-colors"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400 italic">No has seleccionado fechas. Si no seleccionas ninguna, el tour podría no estar disponible para reservar.</p>
+                    )}
                 </div>
             </div>
 

@@ -30,7 +30,11 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             where: { id },
             include: {
                 images: true,
-                agency: true
+                agency: true,
+                dates: {
+                    orderBy: { date: 'asc' },
+                    where: { date: { gte: new Date() } } // Only future dates
+                }
             }
         });
     } catch (error) {
@@ -48,6 +52,8 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     } catch (e) {
         includesList = [tour.includes || ''];
     }
+
+    const availableDates = tour.dates?.map(d => d.date.toISOString().split('T')[0]) || [];
 
     const whatsappMessage = `Hola, vengo de DescubreRD y me interesa el tour: ${tour.title || ''} `;
 
@@ -166,6 +172,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             price={tour.price}
                             currency={tour.currency || 'DOP'}
                             whatsappLink={whatsappLink}
+                            availableDates={availableDates}
                         />
                     </div>
 
@@ -176,6 +183,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             price={tour.price}
                             currency={tour.currency || 'DOP'}
                             whatsappLink={whatsappLink}
+                            availableDates={availableDates}
                         />
                     </div>
                 </div>

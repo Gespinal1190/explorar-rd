@@ -8,9 +8,10 @@ interface BookingFormProps {
     price: number;
     currency?: string;
     whatsappLink: string;
+    availableDates?: string[];
 }
 
-export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink }: BookingFormProps) {
+export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [] }: BookingFormProps) {
     const router = useRouter();
     const [date, setDate] = useState("");
     const [guests, setGuests] = useState(2);
@@ -36,14 +37,33 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink }: B
         <div className="space-y-4">
             {/* Date Input */}
             <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 transition-colors focus-within:ring-2 ring-primary/20">
-                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Fecha de Viaje</label>
-                <input
-                    type="date"
-                    className="w-full bg-transparent outline-none font-bold text-gray-900"
-                    min={new Date().toISOString().split('T')[0]}
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                />
+                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">
+                    {availableDates.length > 0 ? "Próximas Salidas Disponibles" : "Fecha de Viaje"}
+                </label>
+
+                {availableDates.length > 0 ? (
+                    <select
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="w-full bg-transparent outline-none font-bold text-gray-900 cursor-pointer appearance-none"
+                        style={{ backgroundImage: 'none' }} // Remove default arrow in some browsers if needed, or keeping it is fine
+                    >
+                        <option value="" disabled>Selecciona una fecha...</option>
+                        {availableDates.map((d) => (
+                            <option key={d} value={d}>
+                                {new Date(d).toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        type="date"
+                        className="w-full bg-transparent outline-none font-bold text-gray-900"
+                        min={new Date().toISOString().split('T')[0]}
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                    />
+                )}
             </div>
 
             {/* Guests Input */}
