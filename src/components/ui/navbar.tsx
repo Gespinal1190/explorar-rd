@@ -57,7 +57,7 @@ export default async function Navbar() {
                                         session.user.role === 'AGENCY' ? '/dashboard/agency' :
                                             '/dashboard/user'
                                 }
-                                className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold hover:bg-primary hover:text-white transition-all overflow-hidden"
+                                className="hidden sm:flex w-9 h-9 bg-primary/10 rounded-full items-center justify-center text-primary font-bold hover:bg-primary hover:text-white transition-all overflow-hidden"
                             >
                                 {session.user.image ? (
                                     <img src={session.user.image} alt={session.user.name || ""} className="w-full h-full object-cover" />
@@ -67,17 +67,17 @@ export default async function Navbar() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="flex items-center space-x-2">
-                            <Link href="/login" className="inline-flex px-4 py-2 rounded-full border border-primary text-primary text-xs md:text-sm font-bold hover:bg-primary/5 transition-colors">
+                        <div className="hidden md:flex items-center space-x-3">
+                            <Link href="/login" className="px-5 py-2 rounded-full border border-primary text-primary text-sm font-semibold hover:bg-primary/5 transition-colors">
                                 Iniciar Sesión
                             </Link>
-                            <Link href="/agencies/register" className="hidden sm:inline-flex px-5 py-2 rounded-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-md shadow-teal-500/20">
+                            <Link href="/agencies/register" className="px-5 py-2 rounded-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-md shadow-teal-500/20">
                                 Soy Agencia
                             </Link>
                         </div>
                     )}
 
-                    {/* Mobile Menu Toggle */}
+                    {/* Mobile Menu Toggle (Hamburger) */}
                     <NavMobile session={session} />
                 </div>
             </div>
