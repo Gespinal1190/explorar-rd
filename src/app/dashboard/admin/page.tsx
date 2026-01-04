@@ -56,48 +56,88 @@ export default async function AdminDashboard() {
     });
 
     return (
-        <div className="space-y-12">
-            <div className="flex justify-between items-end">
+        <div className="space-y-8 md:space-y-12">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900">Panel de Administración</h1>
-                    <p className="text-gray-500">Vista general del rendimiento de la plataforma.</p>
+                    <h1 className="text-2xl md:text-3xl font-black text-gray-900">Panel de Administración</h1>
+                    <p className="text-sm md:text-base text-gray-500">Vista general del rendimiento de la plataforma.</p>
                 </div>
-                <a href="/dashboard/admin/profile" className="px-4 py-2 bg-white text-gray-700 font-bold text-xs rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm">
+                <a href="/dashboard/admin/profile" className="self-start md:self-auto px-4 py-2 bg-white text-gray-700 font-bold text-xs rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm">
                     ⚙️ Mi Configuración
                 </a>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-primary to-teal-600 p-6 rounded-3xl text-white shadow-lg shadow-primary/20">
-                    <div className="text-3xl mb-1">💰</div>
-                    <div className="text-3xl font-black">RD${(totalSales._sum.totalPrice || 0).toLocaleString()}</div>
-                    <div className="text-xs font-bold uppercase opacity-80">Ventas Totales</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="bg-gradient-to-br from-primary to-teal-600 p-5 md:p-6 rounded-3xl text-white shadow-lg shadow-primary/20 relative overflow-hidden">
+                    <div className="text-3xl mb-1 relative z-10">💰</div>
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black truncate relative z-10" title={`RD$ ${(totalSales._sum.totalPrice || 0).toLocaleString()}`}>
+                        RD${(totalSales._sum.totalPrice || 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs font-bold uppercase opacity-80 relative z-10">Ventas Totales</div>
+                    {/* Decorative Circle */}
+                    <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
                 </div>
                 {[
                     { label: "Usuarios", value: stats.users, icon: "👥" },
                     { label: "Agencias", value: stats.agencies, icon: "🏢" },
                     { label: "Reservas", value: stats.bookings, icon: "📅" },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <div key={i} className="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
                         <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">{stat.icon}</span>
                             <span className="text-xs font-bold text-gray-400 uppercase">{stat.label}</span>
                         </div>
-                        <div className="text-4xl font-black text-gray-900">{stat.value}</div>
+                        <div className="text-3xl md:text-4xl font-black text-gray-900">{stat.value}</div>
                     </div>
                 ))}
             </div>
 
             {/* Agency Management */}
             <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                <div className="p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h3 className="text-xl font-bold text-gray-900">🏢 Agencias Registradas</h3>
-                        <p className="text-sm text-gray-500">Valida y gestiona los socios de la plataforma.</p>
+                        <h3 className="text-lg md:text-xl font-bold text-gray-900">🏢 Agencias Registradas</h3>
+                        <p className="text-xs md:text-sm text-gray-500">Valida y gestiona los socios de la plataforma.</p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
+
+                {/* Mobile Agency Cards */}
+                <div className="block md:hidden p-4 space-y-4">
+                    {agencies.map((agency: any) => (
+                        <div key={agency.id} className="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h4 className="font-bold text-gray-900">{agency.name}</h4>
+                                    <p className="text-xs text-gray-500">{agency.user.email}</p>
+                                </div>
+                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${agency.isVerified ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                    {agency.isVerified ? 'Verificado' : 'Pendiente'}
+                                </span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200/50">
+                                <form action={toggleVerification.bind(null, agency.id, agency.isVerified)} className="flex-1">
+                                    <button className={`w-full py-2 rounded-lg text-xs font-bold transition-colors ${agency.isVerified ? 'bg-orange-100 text-orange-600' : 'bg-primary text-white shadow-md shadow-primary/20'}`}>
+                                        {agency.isVerified ? 'Revocar' : 'Validar'}
+                                    </button>
+                                </form>
+                                <Link href={`/dashboard/admin/agencies/${agency.id}`} className="flex-1 py-2 rounded-lg text-xs font-bold bg-white text-gray-700 border border-gray-200 text-center">
+                                    Detalles
+                                </Link>
+                                {!agency.isVerified && (
+                                    <form action={removeUser.bind(null, agency.userId)} className="w-full">
+                                        <button className="w-full py-2 rounded-lg text-xs font-bold bg-red-50 text-red-600 border border-red-100">
+                                            Rechazar
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Desktop Agency Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-gray-50">
                             <tr>
@@ -146,11 +186,31 @@ export default async function AdminDashboard() {
 
             {/* User Management */}
             <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-8 border-b border-gray-100">
-                    <h3 className="text-xl font-bold text-gray-900">👥 Gestión de Usuarios</h3>
-                    <p className="text-sm text-gray-500">Usuarios registrados en la plataforma.</p>
+                <div className="p-6 md:p-8 border-b border-gray-100">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900">👥 Gestión de Usuarios</h3>
+                    <p className="text-xs md:text-sm text-gray-500">Usuarios registrados en la plataforma.</p>
                 </div>
-                <div className="overflow-x-auto">
+
+                {/* Mobile User List */}
+                <div className="block md:hidden p-4 space-y-2">
+                    {users.map((u: any) => (
+                        <div key={u.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div>
+                                <p className="font-bold text-gray-900 text-sm">{u.name}</p>
+                                <p className="text-xs text-gray-500 truncate max-w-[150px]">{u.email}</p>
+                            </div>
+                            <form action={removeUser.bind(null, u.id)}>
+                                <button className="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg">
+                                    <span className="sr-only">Eliminar</span>
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Desktop User Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-gray-50">
                             <tr>
@@ -175,57 +235,6 @@ export default async function AdminDashboard() {
                                                 Eliminar
                                             </button>
                                         </form>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            {/* Booking Management */}
-            <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-8 border-b border-gray-100">
-                    <h3 className="text-xl font-bold text-gray-900">📅 Gestión de Reservas</h3>
-                    <p className="text-sm text-gray-500">Historial completo de reservas.</p>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="p-6 text-xs font-bold text-gray-500 uppercase">Detalle</th>
-                                <th className="p-6 text-xs font-bold text-gray-500 uppercase">Usuario</th>
-                                <th className="p-6 text-xs font-bold text-gray-500 uppercase">Estado</th>
-                                <th className="p-6 text-xs font-bold text-gray-500 uppercase">Pago</th>
-                                <th className="p-6 text-xs font-bold text-gray-500 uppercase">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {bookings.map((booking: any) => (
-                                <tr key={booking.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="p-6">
-                                        <div className="font-bold text-gray-900 text-sm">ID: {booking.id.slice(0, 8)}...</div>
-                                        <div className="text-xs text-gray-500 mt-1">
-                                            {new Date(booking.date).toLocaleDateString()} · {booking.people} Pers.
-                                        </div>
-                                        <div className="text-xs font-bold text-primary mt-1">{booking.tour.title}</div>
-                                    </td>
-                                    <td className="p-6 text-sm text-gray-600">
-                                        <div className="font-bold">{booking.user.name}</div>
-                                        <div className="text-xs text-gray-400">{booking.user.email}</div>
-                                    </td>
-                                    <td className="p-6">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                            {booking.status}
-                                        </span>
-                                    </td>
-                                    <td className="p-6">
-                                        <div className="text-xs font-bold uppercase text-gray-500 mb-1">{booking.paymentMethod}</div>
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${booking.paymentStatus === 'PAID' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
-                                            {booking.paymentStatus}
-                                        </span>
-                                    </td>
-                                    <td className="p-6 font-black text-gray-900">
-                                        RD${booking.totalPrice.toLocaleString()}
                                     </td>
                                 </tr>
                             ))}
