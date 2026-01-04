@@ -6,18 +6,26 @@ export default async function AgencyBookingsPage() {
     const session = await auth();
     if (!session?.user?.id) return null;
 
-    const agency = await prisma.agencyProfile.findUnique({
-        where: { userId: session.user.id },
-        include: {
-            tours: {
-                include: {
-                    bookings: {
-                        include: { user: true }
+    let agency;
+    try {
+        agency = await prisma.agencyProfile.findUnique({
+            where: { userId: session.user.id },
+            include: {
+                tours: {
+                    include: {
+                        bookings: {
+                            include: { user: true }
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error("Agency bookings error:", error);
+        return <div className="p-8 text-center text-red-500 bg-red-50 rounded-2xl">
+            Error al cargar tus reservas. Revisa tu conexión o intenta más tarde.
+        </div>;
+    }
 
     if (!agency) return <div>No tienes perfil de agencia.</div>;
 

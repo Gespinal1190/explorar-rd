@@ -10,8 +10,8 @@ export default function BookingCard({ booking }: { booking: any }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Check if we need to show payment instructions
-    const showPaymentInstructions = booking.paymentMethod === 'transfer' && booking.paymentStatus === 'PENDING';
-    const bankAccounts = booking.tour.agency.bankAccounts || [];
+    const showPaymentInstructions = booking?.paymentMethod === 'transfer' && booking?.paymentStatus === 'PENDING';
+    const bankAccounts = booking?.tour?.agency?.bankAccounts || [];
 
     const handleFileUpload = async (file: File) => {
         setIsSubmitting(true);
@@ -43,11 +43,13 @@ export default function BookingCard({ booking }: { booking: any }) {
         }
     };
 
+    if (!booking || !booking.tour) return null;
+
     return (
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-32 h-32 bg-gray-100 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
-                    {booking.tour.images[0] && (
+                    {booking.tour.images?.[0] && (
                         <img src={booking.tour.images[0].url} alt="" className="w-full h-full object-cover" />
                     )}
                 </div>
@@ -73,11 +75,11 @@ export default function BookingCard({ booking }: { booking: any }) {
                                 )}
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 leading-tight">{booking.tour.title}</h3>
-                            <p className="text-sm text-gray-500 mt-1">📅 {new Date(booking.date).toLocaleDateString()} • {booking.people} Personas</p>
+                            <p className="text-sm text-gray-500 mt-1">📅 {booking.date ? new Date(booking.date).toLocaleDateString() : 'Fecha no disponible'} • {booking.people} Personas</p>
                         </div>
                         <div className="text-right">
                             <p className="text-xs text-gray-400 font-bold uppercase">Total</p>
-                            <p className="text-xl font-black text-gray-900">RD${booking.totalPrice.toLocaleString()}</p>
+                            <p className="text-xl font-black text-gray-900">RD${(booking.totalPrice || 0).toLocaleString()}</p>
                         </div>
                     </div>
 

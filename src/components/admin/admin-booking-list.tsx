@@ -57,22 +57,22 @@ function AdminBookingRow({ booking }: { booking: any }) {
     return (
         <tr className="hover:bg-gray-50">
             <td className="px-6 py-4">
-                <div className="text-xs font-mono text-gray-500 mb-1">{booking.id.slice(-8)}</div>
-                <div className="text-sm font-bold text-gray-900">{new Date(booking.date).toLocaleDateString()}</div>
+                <div className="text-xs font-mono text-gray-500 mb-1">{(booking?.id || '').slice(-8)}</div>
+                <div className="text-sm font-bold text-gray-900">{booking?.date ? new Date(booking.date).toLocaleDateString() : 'N/A'}</div>
             </td>
             <td className="px-6 py-4">
-                <div className="text-sm font-medium text-gray-900">{booking.user.name || "Sin nombre"}</div>
-                <div className="text-xs text-gray-500">{booking.user.email}</div>
+                <div className="text-sm font-medium text-gray-900">{booking?.user?.name || "Sin nombre"}</div>
+                <div className="text-xs text-gray-500">{booking?.user?.email || 'N/A'}</div>
             </td>
             <td className="px-6 py-4">
-                <div className="text-sm font-medium text-gray-900 line-clamp-1">{booking.tour.title}</div>
-                <div className="text-xs text-gray-500">{booking.tour.agency.name}</div>
+                <div className="text-sm font-medium text-gray-900 line-clamp-1">{booking?.tour?.title || 'Tour Desconocido'}</div>
+                <div className="text-xs text-gray-500">{booking?.tour?.agency?.name || 'Agencia Desconocida'}</div>
             </td>
             <td className="px-6 py-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
-                    booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                <span className={`px-2 py-1 rounded-full text-xs font-bold ${booking?.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
+                    booking?.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
                     }`}>
-                    {booking.status}
+                    {booking?.status || 'N/A'}
                 </span>
             </td>
             <td className="px-6 py-4">

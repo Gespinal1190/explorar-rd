@@ -9,16 +9,24 @@ export default async function AdminBookingsPage() {
         redirect("/dashboard");
     }
 
-    const bookings = await prisma.booking.findMany({
-        include: {
-            user: true,
-            tour: {
-                include: { agency: true }
-            }
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 100 // Limit to last 100 for performance
-    });
+    let bookings = [];
+    try {
+        bookings = await prisma.booking.findMany({
+            include: {
+                user: true,
+                tour: {
+                    include: { agency: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 100 // Limit to last 100 for performance
+        });
+    } catch (error) {
+        console.error("Admin bookings error:", error);
+        return <div className="p-8 text-center text-red-500 bg-red-50 rounded-2xl border border-red-100">
+            Error al cargar las reservas. Por favor contacte soporte.
+        </div>;
+    }
 
     // Serialize dates
     const serializedBookings = JSON.parse(JSON.stringify(bookings));

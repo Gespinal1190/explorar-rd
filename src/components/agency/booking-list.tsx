@@ -76,12 +76,12 @@ function BookingRow({ booking }: { booking: Booking }) {
         <tr className="hover:bg-gray-50/50 transition-colors">
             <td className="px-6 py-4">
                 <div className="flex flex-col">
-                    <span className="font-semibold text-gray-900">{booking.user.name || "Sin nombre"}</span>
+                    <span className="font-semibold text-gray-900">{booking?.user?.name || "Sin nombre"}</span>
                     <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
                         <EnvelopeIcon className="w-3 h-3" />
-                        <span>{booking.user.email}</span>
+                        <span>{booking?.user?.email || 'N/A'}</span>
                     </div>
-                    {booking.user.phone && (
+                    {booking?.user?.phone && (
                         <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
                             <PhoneIcon className="w-3 h-3" />
                             <span>{booking.user.phone}</span>
@@ -91,12 +91,12 @@ function BookingRow({ booking }: { booking: Booking }) {
             </td>
             <td className="px-6 py-4">
                 <div className="flex flex-col">
-                    <span className="font-medium text-gray-900">{booking.tourTitle}</span>
+                    <span className="font-medium text-gray-900">{booking?.tourTitle || "Tour Desconocido"}</span>
                     <span className="text-sm text-gray-500">
-                        {new Date(booking.date).toLocaleDateString()} • {booking.people} pers.
+                        {booking?.date ? new Date(booking.date).toLocaleDateString() : 'N/A'} • {booking?.people || 0} pers.
                     </span>
                     <span className="text-sm font-bold text-gray-900 mt-1">
-                        RD$ {booking.totalPrice.toLocaleString()}
+                        RD$ {(booking?.totalPrice || 0).toLocaleString()}
                     </span>
                 </div>
             </td>
