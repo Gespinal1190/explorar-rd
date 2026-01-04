@@ -53,8 +53,8 @@ export function NavMobile({ session }: NavMobileProps) {
                         </svg>
                     </button>
 
-                    {/* Links Container with Glass Effect */}
-                    <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-white/50 p-6 shadow-sm">
+                    {/* Links Container with "Cristal Empañado" Effect */}
+                    <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/40 p-6 shadow-lg shadow-black/5">
                         <nav className="flex flex-col space-y-1">
                             {[
                                 { name: 'Inicio', href: '/' },
@@ -66,18 +66,18 @@ export function NavMobile({ session }: NavMobileProps) {
                                     key={item.href}
                                     href={item.href}
                                     onClick={() => setIsOpen(false)}
-                                    className="text-xl font-bold text-gray-900 px-4 py-4 rounded-2xl active:bg-white/50 transition-colors flex justify-between items-center group"
+                                    className="text-xl font-black text-gray-900 px-4 py-4 rounded-2xl active:bg-black/5 transition-colors flex justify-between items-center group"
                                 >
                                     {item.name}
-                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                    <span className="text-gray-400 group-hover:text-primary transition-colors">→</span>
                                 </Link>
                             ))}
                         </nav>
                     </div>
 
-                    <div className="mt-8 space-y-4">
+                    <div className="mt-6 space-y-4">
                         {session?.user ? (
-                            <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-white/50 p-6 shadow-sm">
+                            <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/40 p-6 shadow-lg shadow-black/5">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="w-14 h-14 bg-gradient-to-tr from-primary to-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">
                                         {session.user.name?.charAt(0)}
@@ -107,14 +107,14 @@ export function NavMobile({ session }: NavMobileProps) {
                                 <Link
                                     href="/login"
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-5 text-center font-black text-gray-900 bg-white/60 backdrop-blur-sm border border-white rounded-[2rem] shadow-sm active:scale-95 transition-transform"
+                                    className="w-full py-5 text-center font-black text-gray-900 bg-white/80 backdrop-blur-2xl border border-white/50 rounded-[2.5rem] shadow-lg shadow-black/5 active:scale-95 transition-transform"
                                 >
                                     Iniciar Sesión
                                 </Link>
                                 <Link
                                     href="/agencies/register"
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-5 text-center font-black text-white bg-primary rounded-[2rem] shadow-xl shadow-primary/20 active:scale-95 transition-transform"
+                                    className="w-full py-5 text-center font-black text-white bg-primary rounded-[2.5rem] shadow-xl shadow-primary/30 active:scale-95 transition-transform"
                                 >
                                     Registrar mi Agencia
                                 </Link>
