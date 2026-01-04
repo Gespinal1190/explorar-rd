@@ -40,7 +40,7 @@ export function NavMobile({ session }: NavMobileProps) {
 
             {/* Sidebar Content */}
             <div
-                className={`fixed top-0 right-0 h-full w-[80%] max-w-sm bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white/90 backdrop-blur-2xl z-50 shadow-2xl transform transition-transform duration-500 ease-out border-l border-white/20 ${isOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="flex flex-col h-full p-8 pt-20">
