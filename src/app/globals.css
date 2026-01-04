@@ -42,6 +42,21 @@ body {
   overflow-x: hidden;
   background-color: var(--color-background);
   color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+  /* Remove tap highlight on mobile */
+}
+
+/* Fluid Typography for Headers */
+h1 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-black tracking-tight;
+}
+
+h2 {
+  @apply text-2xl md:text-3xl font-bold tracking-tight;
+}
+
+h3 {
+  @apply text-xl md:text-2xl font-bold;
 }
 
 body {
