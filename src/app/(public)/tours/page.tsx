@@ -1,0 +1,193 @@
+import Navbar from "@/components/ui/navbar";
+import { TourCard } from "@/components/tours/tour-card";
+import prisma from "@/lib/prisma";
+import Link from "next/link";
+
+export const metadata = {
+    title: 'Explorar Tours | Explorar RD',
+};
+
+export default async function ToursPage(props: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const searchParams = await props.searchParams;
+    const search = typeof searchParams?.search === 'string' ? searchParams.search : undefined;
+    const location = typeof searchParams?.location === 'string' ? searchParams.location : undefined;
+
+    const query = search || location;
+    const now = new Date();
+
+    // Define search filter
+    const searchFilter = query ? {
+        OR: [
+            { title: { contains: query } },
+            { location: { contains: query } },
+            { agency: { name: { contains: query } } },
+            { description: { contains: query } }
+        ]
+    } : {};
+
+    // Sort priority for plans
+    const planPriority: Record<string, number> = {
+        'ad_premium_1m': 3,
+        'ad_standard_2w': 2,
+        'ad_basic_1w': 1,
+    };
+
+    const featuredTours = (await prisma.tour.findMany({
+        where: {
+            featuredExpiresAt: { gt: now },
+            ...searchFilter
+        } as any,
+        include: { images: true, agency: true },
+        orderBy: [
+            { agency: { tier: 'desc' } },
+            { createdAt: 'desc' }
+        ] as any,
+        take: 20
+    })) as any[];
+
+    // Sort featured tours by plan priority
+    featuredTours.sort((a, b) => {
+        const priorityA = planPriority[a.featuredPlan || ''] || 0;
+        const priorityB = planPriority[b.featuredPlan || ''] || 0;
+        if (priorityA !== priorityB) return priorityB - priorityA;
+        return 0; // fallback to prisma order
+    });
+
+    const regularTours = (await prisma.tour.findMany({
+        where: {
+            OR: [
+                { featuredExpiresAt: null },
+                { featuredExpiresAt: { lte: now } }
+            ],
+            ...searchFilter
+        } as any,
+        include: { images: true, agency: true },
+        orderBy: [
+            { agency: { tier: 'desc' } }, // PRO agencies first
+            { createdAt: 'desc' }
+        ] as any
+    })) as any[];
+
+    return (
+        <div className="min-h-screen bg-[#FBFBF8]">
+            <Navbar />
+
+            {/* Enhanced Header with Search Feedback */}
+            <div className="bg-white border-b border-gray-100">
+                <div className="container mx-auto px-4 py-12">
+                    <div className="max-w-4xl">
+                        <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+                            {query ? (
+                                <span>Resultados para <span className="text-primary">"{query}"</span></span>
+                            ) : (
+                                "Explorar Excursiones"
+                            )}
+                        </h1>
+                        <p className="text-gray-500 text-lg font-medium mb-8">
+                            {query
+                                ? `Hemos encontrado ${featuredTours.length + regularTours.length} experiencias que coinciden con tu búsqueda.`
+                                : "Descubre las mejores aventuras y destinos de la República Dominicana."
+                            }
+                        </p>
+
+                        <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                            <Link href="/tours" className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap shadow-sm border ${!query ? 'bg-primary text-white border-primary shadow-primary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-primary/50'}`}>
+                                Todos
+                            </Link>
+                            {['Punta Cana', 'Samaná', 'Jarabacoa', 'Bayahíbe', 'Bahía de las Águilas'].map(cat => (
+                                <Link
+                                    key={cat}
+                                    href={`/tours?search=${cat}`}
+                                    className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap shadow-sm border ${query === cat ? 'bg-primary text-white border-primary shadow-primary/20' : 'bg-white text-gray-600 border-gray-100 hover:border-primary/50'}`}
+                                >
+                                    {cat}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 py-12 space-y-16">
+
+                {/* Featured Section */}
+                {featuredTours.length > 0 && (
+                    <section className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 p-8 md:p-12 rounded-[2.5rem] border border-amber-100 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+                            <span className="text-9xl">💎</span>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 relative z-10">
+                            <div>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-amber-200 animate-bounce-subtle">
+                                        🔥
+                                    </div>
+                                    <h2 className="text-3xl font-black text-gray-900 tracking-tight">Anuncios Premium</h2>
+                                </div>
+                                <p className="text-amber-800/70 font-bold max-w-md">Las mejores opciones seleccionadas para ti por su alta disponibilidad y confianza.</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10">
+                            {featuredTours.map((tour) => (
+                                <TourCard
+                                    key={tour.id}
+                                    id={tour.id}
+                                    title={tour.title}
+                                    price={tour.price}
+                                    location={tour.location}
+                                    image={tour.images[0]?.url}
+                                    agencyName={tour.agency.name}
+                                    isAgencyPro={tour.agency.tier === 'PRO'}
+                                    currency={tour.currency}
+                                    isFeatured={true}
+                                    featuredPlan={tour.featuredPlan}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Regular Section */}
+                <section>
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+                            {query ? "Más resultados" : "Todas las actividades"}
+                        </h2>
+                        {!query && <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{regularTours.length} Tours</span>}
+                    </div>
+
+                    {regularTours.length === 0 && featuredTours.length === 0 ? (
+                        <div className="text-center py-24 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
+                            <span className="text-6xl mb-6 block">🔍</span>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">No encontramos nada para "{query}"</h3>
+                            <p className="text-gray-500 mb-8 max-w-sm mx-auto">Prueba con términos más generales como "Punta Cana" o "Playa".</p>
+                            <Link href="/tours" className="inline-block bg-primary text-white font-bold px-8 py-3 rounded-full shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                                Ver todos los tours
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {regularTours.map((tour) => (
+                                <TourCard
+                                    key={tour.id}
+                                    id={tour.id}
+                                    title={tour.title}
+                                    price={tour.price}
+                                    location={tour.location}
+                                    image={tour.images[0]?.url}
+                                    agencyName={tour.agency.name}
+                                    isAgencyPro={tour.agency.tier === 'PRO'}
+                                    currency={tour.currency}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,76 @@
+
+[2026-01-04T01:52:04.503Z] Error: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$explorard$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.create()` invocation in
+C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\[root-of-the-server]__fa642891._.js:259:193
+
+  256     paymentMethod
+  257 });
+  258 // Create the booking
+→ 259 const booking = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$explorard$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.create({
+        data: {
+          userId: "cmjz0i0080000im6zdkimedbz",
+          tourId: "cmjz0i0120004im6z24u67ctl",
+          date: new Date("2026-06-01T00:00:00.000Z"),
+          people: 2,
+          totalPrice: 9000,
+          status: "PENDING",
+          paymentMethod: "transfer",
+          ~~~~~~~~~~~~~
+          paymentStatus: "PENDING",
+      ?   id?: String,
+      ?   createdAt?: DateTime,
+      ?   updatedAt?: DateTime
+        }
+      })
+
+Unknown argument `paymentMethod`. Available options are marked with ?.
+Stack: PrismaClientValidationError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$explorard$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.create()` invocation in
+C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\[root-of-the-server]__fa642891._.js:259:193
+
+  256     paymentMethod
+  257 });
+  258 // Create the booking
+→ 259 const booking = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$explorard$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.create({
+        data: {
+          userId: "cmjz0i0080000im6zdkimedbz",
+          tourId: "cmjz0i0120004im6z24u67ctl",
+          date: new Date("2026-06-01T00:00:00.000Z"),
+          people: 2,
+          totalPrice: 9000,
+          status: "PENDING",
+          paymentMethod: "transfer",
+          ~~~~~~~~~~~~~
+          paymentStatus: "PENDING",
+      ?   id?: String,
+      ?   createdAt?: DateTime,
+      ?   updatedAt?: DateTime
+        }
+      })
+
+Unknown argument `paymentMethod`. Available options are marked with ?.
+    at Tn (C:\Users\German Espinal\Desktop\explorard\node_modules\@prisma\client\runtime\library.js:115:6855)
+    at In.handleRequestError (C:\Users\German Espinal\Desktop\explorard\node_modules\@prisma\client\runtime\library.js:122:6533)
+    at In.handleAndLogRequestError (C:\Users\German Espinal\Desktop\explorard\node_modules\@prisma\client\runtime\library.js:122:6211)
+    at In.request (C:\Users\German Espinal\Desktop\explorard\node_modules\@prisma\client\runtime\library.js:122:5919)
+    at async l (C:\Users\German Espinal\Desktop\explorard\node_modules\@prisma\client\runtime\library.js:127:11167)
+    at async POST (C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\[root-of-the-server]__fa642891._.js:259:25)
+    at async AppRouteRouteModule.do (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\001ac_next_cf98efe2._.js:16647:38)
+    at async AppRouteRouteModule.handleResponse (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:187713)
+    at async handleResponse (C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\001ac_next_cf98efe2._.js:16710:32)
+    at async Module.handler (C:\Users\German Espinal\Desktop\explorard\.next\dev\server\chunks\001ac_next_cf98efe2._.js:16763:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\base-server.js:1422:9)
+    at async DevServer.renderPageComponent (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\base-server.js:1474:24)
+    at async DevServer.renderToResponseImpl (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\base-server.js:1524:32)
+    at async DevServer.pipeImpl (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\base-server.js:1018:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\base-server.js:909:17)
+    at async C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\Users\German Espinal\Desktop\explorard\node_modules\next\dist\server\lib\start-server.js:226:13)

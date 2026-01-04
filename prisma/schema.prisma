@@ -1,0 +1,165 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  phone         String?
+  role          String    @default("USER") // USER, AGENCY, ADMIN
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  agencyProfile AgencyProfile?
+  bookings      Booking[]
+  favorites     Favorite[]
+}
+
+model AgencyProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String   // Agency Name
+  description String?
+  logo        String?
+  phone       String?
+  whatsapp    String?
+  instagram   String?
+  website     String?
+  isVerified  Boolean  @default(false)
+
+  tier            String    @default("FREE")
+  tierExpiresAt   DateTime?
+  
+  stripeConnectId String? // For Stripe payouts
+  
+  tours       Tour[]
+  
+  rnc         String?
+  licenseUrl  String?
+  premisesUrl String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bankAccounts BankAccount[]
+}
+
+model BankAccount {
+  id              String        @id @default(cuid())
+  agencyProfileId String
+  agencyProfile   AgencyProfile @relation(fields: [agencyProfileId], references: [id], onDelete: Cascade)
+  
+  bankName        String
+  accountNumber   String
+  accountType     String        @default("CORRIENTE") // CORRIENTE, AHORROS
+  beneficiaryName String
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Tour {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      AgencyProfile @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String
+  location    String   // Zone: Punta Cana, etc.
+  address     String?  // Exact address/Google Maps string
+  
+  // Map Coordinates
+  latitude    Float?
+  longitude   Float?
+  
+  price       Float
+  currency    String   @default("DOP")
+  duration    String?
+  
+  images      TourImage[]
+  
+  includes    String? // JSON string or text list
+  notIncludes String?
+  requirements String?
+  
+  // Social Integration
+  instagramUrl String? // Specific post for this tour
+  
+  bookings    Booking[]
+  favorites   Favorite[]
+  
+  // Feature/Promo System
+  featuredExpiresAt DateTime?
+  featuredPlan      String? // basic_1w, medium_2w, premium_1m
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TourImage {
+  id        String @id @default(cuid())
+  tourId    String
+  tour      Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  url       String
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  tourId      String
+  tour        Tour     @relation(fields: [tourId], references: [id])
+  
+  date        DateTime
+  people      Int      @default(1)
+  totalPrice  Float
+  status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
+  
+  // Payment Details
+  paymentStatus String @default("PENDING") // PENDING, PAID
+  paymentMethod String @default("CASH")    // STRIPE, TRANSFER, CASH
+  
+  stripeSessionId String?
+  transferReference String?
+  paymentReceiptUrl String? // Proof of payment for transfers
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tourId    String
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tourId])
+}
+
+model Plan {
+  id           String   @id @default(cuid())
+  type         String   // 'AD' or 'MEMBERSHIP'
+  slug         String   @unique 
+  name         String
+  price        Float
+  durationDays Int
+  description  String?
+  features     String?
+  
+  updatedAt    DateTime @updatedAt
+}
