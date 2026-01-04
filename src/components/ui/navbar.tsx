@@ -34,13 +34,6 @@ export default async function Navbar() {
 
                 {/* Right Actions */}
                 <div className="flex items-center space-x-2 md:space-x-4">
-                    <button className="hidden sm:block text-gray-500 hover:text-primary p-2">
-                        {/* Search Icon Placeholder */}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </button>
-
                     {session?.user ? (
                         <div className="flex items-center space-x-4">
                             {session.user.role === 'AGENCY' && (
@@ -74,11 +67,11 @@ export default async function Navbar() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="flex items-center space-x-3">
-                            <Link href="/login" className="hidden sm:inline-flex px-5 py-2 rounded-full border border-primary text-primary text-sm font-semibold hover:bg-primary/5 transition-colors">
+                        <div className="flex items-center space-x-2">
+                            <Link href="/login" className="inline-flex px-4 py-2 rounded-full border border-primary text-primary text-xs md:text-sm font-bold hover:bg-primary/5 transition-colors">
                                 Iniciar Sesión
                             </Link>
-                            <Link href="/agencies/register" className="hidden md:inline-flex px-5 py-2 rounded-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-md shadow-teal-500/20">
+                            <Link href="/agencies/register" className="hidden sm:inline-flex px-5 py-2 rounded-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-md shadow-teal-500/20">
                                 Soy Agencia
                             </Link>
                         </div>
