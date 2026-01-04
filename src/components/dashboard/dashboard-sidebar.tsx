@@ -11,7 +11,8 @@ import {
     CurrencyDollarIcon,
     HeartIcon,
     MapIcon,
-    BuildingStorefrontIcon
+    BuildingStorefrontIcon,
+    XMarkIcon
 } from "@heroicons/react/24/outline";
 
 interface DashboardSidebarProps {
@@ -28,8 +29,8 @@ export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSid
     // Helper to check active link
     const isActive = (path: string) => pathname === path;
     const linkClass = (path: string) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive(path)
-            ? 'bg-primary/10 text-primary font-bold'
-            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+        ? 'bg-primary/10 text-primary font-bold'
+        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
         }`;
 
     const handleClick = () => {
@@ -39,13 +40,23 @@ export function DashboardSidebar({ userRole, userName, closeMenu }: DashboardSid
     return (
         <div className="flex flex-col h-full bg-white border-r border-gray-100">
             {/* Logo Area (Desktop only usually, but kept for structure) */}
-            <div className="p-6 h-20 flex items-center border-b border-gray-100">
+            <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
                     <span className="text-xl font-black text-gray-900 tracking-tight">
                         Explorar<span className="text-primary">RD</span>
                     </span>
                     <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">PANEL</span>
                 </Link>
+
+                {/* Mobile Close Button */}
+                {closeMenu && (
+                    <button
+                        onClick={closeMenu}
+                        className="p-2 -mr-2 text-gray-400 hover:text-gray-900 md:hidden"
+                    >
+                        <XMarkIcon className="w-6 h-6" />
+                    </button>
+                )}
             </div>
 
             <nav className="flex-1 overflow-y-auto p-4 space-y-8">
