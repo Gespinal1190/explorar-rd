@@ -3,14 +3,21 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { GalleryGrid } from "@/components/ui/gallery-grid";
-import { ClientMap } from "@/components/ui/client-map";
 import { BookingForm } from "@/components/tours/booking-form";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const tour = await prisma.tour.findUnique({ where: { id } });
-    if (!tour) return { title: 'Tour no encontrado' };
-    return { title: `${tour.title} | DescubreRD` };
+    try {
+        const { id } = await params;
+        const tour = await prisma.tour.findUnique({
+            where: { id },
+            select: { title: true }
+        });
+        if (!tour) return { title: 'Tour no encontrado' };
+        return { title: `${tour.title} | DescubreRD` };
+    } catch (e) {
+        console.error("Metadata error:", e);
+        return { title: 'Explorar RD' };
+    }
 }
 
 export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -21,11 +28,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             where: { id },
             include: {
                 images: true,
-                agency: {
-                    include: {
-                        user: true
-                    }
-                }
+                agency: true // Removed nested user include to prevent serialization issues
             }
         });
     } catch (error) {
