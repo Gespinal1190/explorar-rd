@@ -38,24 +38,40 @@ export function NavMobile({ session }: NavMobileProps) {
                 />
             )}
 
-            {/* Sidebar Content */}
+            {/* Sidebar Content (Drawer) */}
             <div
-                className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl transform transition-transform duration-500 ease-out border-l border-gray-100 ${isOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed inset-0 h-screen w-full bg-white/80 backdrop-blur-2xl z-50 transform transition-transform duration-500 ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"
                     }`}
             >
-                <div className="flex flex-col h-full p-8 pt-24 overflow-y-auto">
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-gray-50 text-gray-900 rounded-full"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                <div className="flex flex-col h-full p-6 pt-20">
+                    {/* Header with Logo and Close Button */}
+                    <div className="flex items-center justify-between mb-12">
+                        <div className="w-10 h-10 bg-[#06B6D4] rounded-full flex items-center justify-center text-white shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                            </svg>
+                        </div>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="bg-gray-100/50 p-2 rounded-full text-gray-900"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
 
-                    <nav className="flex flex-col space-y-2">
+                    {/* Navigation Links */}
+                    <nav className="flex flex-col space-y-2 mb-10">
+                        <Link
+                            href="/"
+                            onClick={() => setIsOpen(false)}
+                            className="text-2xl font-semibold text-[#14B8A6] bg-[#14B8A6]/10 px-6 py-4 rounded-2xl"
+                        >
+                            Inicio
+                        </Link>
                         {[
-                            { name: 'Inicio', href: '/' },
                             { name: 'Tours', href: '/tours' },
                             { name: 'Destinos', href: '/destinos' },
                             { name: 'Agencias', href: '/agencies' }
@@ -64,60 +80,59 @@ export function NavMobile({ session }: NavMobileProps) {
                                 key={item.href}
                                 href={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="text-2xl font-black text-black py-4 border-b border-gray-50 flex justify-between items-center"
+                                className="text-2xl font-semibold text-gray-600 px-6 py-4"
                             >
                                 {item.name}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-gray-300">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                </svg>
                             </Link>
                         ))}
                     </nav>
 
+                    {/* Action Buttons */}
                     <div className="mt-auto pb-10 space-y-4">
                         {session?.user ? (
-                            <div className="pt-8 border-t border-gray-100">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center font-black text-xl shadow-lg">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4 p-4 bg-white/50 rounded-2xl border border-white/20">
+                                    <div className="w-12 h-12 bg-[#14B8A6] text-white rounded-full flex items-center justify-center font-bold text-xl">
                                         {session.user.name?.charAt(0)}
                                     </div>
-                                    <div>
-                                        <p className="font-black text-black text-lg leading-tight">{session.user.name}</p>
-                                        <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-1">{session.user.role}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-gray-900 truncate">{session.user.name}</p>
+                                        <p className="text-xs text-gray-500 uppercase tracking-widest">{session.user.role}</p>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-3">
-                                    <Link
-                                        href={
-                                            session.user.role === 'ADMIN' ? '/dashboard/admin' :
-                                                session.user.role === 'AGENCY' ? '/dashboard/agency' :
-                                                    '/dashboard/user'
-                                        }
-                                        onClick={() => setIsOpen(false)}
-                                        className="w-full py-4 bg-gray-900 text-white rounded-2xl text-center font-black text-sm shadow-xl"
-                                    >
-                                        Mi Panel de Control
-                                    </Link>
-                                    <SignOut />
-                                </div>
+                                <Link
+                                    href={
+                                        session.user.role === 'ADMIN' ? '/dashboard/admin' :
+                                            session.user.role === 'AGENCY' ? '/dashboard/agency' :
+                                                '/dashboard/user'
+                                    }
+                                    onClick={() => setIsOpen(false)}
+                                    className="block w-full py-4 bg-gray-900 text-white rounded-2xl text-center font-bold shadow-xl"
+                                >
+                                    Panel de Control
+                                </Link>
+                                <SignOut />
                             </div>
                         ) : (
-                            <div className="pt-8 space-y-3">
+                            <>
                                 <Link
                                     href="/login"
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-5 text-center font-black text-black bg-gray-50 rounded-2xl border border-gray-200"
+                                    className="flex items-center justify-center gap-2 w-full py-4 bg-transparent text-[#14B8A6] font-semibold rounded-2xl border-2 border-[#14B8A6]"
                                 >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>
                                     Iniciar Sesión
                                 </Link>
                                 <Link
                                     href="/agencies/register"
                                     onClick={() => setIsOpen(false)}
-                                    className="w-full py-5 text-center font-black text-white bg-primary rounded-2xl shadow-xl shadow-primary/20"
+                                    className="block w-full py-4 bg-[#14B8A6] text-white rounded-2xl text-center font-bold shadow-lg shadow-[#14B8A6]/30"
                                 >
-                                    Registrar mi Agencia
+                                    Soy Agencia
                                 </Link>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>
