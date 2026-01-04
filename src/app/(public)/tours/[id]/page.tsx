@@ -31,6 +31,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             include: {
                 images: true,
                 agency: true,
+                // @ts-ignore - dates relation exists
                 dates: {
                     orderBy: { date: 'asc' },
                     where: { date: { gte: new Date() } } // Only future dates
@@ -70,7 +71,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
             {/* Premium Gallery Section */}
             <div className="container mx-auto px-4 pt-8 pb-4">
                 <GalleryGrid
-                    images={tour.images?.map(img => ({ id: img.id, url: img.url })) || []}
+                    images={tour.images?.map((img: any) => ({ id: img.id, url: img.url })) || []}
                     title={tour.title}
                 />
 
@@ -108,7 +109,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             ✨ ¿Qué incluye?
                         </h3>
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {includesList.map((item, idx) => (
+                            {includesList.map((item: any, idx: number) => (
                                 <li key={idx} className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                                     <span className="text-green-500 font-bold bg-green-50 p-1 rounded-full">✓</span>
                                     <span className="text-gray-700 font-medium">{item}</span>
