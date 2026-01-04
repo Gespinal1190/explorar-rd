@@ -136,17 +136,17 @@ export default async function ToursPage(props: {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 relative z-10">
-                            {featuredTours.map((tour) => (
+                            {featuredTours.map((tour: any) => (
                                 <TourCard
                                     key={tour.id}
                                     id={tour.id}
                                     title={tour.title}
-                                    price={tour.price}
-                                    location={tour.location}
-                                    image={tour.images[0]?.url}
-                                    agencyName={tour.agency.name}
-                                    isAgencyPro={tour.agency.tier === 'PRO'}
-                                    currency={tour.currency}
+                                    price={tour.price || 0}
+                                    location={tour.location || 'RD'}
+                                    image={tour.images?.[0]?.url}
+                                    agencyName={tour.agency?.name || 'Agencia Local'}
+                                    isAgencyPro={tour.agency?.tier === 'PRO'}
+                                    currency={tour.currency || 'DOP'}
                                     isFeatured={true}
                                     featuredPlan={tour.featuredPlan}
                                 />

@@ -157,17 +157,17 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Reusing featured tours for demo but usually this would be a filtered subset */}
             {featuredTours.slice(0, 3).map((tour: any) => (
-              <Link href={`/tours/${tour.id}`} key={tour.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group">
+              <Link href={`/tours/${tour?.id}`} key={tour?.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group">
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gray-200 overflow-hidden shrink-0">
-                  <img src={tour.images[0]?.url || '/placeholder.jpg'} alt={tour.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img src={tour?.images?.[0]?.url || '/placeholder.jpg'} alt={tour?.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-sm md:text-base leading-snug">{tour.title}</h4>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 uppercase font-bold tracking-wider">{tour.location}</p>
+                  <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-sm md:text-base leading-snug">{tour?.title}</h4>
+                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 uppercase font-bold tracking-wider">{tour?.location}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-primary font-black text-sm md:text-base">
-                      {tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'}
-                      {tour.price.toLocaleString()}
+                      {tour?.currency === 'USD' ? 'USD$' : tour?.currency === 'EUR' ? '€' : 'RD$'}
+                      {tour?.price?.toLocaleString() || '0'}
                     </span>
                     <span className="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-black uppercase tracking-tighter italic">Top Choice</span>
                   </div>
@@ -193,20 +193,20 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {featuredTours.map((tour: any) => {
-              const isFeatured = tour.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
+              const isFeatured = tour?.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
               return (
                 <TourCard
-                  key={tour.id}
-                  id={tour.id}
-                  title={tour.title}
-                  price={tour.price}
-                  currency={tour.currency}
-                  location={tour.location}
-                  image={tour.images[0]?.url}
-                  agencyName={tour.agency.name}
+                  key={tour?.id}
+                  id={tour?.id}
+                  title={tour?.title}
+                  price={tour?.price || 0}
+                  currency={tour?.currency || 'DOP'}
+                  location={tour?.location || 'RD'}
+                  image={tour?.images?.[0]?.url}
+                  agencyName={tour?.agency?.name || 'Agencia Local'}
                   isFeatured={isFeatured}
-                  featuredPlan={tour.featuredPlan}
-                  isAgencyPro={tour.agency.tier === 'PRO'}
+                  featuredPlan={tour?.featuredPlan}
+                  isAgencyPro={tour?.agency?.tier === 'PRO'}
                 />
               );
             })}
