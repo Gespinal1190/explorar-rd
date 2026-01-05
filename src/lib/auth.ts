@@ -81,10 +81,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async session({ session, token }) {
             if (token.sub && session.user) {
                 session.user.id = token.sub;
-                // Fetch role again or store in token
-                const user = await prisma.user.findUnique({ where: { id: token.sub } });
-                if (user) {
-                    session.user.role = user.role;
+
+                // Fetch role again from DB to keep it properly synced
+                // Wrap in try/catch to prevents crashing if DB is momentarily unreachable
+                try {
+                    const user = await prisma.user.findUnique({ where: { id: token.sub } });
+                    if (user) {
+                        session.user.role = user.role;
+                    }
+                } catch (e) {
+                    console.error("Session callback DB error:", e);
+                    // Fallback to token role if available, or default 'USER'
+                    session.user.role = (token.role as string) || 'USER';
                 }
             }
             return session;
