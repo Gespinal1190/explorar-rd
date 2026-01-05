@@ -24,18 +24,18 @@ export default function ProfileEditForm({ user }: { user: any }) {
                     <label className="text-sm font-bold text-gray-700">Correo Electrónico</label>
                     <input
                         type="email"
+                        name="email"
                         defaultValue={user.email}
-                        disabled
-                        className="w-full p-3 bg-gray-100 text-gray-500 rounded-xl outline-none font-medium cursor-not-allowed"
+                        className="w-full p-3 bg-gray-50 rounded-xl outline-none focus:ring-2 ring-primary/20 transition-all font-medium"
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-gray-700">Teléfono</label>
+                    <label className="text-sm font-bold text-gray-700">Teléfono (Opcional)</label>
                     <input
                         type="tel"
                         name="phone"
                         defaultValue={user.phone || ''}
-                        placeholder="Ej. 809-555-5555"
+                        placeholder="Ej. +1 809 555 5555"
                         className="w-full p-3 bg-gray-50 rounded-xl outline-none focus:ring-2 ring-primary/20 transition-all font-medium"
                     />
                 </div>

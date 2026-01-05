@@ -32,10 +32,14 @@ export default async function AgencyDashboard() {
     const confirmedBookings = allBookings.filter((b: any) => b.status === 'CONFIRMED');
 
     const totalBookings = confirmedBookings.length;
-    const totalRevenue = confirmedBookings.reduce((sum: number, b: any) => sum + b.totalPrice, 0);
+    // Calculate Revenue per Currency
+    const revenueByCurrency = confirmedBookings.reduce((acc: Record<string, number>, b: any) => {
+        const currency = b.currency || 'DOP'; // Default to DOP if missing
+        acc[currency] = (acc[currency] || 0) + b.totalPrice;
+        return acc;
+    }, {});
 
-    // Mock clicks (for now)
-    const whatsappClicks = 45;
+    const revenueEntries = Object.entries(revenueByCurrency);
 
     return (
         <div className="space-y-8">
@@ -46,13 +50,24 @@ export default async function AgencyDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Revenue Card */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl">
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl flex-shrink-0">
                         💰
                     </div>
-                    <div>
-                        <p className="text-sm text-gray-500 font-bold uppercase tracking-wide">Ingresos Totales</p>
-                        <p className="text-3xl font-black text-gray-900">RD${totalRevenue.toLocaleString()}</p>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-500 font-bold uppercase tracking-wide mb-1">Ingresos Totales</p>
+                        {revenueEntries.length > 0 ? (
+                            <div className="space-y-1">
+                                {revenueEntries.map(([curr, amount]) => (
+                                    <p key={curr} className="text-2xl font-black text-gray-900 truncate" title={`${curr} ${amount.toLocaleString()}`}>
+                                        <span className="text-sm text-gray-400 font-bold mr-1">{curr}</span>
+                                        {amount.toLocaleString()}
+                                    </p>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-3xl font-black text-gray-900">RD$0</p>
+                        )}
                     </div>
                 </div>
 
