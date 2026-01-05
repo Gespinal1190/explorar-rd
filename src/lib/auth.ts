@@ -26,12 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     pages: {
         signIn: '/login',
     },
-    providers: [
-        Google({
-            clientId: process.env.AUTH_GOOGLE_ID,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET,
-            allowDangerousEmailAccountLinking: true
-        }),
+    const providers: any[] = [
         Credentials({
             async authorize(credentials) {
                 const parsedCredentials = z
@@ -57,7 +52,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 return null;
             },
         }),
-    ],
+    ];
+
+    if(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+        providers.push(Google({
+            clientId: process.env.AUTH_GOOGLE_ID,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET,
+            allowDangerousEmailAccountLinking: true
+        }));
+} else {
+    console.warn("Google Auth Environment Variables missing. Google Sign-In will not be available.");
+}
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+    debug: true,
+    secret: process.env.AUTH_SECRET || "secret_random_password_123",
+    adapter: PrismaAdapter(prisma),
+    pages: {
+        signIn: '/login',
+    },
+    providers,
     callbacks: {
         async session({ session, token }) {
             if (token.sub && session.user) {
