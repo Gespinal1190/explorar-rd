@@ -42,6 +42,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     const user = await getUser(email);
                     if (!user) return null;
 
+                    if (!user.password) return null;
+
                     // In real app, use bcrypt.compare
                     // For seed data compatibility (which is plain text "password123"), we check both
                     const passwordsMatch = await bcrypt.compare(password, user.password);
