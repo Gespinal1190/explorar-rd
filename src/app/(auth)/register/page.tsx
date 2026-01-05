@@ -1,15 +1,14 @@
-"use client";
-
 import RegisterForm from "@/components/ui/register-form";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from 'react';
 
-function RegisterContent() {
-    const searchParams = useSearchParams();
-    const role = searchParams.get('role') || 'USER';
+export default async function RegisterPage(props: {
+    searchParams: Promise<{ role?: string }>;
+}) {
+    const searchParams = await props.searchParams;
+    const role = searchParams.role || 'USER';
     const isAgency = role === 'AGENCY';
+    const googleEnabled = !!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
     return (
         <div className="min-h-screen flex">
@@ -60,17 +59,9 @@ function RegisterContent() {
                         </button>
                     </div>
 
-                    <RegisterForm googleEnabled={!!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET)} />
+                    <RegisterForm googleEnabled={googleEnabled} />
                 </div>
             </div>
         </div>
     );
-}
-
-export default function RegisterPage() {
-    return (
-        <Suspense fallback={<div>Cargando...</div>}>
-            <RegisterContent />
-        </Suspense>
-    )
 }
