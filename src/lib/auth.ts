@@ -59,6 +59,17 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     debug: true,
+    logger: {
+        error(code, ...message) {
+            console.error(code, message)
+        },
+        warn(code, ...message) {
+            console.warn(code, message)
+        },
+        debug(code, ...message) {
+            console.log(code, message)
+        }
+    },
     secret: process.env.AUTH_SECRET || "secret_random_password_123",
     adapter: PrismaAdapter(prisma),
     pages: {
