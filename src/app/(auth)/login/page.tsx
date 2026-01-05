@@ -2,26 +2,46 @@
 
 import LoginForm from "@/components/ui/login-form";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen bg-[#FBFBF8] flex flex-col justify-center py-12 px-6">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center mb-8">
-                <Link href="/" className="text-3xl font-black text-gray-900 tracking-tight">
-                    Descubre<span className="text-primary">RD</span>
-                </Link>
-                <h2 className="mt-4 text-xl font-bold text-gray-900">Bienvenido de vuelta</h2>
-                <p className="text-gray-500 mt-2">Ingresa a tu cuenta para gestionar tus reservas.</p>
+        <div className="min-h-screen flex">
+            {/* Left Side - Image */}
+            <div className="hidden lg:flex w-1/2 relative bg-gray-900">
+                <Image
+                    src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=2070&auto=format&fit=crop" // High quality DR beach image
+                    alt="Dominican Republic Beach"
+                    fill
+                    className="object-cover opacity-60 mix-blend-overlay"
+                    priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="relative z-10 flex flex-col justify-end p-12 text-white">
+                    <h2 className="text-4xl font-black mb-4 tracking-tighter">Descubre el paraíso.</h2>
+                    <p className="text-lg opacity-90 max-w-md">La plataforma líder para conectar con los tesoros escondidos de República Dominicana.</p>
+                </div>
             </div>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-[400px]">
-                <div className="bg-white py-10 px-8 shadow-xl rounded-2xl border border-gray-100">
-                    {/* Tab Switcher Visual Placeholder */}
-                    <div className="flex bg-gray-50 p-1 rounded-xl mb-8">
-                        <button className="flex-1 py-2 text-sm font-bold text-gray-900 bg-white shadow-sm rounded-lg transition-all">
+            {/* Right Side - Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+                <div className="w-full max-w-[450px]">
+                    <div className="text-center mb-10">
+                        <Link href="/" className="inline-block mb-6">
+                            <span className="text-4xl font-black text-gray-900 tracking-tighter">
+                                Descubre<span className="text-primary">RD</span>
+                            </span>
+                        </Link>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Bienvenido de vuelta</h1>
+                        <p className="text-gray-500">Ingresa tus credenciales para continuar.</p>
+                    </div>
+
+                    {/* Tab Switcher */}
+                    <div className="flex bg-gray-50 p-1 rounded-2xl mb-8 border border-gray-100">
+                        <button className="flex-1 py-3 text-sm font-bold text-gray-900 bg-white shadow-sm rounded-xl transition-all">
                             Iniciar Sesión
                         </button>
-                        <Link href="/register" className="flex-1 py-2 text-sm font-bold text-gray-500 hover:text-gray-900 transition-all text-center">
+                        <Link href="/register" className="flex-1 py-3 text-sm font-bold text-gray-500 hover:text-gray-900 transition-all text-center flex items-center justify-center">
                             Registrarse
                         </Link>
                     </div>

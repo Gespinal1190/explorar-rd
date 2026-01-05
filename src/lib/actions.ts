@@ -51,6 +51,15 @@ export async function register(prevState: string | undefined, formData: FormData
 
     const { email, password, name, role, phone, description, instagram, website, logo, rnc, licenseUrl, premisesUrl } = parsed.data;
 
+    // Strict Email Validation (Gmail/Outlook only) with Exception for Test Agency
+    const allowedDomains = ['@gmail.com', '@outlook.com'];
+    const isAllowedDomain = allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
+    const isWhitelisted = email === 'agencia@test.com' || email === 'admin@test.com'; // Keeping admin too just in case
+
+    if (!isAllowedDomain && !isWhitelisted) {
+        return "Solo se permiten correos electrónicos de Gmail o Outlook.";
+    }
+
     try {
         const existingUser = await prisma.user.findUnique({
             where: { email },
@@ -387,4 +396,28 @@ export async function updateAgencyProfile(prevState: any, formData: FormData) {
         console.error(e);
         return { message: "Error al actualizar perfil", success: false };
     }
+}
+
+export async function resetPasswordRequest(prevState: any, formData: FormData) {
+    const email = formData.get("email") as string;
+
+    // Simulate delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Basic Validation
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+        return { message: "Por favor ingresa un correo válido." };
+    }
+
+    // In a real app, generate token, save to DB, send email via Resend/SendGrid/AWS
+    // For this Mock/Demo:
+    console.log(`[MOCK EMAIL SERVICE] Sending Password Reset to: ${email}`);
+    console.log(`[MOCK EMAIL CONTENT]
+    Subject: Recupera tu contraseña - DescubreRD
+    Body: Hola, has solicitado restablecer tu contraseña. Haz click aquí: https://descubrerd.com/reset-password?token=mock_token_123
+    `);
+
+    // We always return success to user to prevent email enumeration, 
+    // but in this mock user can assume it worked.
+    return { success: true, email };
 }
