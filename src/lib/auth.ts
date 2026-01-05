@@ -47,14 +47,12 @@ const providers: any[] = [
     }),
 ];
 
-if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+if (true) {
     providers.push(Google({
-        clientId: process.env.AUTH_GOOGLE_ID,
-        clientSecret: process.env.AUTH_GOOGLE_SECRET,
+        clientId: process.env.AUTH_GOOGLE_ID ?? "",
+        clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
         allowDangerousEmailAccountLinking: true
     }));
-} else {
-    // console.warn("Google Auth Environment Variables missing. Google Sign-In will not be available.");
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({

@@ -59,7 +59,7 @@ export default async function RegisterPage(props: {
                         </button>
                     </div>
 
-                    <RegisterForm googleEnabled={googleEnabled} />
+                    <RegisterForm />
                 </div>
             </div>
         </div>
