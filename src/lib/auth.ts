@@ -19,49 +19,42 @@ async function getUser(email: string) {
     }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-    debug: true,
-    secret: process.env.AUTH_SECRET || "secret_random_password_123",
-    adapter: PrismaAdapter(prisma),
-    pages: {
-        signIn: '/login',
-    },
-    const providers: any[] = [
-        Credentials({
-            async authorize(credentials) {
-                const parsedCredentials = z
-                    .object({ email: z.string().email(), password: z.string().min(6) })
-                    .safeParse(credentials);
+const providers: any[] = [
+    Credentials({
+        async authorize(credentials) {
+            const parsedCredentials = z
+                .object({ email: z.string().email(), password: z.string().min(6) })
+                .safeParse(credentials);
 
-                if (parsedCredentials.success) {
-                    const { email, password } = parsedCredentials.data;
-                    const user = await getUser(email);
-                    if (!user) return null;
+            if (parsedCredentials.success) {
+                const { email, password } = parsedCredentials.data;
+                const user = await getUser(email);
+                if (!user) return null;
 
-                    if (!user.password) return null;
+                if (!user.password) return null;
 
-                    // In real app, use bcrypt.compare
-                    // For seed data compatibility (which is plain text "password123"), we check both
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
-                    const isPlainTextMatch = password === user.password; // Fallback for seed data
+                // In real app, use bcrypt.compare
+                // For seed data compatibility (which is plain text "password123"), we check both
+                const passwordsMatch = await bcrypt.compare(password, user.password);
+                const isPlainTextMatch = password === user.password; // Fallback for seed data
 
-                    if (passwordsMatch || isPlainTextMatch) return user;
-                }
+                if (passwordsMatch || isPlainTextMatch) return user;
+            }
 
-                console.log('Invalid credentials');
-                return null;
-            },
-        }),
-    ];
+            console.log('Invalid credentials');
+            return null;
+        },
+    }),
+];
 
-    if(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
-        providers.push(Google({
-            clientId: process.env.AUTH_GOOGLE_ID,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET,
-            allowDangerousEmailAccountLinking: true
-        }));
+if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+    providers.push(Google({
+        clientId: process.env.AUTH_GOOGLE_ID,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET,
+        allowDangerousEmailAccountLinking: true
+    }));
 } else {
-    console.warn("Google Auth Environment Variables missing. Google Sign-In will not be available.");
+    // console.warn("Google Auth Environment Variables missing. Google Sign-In will not be available.");
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
