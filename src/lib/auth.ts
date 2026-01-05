@@ -20,6 +20,7 @@ async function getUser(email: string) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+    debug: true,
     secret: process.env.AUTH_SECRET || "secret_random_password_123",
     adapter: PrismaAdapter(prisma),
     pages: {
