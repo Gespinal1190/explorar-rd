@@ -60,7 +60,7 @@ function RegisterContent() {
                         </button>
                     </div>
 
-                    <RegisterForm />
+                    <RegisterForm googleEnabled={!!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET)} />
                 </div>
             </div>
         </div>

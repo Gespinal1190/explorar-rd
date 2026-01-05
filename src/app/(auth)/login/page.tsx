@@ -46,7 +46,7 @@ export default function LoginPage() {
                         </Link>
                     </div>
 
-                    <LoginForm />
+                    <LoginForm googleEnabled={!!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET)} />
                 </div>
             </div>
         </div>
