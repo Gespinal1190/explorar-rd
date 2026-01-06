@@ -55,8 +55,8 @@ export default function AgencyRegisterPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Reset state for this field
-        updateUploadState(field, { uploading: true, progress: 0, error: "" });
+        // Reset state for this field with 10% initial progress to show activity
+        updateUploadState(field, { uploading: true, progress: 10, error: "" });
 
         // Create a unique filename
         const filename = `agency-uploads/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
