@@ -1,19 +1,48 @@
 "use client";
 
-import { useActionState } from 'react';
-import { resetPasswordRequest } from '@/lib/actions'; // Need to create this
+import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
+import { sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function ForgotPasswordPage() {
-    const [state, formAction, isPending] = useActionState(resetPasswordRequest, undefined);
+    const [email, setEmail] = useState("");
+    const [isPending, setIsPending] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsPending(true);
+        setErrorMessage(null);
+
+        const emailToReset = email.trim();
+
+        try {
+            // Proceed directly to send reset email.
+            // Note: If "Email Enumeration Protection" is enabled in Firebase Console, 
+            // fetchSignInMethodsForEmail would return empty even for valid users.
+            await sendPasswordResetEmail(auth, emailToReset);
+            setIsSuccess(true);
+        } catch (error: any) {
+            console.error("Reset Password Error:", error);
+            if (error.code === 'auth/user-not-found') {
+                setErrorMessage("No encontramos una cuenta con este correo.");
+            } else {
+                setErrorMessage("Ocurrió un error: " + error.message);
+            }
+        } finally {
+            setIsPending(false);
+        }
+    };
 
     return (
         <div className="min-h-screen flex">
             {/* Left Side - Image */}
             <div className="hidden lg:flex w-1/2 relative bg-gray-900">
                 <Image
-                    src="https://images.unsplash.com/photo-1544983058-290c04fdf6df?q=80&w=2070&auto=format&fit=crop" // Another calming DR view
+                    src="https://images.unsplash.com/photo-1544983058-290c04fdf6df?q=80&w=2070&auto=format&fit=crop"
                     alt="Dominican Republic Coast"
                     fill
                     className="object-cover opacity-60 mix-blend-overlay"
@@ -39,8 +68,8 @@ export default function ForgotPasswordPage() {
                         <p className="text-gray-500">Ingresa tu correo y te enviaremos las instrucciones.</p>
                     </div>
 
-                    {!state?.success ? (
-                        <form action={formAction} className="space-y-6">
+                    {!isSuccess ? (
+                        <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1" htmlFor="email">
                                     Correo Electrónico
@@ -49,16 +78,17 @@ export default function ForgotPasswordPage() {
                                     className="w-full px-4 py-3 bg-gray-50 border-transparent focus:bg-white border-2 rounded-xl focus:ring-0 focus:border-primary outline-none transition-all font-medium"
                                     id="email"
                                     type="email"
-                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="tu@email.com"
                                     required
                                 />
                             </div>
 
                             <div aria-live="polite">
-                                {state?.message && (
+                                {errorMessage && (
                                     <p className="text-red-500 text-sm font-medium bg-red-50 p-2 rounded-lg w-full text-center border border-red-100">
-                                        ⚠️ {state.message}
+                                        ⚠️ {errorMessage}
                                     </p>
                                 )}
                             </div>
@@ -84,7 +114,7 @@ export default function ForgotPasswordPage() {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-2">¡Correo enviado!</h3>
                             <p className="text-gray-600 mb-6">
-                                Hemos enviado instrucciones a <strong>{state.email}</strong>. Revisa tu bandeja de entrada (y spam).
+                                Hemos enviado instrucciones a <strong>{email}</strong>. Revisa tu bandeja de entrada (y spam).
                             </p>
                             <Link href="/login" className="block w-full bg-white border-2 border-green-100 text-green-700 font-bold py-3 rounded-xl hover:bg-green-50 transition-all">
                                 Volver al login

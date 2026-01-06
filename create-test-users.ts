@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🔧 Creating test users in Neon database...\n');
+    console.log('🔧 Creating test users in Neon database (Postgres)...');
+    console.log('⚠️  NOTE: This script does NOT create users in Firebase Auth. You must sign up via the App or use Google Login.\n');
 
     // Create agency test user
     const agencyEmail = 'agencia@test.com';

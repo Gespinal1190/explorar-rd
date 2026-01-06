@@ -11,6 +11,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export default function AgencyRegisterPage() {
     const router = useRouter();
+    // Force re-render: 1
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -55,8 +56,11 @@ export default function AgencyRegisterPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        console.log(`[Upload] Starting upload for ${field}:`, file.name);
+
         // Reset state for this field with 10% initial progress to show activity
         updateUploadState(field, { uploading: true, progress: 10, error: "" });
+        console.log(`[Upload] State set to uploading...`);
 
         // Create a unique filename
         const filename = `agency-uploads/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
@@ -66,13 +70,15 @@ export default function AgencyRegisterPage() {
 
         uploadTask.on('state_changed',
             (snapshot) => {
+                console.log(`[Upload] Progress Event:`, snapshot.bytesTransferred, '/', snapshot.totalBytes);
                 if (snapshot.totalBytes > 0) {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`[Upload] Valid Progress: ${progress}%`);
                     updateUploadState(field, { progress });
                 }
             },
             (error: any) => {
-                console.error("Upload error:", error);
+                console.error("[Upload] Error:", error);
 
                 let errorMessage = `❌ Error: ${error.message}`;
                 if (error.code === 'storage/unauthorized') {
@@ -84,19 +90,22 @@ export default function AgencyRegisterPage() {
                 updateUploadState(field, { uploading: false, progress: 0, error: errorMessage });
             },
             async () => {
+                console.log(`[Upload] Complete! Getting URL...`);
                 // Ensure 100% is displayed immediately
                 updateUploadState(field, { progress: 100 });
 
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    console.log(`[Upload] URL Retrieved:`, downloadURL);
 
                     // Delay success state to let user see the 100% bar
                     setTimeout(() => {
+                        console.log(`[Upload] Setting final success state.`);
                         setFormData(prev => ({ ...prev, [field]: downloadURL }));
                         updateUploadState(field, { uploading: false });
                     }, 1000);
                 } catch (err) {
-                    console.error("Error getting download URL", err);
+                    console.error("[Upload] Error getting download URL", err);
                     updateUploadState(field, { uploading: false, error: "Error al obtener el enlace del archivo." });
                 }
             }
@@ -381,10 +390,10 @@ export default function AgencyRegisterPage() {
                                                         onClick={() => {
                                                             const input = document.getElementById('license-upload') as HTMLInputElement;
                                                             if (input) input.value = '';
-                                                            // Explicitly reset upload state to null/initial to allowing re-upload UI to show if needed, 
-                                                            // though we are showing the input above anyway.
-                                                            // The input needs to be active.
+
+                                                            // Valid Reset: Clear Form Data AND Reset Upload State
                                                             setFormData(prev => ({ ...prev, licenseUrl: "" }));
+                                                            updateUploadState('licenseUrl', { uploading: false, progress: 0, error: "" });
                                                         }}
                                                         className="text-[10px] text-gray-500 hover:text-gray-900 underline"
                                                     >
@@ -435,6 +444,7 @@ export default function AgencyRegisterPage() {
                                                             const input = document.getElementById('premises-upload') as HTMLInputElement;
                                                             if (input) input.value = '';
                                                             setFormData(prev => ({ ...prev, premisesUrl: "" }));
+                                                            updateUploadState('premisesUrl', { uploading: false, progress: 0, error: "" });
                                                         }}
                                                         className="text-[10px] text-gray-500 hover:text-gray-900 underline"
                                                     >

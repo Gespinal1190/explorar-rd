@@ -126,9 +126,18 @@ export default async function AgencyDetailsPage(props: { params: Promise<{ id: s
                             {agency.premisesUrl && (
                                 <div>
                                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">Foto del Local / Equipo</label>
-                                    <div className="relative h-64 w-full rounded-xl overflow-hidden border border-gray-100">
-                                        <Image src={agency.premisesUrl} alt="Local" fill className="object-cover" />
-                                    </div>
+                                    {(agency.premisesUrl.toLowerCase().includes('.pdf') || agency.premisesUrl.toLowerCase().includes('alt=media')) && !agency.premisesUrl.toLowerCase().includes('.jpg') && !agency.premisesUrl.toLowerCase().includes('.png') && !agency.premisesUrl.toLowerCase().includes('.jpeg') && !agency.premisesUrl.toLowerCase().includes('.webp') ? (
+                                        <a href={agency.premisesUrl} target="_blank" className="flex items-center gap-2 text-primary hover:underline font-medium p-4 bg-gray-50 rounded-xl border border-gray-200">
+                                            <span>📄 Ver Documento (PDF)</span>
+                                        </a>
+                                    ) : (
+                                        <div className="relative h-64 w-full rounded-xl overflow-hidden border border-gray-100 group">
+                                            <Image src={agency.premisesUrl} alt="Local" fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                                            <a href={agency.premisesUrl} target="_blank" className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                <span className="bg-white px-4 py-2 rounded-lg text-xs font-bold shadow-md">Ver Imagen Completa</span>
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 

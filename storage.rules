@@ -1,0 +1,10 @@
+rules_version = '2';
+
+// Allow Public Read/Write for now (Debugging)
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}
