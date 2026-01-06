@@ -32,10 +32,12 @@ export default function LoginForm() {
         const emailDomain = email.split('@')[1]?.toLowerCase();
 
         if (!emailDomain || !allowedDomains.includes(emailDomain)) {
-            setErrorMessage("Por seguridad, solo se permiten correos de proveedores principales (Gmail, Outlook, etc).");
-            setIsPending(false);
-            return;
-            return;
+            // Exceptions for existing test accounts
+            if (email !== 'agencia@test.com' && email !== 'admin@test.com') {
+                setErrorMessage("Por seguridad, solo se permiten correos de proveedores principales (Gmail, Outlook, etc).");
+                setIsPending(false);
+                return;
+            }
         }
 
         try {
