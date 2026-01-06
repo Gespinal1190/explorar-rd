@@ -25,6 +25,8 @@ export default function AgencyRegisterPage() {
         website: "",
         rnc: "",
         logo: "",
+        licenseUrl: "",
+        premisesUrl: "",
         acceptTerms: false,
     });
 
@@ -66,7 +68,7 @@ export default function AgencyRegisterPage() {
             // Note: Currently registerAction only takes basic info. 
             // We might need to update the profile later or expand registerAction.
             // For now, we register the user and profile with basic info.
-            const res = await registerAction(user.uid, formData.email, formData.name, "AGENCY");
+            const res = await registerAction(user.uid, formData.email, formData.name, "AGENCY", formData);
 
             if (res?.error) {
                 setError(res.error);

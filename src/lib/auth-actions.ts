@@ -29,7 +29,7 @@ export async function loginAction(uid: string, email: string) {
     redirect('/dashboard')
 }
 
-export async function registerAction(uid: string, email: string, name: string, role: string) {
+export async function registerAction(uid: string, email: string, name: string, role: string, agencyData?: any) {
     // Check collision
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
@@ -51,7 +51,14 @@ export async function registerAction(uid: string, email: string, name: string, r
                 userId: user.id,
                 name: name,
                 isVerified: false,
-                description: 'Agencia nueva',
+                description: agencyData?.description || 'Agencia nueva',
+                phone: agencyData?.phone,
+                // walletAddress removed as it defaults to null or isn't in main CreateInput
+                licenseUrl: agencyData?.licenseUrl,
+                premisesUrl: agencyData?.premisesUrl,
+                website: agencyData?.website,
+                rnc: agencyData?.rnc,
+                logo: agencyData?.logo,
                 // other defaults
             }
         })
