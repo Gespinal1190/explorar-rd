@@ -28,6 +28,16 @@ export default function LoginForm() {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
+        const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'];
+        const emailDomain = email.split('@')[1]?.toLowerCase();
+
+        if (!emailDomain || !allowedDomains.includes(emailDomain)) {
+            setErrorMessage("Por seguridad, solo se permiten correos de proveedores principales (Gmail, Outlook, etc).");
+            setIsLoading(false);
+            setIsPending(false);
+            return;
+        }
+
         try {
             await loginWithEmail(email, password);
         } catch (error: any) {

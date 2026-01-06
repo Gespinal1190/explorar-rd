@@ -73,6 +73,14 @@ export default function AgencyRegisterPage() {
             return;
         }
 
+        const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'];
+        const emailDomain = formData.email.split('@')[1]?.toLowerCase();
+
+        if (!emailDomain || !allowedDomains.includes(emailDomain)) {
+            setError("Por favor utiliza un correo válido (Gmail, Outlook, Hotmail, Yahoo, iCloud).");
+            return;
+        }
+
         if (!formData.acceptTerms) {
             setError("Debes aceptar los términos y condiciones");
             return;
