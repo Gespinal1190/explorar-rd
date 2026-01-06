@@ -84,16 +84,17 @@ export default function AgencyRegisterPage() {
                 updateUploadState(field, { uploading: false, progress: 0, error: errorMessage });
             },
             async () => {
+                // Ensure 100% is displayed immediately
+                updateUploadState(field, { progress: 100 });
+
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    setFormData(prev => ({ ...prev, [field]: downloadURL }));
 
-                    updateUploadState(field, { progress: 100 });
-
-                    // Add a small delay before hiding "uploading"
+                    // Delay success state to let user see the 100% bar
                     setTimeout(() => {
+                        setFormData(prev => ({ ...prev, [field]: downloadURL }));
                         updateUploadState(field, { uploading: false });
-                    }, 500);
+                    }, 1000);
                 } catch (err) {
                     console.error("Error getting download URL", err);
                     updateUploadState(field, { uploading: false, error: "Error al obtener el enlace del archivo." });
@@ -357,6 +358,7 @@ export default function AgencyRegisterPage() {
                                             {uploadStates.licenseUrl?.uploading && (
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                                                     <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadStates.licenseUrl.progress}%` }}></div>
+                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadStates.licenseUrl.progress)}% subido</p>
                                                 </div>
                                             )}
 
