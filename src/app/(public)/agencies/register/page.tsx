@@ -7,13 +7,18 @@ import { useRouter } from "next/navigation";
 import { registerAction } from "@/lib/auth-actions";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export default function AgencyRegisterPage() {
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+
+    // Validation & Upload State
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadError, setUploadError] = useState("");
+    const [uploading, setUploading] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -31,30 +36,44 @@ export default function AgencyRegisterPage() {
         acceptTerms: false,
     });
 
-    const [uploading, setUploading] = useState(false);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value });
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        try {
-            setUploading(true);
-            const storageRef = ref(storage, `agency-uploads/${Date.now()}_${file.name}`);
-            const snapshot = await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(snapshot.ref);
+        // Reset states
+        setUploading(true);
+        setUploadProgress(0);
+        setUploadError("");
 
-            setFormData(prev => ({ ...prev, [field]: downloadURL }));
-        } catch (error) {
-            console.error("Upload error:", error);
-            setError("Error al subir la imagen. Intenta de nuevo.");
-        } finally {
-            setUploading(false);
-        }
+        const storageRef = ref(storage, `agency-uploads/${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setUploadProgress(progress);
+            },
+            (error: any) => {
+                console.error("Upload error:", error);
+                setUploading(false);
+                if (error.code === 'storage/unauthorized') {
+                    setUploadError("⚠️ Permiso denegado: Verifica las reglas de Firebase Storage.");
+                } else {
+                    setUploadError("❌ Error al subir: " + error.message);
+                }
+            },
+            async () => {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                setFormData(prev => ({ ...prev, [field]: downloadURL }));
+                setUploading(false);
+                setUploadProgress(100);
+            }
+        );
     };
 
     const handleNext = () => {
@@ -317,20 +336,40 @@ export default function AgencyRegisterPage() {
 
                                     <div>
                                         <label className="block text-xs font-bold text-gray-600 mb-1">Foto del Local o Equipo (Opcional)</label>
-                                        <div className="flex gap-2 items-center">
+                                        <div className="space-y-2">
                                             <input
                                                 type="file"
                                                 accept="image/*"
+                                                disabled={uploading}
                                                 onChange={(e) => handleFileUpload(e, 'premisesUrl')}
-                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
                                             />
-                                            {uploading && <span className="text-xs text-blue-500 animate-pulse">Subiendo...</span>}
+
+                                            {/* Progress Bar */}
+                                            {uploading && (
+                                                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                                    <div
+                                                        className="bg-primary h-2.5 rounded-full transition-all duration-300"
+                                                        style={{ width: `${uploadProgress}%` }}
+                                                    ></div>
+                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadProgress)}% subido</p>
+                                                </div>
+                                            )}
+
+                                            {/* Error Message */}
+                                            {uploadError && (
+                                                <p className="text-xs text-red-500 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
+                                                    {uploadError}
+                                                </p>
+                                            )}
+
+                                            {/* Success Message */}
+                                            {!uploading && !uploadError && formData.premisesUrl && (
+                                                <p className="text-xs text-green-600 flex items-center gap-1 font-bold">
+                                                    ✅ Imagen cargada correctamente
+                                                </p>
+                                            )}
                                         </div>
-                                        {formData.premisesUrl && (
-                                            <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
-                                                ✅ Imagen cargada exitosamente
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
                             </div>
