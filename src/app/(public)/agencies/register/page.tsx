@@ -137,6 +137,72 @@ export default function AgencyRegisterPage() {
                         </div>
 
                         <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                                Teléfono / WhatsApp
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    id="phone"
+                                    name="phone"
+                                    type="tel"
+                                    required
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor="rnc" className="block text-sm font-medium text-gray-700">
+                                RNC (Registro Nacional de Contribuyentes)
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    id="rnc"
+                                    name="rnc"
+                                    type="text"
+                                    value={formData.rnc}
+                                    onChange={handleChange}
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor="logo" className="block text-sm font-medium text-gray-700">
+                                URL del Logo (Opcional)
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    id="logo"
+                                    name="logo"
+                                    type="url"
+                                    value={formData.logo}
+                                    onChange={handleChange}
+                                    placeholder="https://"
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                                Descripción de la Agencia
+                            </label>
+                            <div className="mt-1">
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    rows={3}
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
                             <button
                                 type="submit"
                                 disabled={isLoading}
