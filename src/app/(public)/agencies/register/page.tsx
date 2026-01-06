@@ -140,19 +140,12 @@ export default function AgencyRegisterPage() {
             const user = userCredential.user;
 
             // 2. Register Agency in Database
-            // Note: Currently registerAction only takes basic info. 
-            // We might need to update the profile later or expand registerAction.
-            // For now, we register the user and profile with basic info.
             const res = await registerAction(user.uid, formData.email, formData.name, "AGENCY", formData);
 
             if (res?.error) {
                 setError(res.error);
                 return;
             }
-
-            // Ideally we would update the Agency Profile with the extra info here
-            // but for this MVP restoration, getting the user created is key.
-            // We can add an onboarding step later or a profile update call.
 
             router.push("/dashboard/agency");
         } catch (err: any) {
@@ -355,20 +348,27 @@ export default function AgencyRegisterPage() {
                                                 type="file"
                                                 accept="image/*,application/pdf"
                                                 id="license-upload"
-                                                disabled={uploading}
+                                                disabled={uploadStates.licenseUrl?.uploading}
                                                 onChange={(e) => handleFileUpload(e, 'licenseUrl')}
                                                 className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
                                             />
 
                                             {/* Progress Bar (License) */}
-                                            {uploading && (
+                                            {uploadStates.licenseUrl?.uploading && (
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadStates.licenseUrl.progress}%` }}></div>
                                                 </div>
                                             )}
 
+                                            {/* Error Message (License) */}
+                                            {uploadStates.licenseUrl?.error && (
+                                                <p className="text-xs text-red-500 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
+                                                    {uploadStates.licenseUrl.error}
+                                                </p>
+                                            )}
+
                                             {/* Success/Preview License */}
-                                            {!uploading && !uploadError && formData.licenseUrl && (
+                                            {!uploadStates.licenseUrl?.uploading && !uploadStates.licenseUrl?.error && formData.licenseUrl && (
                                                 <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-lg">📄</span>
@@ -396,28 +396,28 @@ export default function AgencyRegisterPage() {
                                                 type="file"
                                                 accept="image/*,application/pdf"
                                                 id="premises-upload"
-                                                disabled={uploading}
+                                                disabled={uploadStates.premisesUrl?.uploading}
                                                 onChange={(e) => handleFileUpload(e, 'premisesUrl')}
                                                 className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
                                             />
 
                                             {/* Progress Bar (Premises) */}
-                                            {uploading && (
+                                            {uploadStates.premisesUrl?.uploading && (
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
-                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadProgress)}% subido</p>
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadStates.premisesUrl.progress}%` }}></div>
+                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadStates.premisesUrl.progress)}% subido</p>
                                                 </div>
                                             )}
 
                                             {/* Error Message */}
-                                            {uploadError && (
+                                            {uploadStates.premisesUrl?.error && (
                                                 <p className="text-xs text-red-500 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
-                                                    {uploadError}
+                                                    {uploadStates.premisesUrl.error}
                                                 </p>
                                             )}
 
                                             {/* Success/Preview Premises */}
-                                            {!uploading && !uploadError && formData.premisesUrl && (
+                                            {!uploadStates.premisesUrl?.uploading && !uploadStates.premisesUrl?.error && formData.premisesUrl && (
                                                 <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-lg">🖼️</span>
