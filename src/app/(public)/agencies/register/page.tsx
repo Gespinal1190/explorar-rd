@@ -227,19 +227,32 @@ export default function AgencyRegisterPage() {
 
                         {step === 2 && (
                             <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-                                <h3 className="text-lg font-bold text-gray-900">Contacto y Ubicación</h3>
+                                <h3 className="text-lg font-bold text-gray-900">Contacto y Ubicación y Seguridad</h3>
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Teléfono / WhatsApp</label>
-                                    <input
-                                        name="phone"
-                                        type="tel"
-                                        required
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
-                                        placeholder="+1 (809) 000-0000"
-                                    />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Teléfono / WhatsApp</label>
+                                        <input
+                                            name="phone"
+                                            type="tel"
+                                            required
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium text-sm"
+                                            placeholder="+1 (809) 000-0000"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">Sitio Web</label>
+                                        <input
+                                            name="website"
+                                            type="url"
+                                            value={formData.website}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium text-sm"
+                                            placeholder="https://tuagencia.com"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div>
@@ -255,16 +268,34 @@ export default function AgencyRegisterPage() {
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Sitio Web (Opcional)</label>
-                                    <input
-                                        name="website"
-                                        type="url"
-                                        value={formData.website}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
-                                        placeholder="https://tuagencia.com"
-                                    />
+                                <div className="p-4 bg-teal-50 rounded-xl border border-teal-100 space-y-4">
+                                    <h4 className="text-sm font-bold text-teal-800 flex items-center gap-2">
+                                        🛡️ Verificación de Seguridad
+                                    </h4>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1">Licencia de Operador (Si aplica)</label>
+                                        <input
+                                            name="licenseUrl"
+                                            type="text"
+                                            value={formData.licenseUrl}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
+                                            placeholder="URL o Número de licencia"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1">Foto del Local o Equipo (Opcional)</label>
+                                        <input
+                                            name="premisesUrl"
+                                            type="text"
+                                            value={formData.premisesUrl}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
+                                            placeholder="URL de la imagen (Google Drive, etc)"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
