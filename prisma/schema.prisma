@@ -126,7 +126,8 @@ model Tour {
   price       Float
   currency    String   @default("DOP")
   duration    String?
-  
+  startTime   String?  // e.g. "08:00 AM"
+
   images      TourImage[]
   dates       TourDate[]  // New relation for specific available dates
   

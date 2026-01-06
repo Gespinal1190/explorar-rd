@@ -1,25 +1,76 @@
 'use client';
 
-import { useActionState } from 'react';
-import { register } from '@/lib/actions';
+import { useState } from 'react';
+import { registerAction } from '@/lib/auth-actions';
 import { useSearchParams } from 'next/navigation';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
     const role = searchParams.get('role') === 'agency' ? 'AGENCY' : 'USER';
+    const { signInWithGoogle } = useAuth();
 
-    const [errorMessage, formAction, isPending] = useActionState(
-        register,
-        undefined
-    );
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isPending, setIsPending] = useState(false);
+
+    const handleGoogleRegister = async () => {
+        // Google Register is same as Login, but we might want to capture role?
+        // For now, simple Google Login. If they want to be Agency, they should use form or upgrade later.
+        // Or we can intercept the loginAction to Update role? 
+        // Let's just forward to standar Google Login for now.
+        setIsPending(true);
+        try {
+            await signInWithGoogle();
+        } catch (e) {
+            setErrorMessage("Error al registrarse con Google");
+        } finally {
+            setIsPending(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsPending(true);
+        setErrorMessage(null);
+
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const role = formData.get('role') as string;
+
+        try {
+            // 1. Create Firebase User
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // 2. Create DB User & Session
+            const result = await registerAction(user.uid, email, name, role);
+            if (result && result.error) {
+                setErrorMessage(result.error);
+            }
+        } catch (error: any) {
+            console.error(error);
+            if (error.code === 'auth/email-already-in-use') {
+                setErrorMessage("El correo ya está registrado.");
+            } else {
+                setErrorMessage("Error al crear cuenta: " + error.message);
+            }
+        } finally {
+            setIsPending(false);
+        }
+    };
 
     return (
         <div className="space-y-6 w-full">
             {/* Google Register Button */}
             <button
                 type="button"
-                onClick={() => { window.location.href = '/api/auth/signin/google?callbackUrl=/dashboard'; }}
-                className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-700 font-bold"
+                onClick={handleGoogleRegister}
+                disabled={isPending}
+                className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-700 font-bold disabled:opacity-50"
             >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -27,7 +78,7 @@ export default function RegisterForm() {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.26c.01-.19.01-.38.01-.58z" fill="#FBBC05" />
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
-                Regístrate con Google
+                {isPending ? 'Procesando...' : 'Regístrate con Google'}
             </button>
 
             <div className="relative">
@@ -39,7 +90,7 @@ export default function RegisterForm() {
                 </div>
             </div>
 
-            <form action={formAction} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <input type="hidden" name="role" value={role} />
 
                 <div>

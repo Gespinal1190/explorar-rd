@@ -1,31 +1,11 @@
 'use server';
 
-import { signIn, auth } from '@/lib/auth';
-import { AuthError } from 'next-auth';
+import { getSession } from '@/lib/session';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-
-export async function authenticate(
-    prevState: string | undefined,
-    formData: FormData,
-) {
-    try {
-        await signIn('credentials', { ...Object.fromEntries(formData), redirectTo: '/' });
-    } catch (error) {
-        if (error instanceof AuthError) {
-            switch (error.type) {
-                case 'CredentialsSignin':
-                    return 'Credenciales inválidas.';
-                default:
-                    return 'Algo salió mal.';
-            }
-        }
-        throw error;
-    }
-}
 const RegisterSchema = z.object({
     name: z.string().min(2),
     email: z.string().email(),
@@ -118,6 +98,7 @@ const TourSchema = z.object({
     currency: z.string().default('DOP'),
     address: z.string().optional(),
     duration: z.string().optional(),
+    startTime: z.string().optional(), // New field
     includes: z.string().optional(),
     latitude: z.coerce.number().optional(),
     longitude: z.coerce.number().optional(),
@@ -127,15 +108,15 @@ const TourSchema = z.object({
 });
 
 export async function createTour(prevState: string | undefined, formData: FormData) {
-    const session = await auth();
-    if (!session || session.user.role !== 'AGENCY') {
+    const session = await getSession();
+    if (!session || session.role !== 'AGENCY') {
         return "No autorizado";
     }
 
     const parsed = TourSchema.safeParse(Object.fromEntries(formData));
     if (!parsed.success) return `Datos inválidos: ${JSON.stringify(parsed.error.flatten())}`;
 
-    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
+    const { title, description, location, price, currency, address, duration, startTime, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
 
     // Convert comma separated string to JSON array
     const includesArray = includes ? JSON.stringify(includes.split(',').map(s => s.trim())) : JSON.stringify([]);
@@ -151,7 +132,7 @@ export async function createTour(prevState: string | undefined, formData: FormDa
         : [];
 
     try {
-        const agency = await prisma.agencyProfile.findUnique({ where: { userId: session.user.id } });
+        const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
         if (!agency) return "Perfil de agencia no encontrado";
 
         // MAPPING 'address' input to 'requirements' DB column because migration failed (EPERM)
@@ -165,6 +146,7 @@ export async function createTour(prevState: string | undefined, formData: FormDa
                 price,
                 currency,
                 duration,
+                startTime,
                 includes: includesArray,
                 latitude,
                 longitude,
@@ -190,8 +172,8 @@ export async function updateTour(
     prevState: string | undefined,
     formData: FormData
 ) {
-    const session = await auth();
-    if (!session || session.user.role !== 'AGENCY') {
+    const session = await getSession();
+    if (!session || session.role !== 'AGENCY') {
         return "No autorizado";
     }
 
@@ -201,11 +183,11 @@ export async function updateTour(
     const parsed = TourSchema.safeParse(Object.fromEntries(formData));
     if (!parsed.success) return "Datos inválidos";
 
-    const { title, description, location, price, currency, address, duration, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
+    const { title, description, location, price, currency, address, duration, startTime, includes, latitude, longitude, instagramUrl, imageUrls, availableDates } = parsed.data;
 
     const includesArray = includes ? JSON.stringify(includes.split(',').map(s => s.trim())) : JSON.stringify([]);
 
-    const agency = await prisma.agencyProfile.findUnique({ where: { userId: session.user.id } });
+    const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
     if (!agency) return "Agencia no encontrada";
 
     const existingTour = await prisma.tour.findFirst({
@@ -226,6 +208,7 @@ export async function updateTour(
                 price,
                 currency,
                 duration,
+                startTime,
                 includes: includesArray,
                 latitude,
                 longitude,
@@ -281,11 +264,11 @@ export async function updateTour(
 }
 
 export async function deleteTour(id: string) {
-    const session = await auth();
-    if (!session || session.user.role !== 'AGENCY') return;
+    const session = await getSession();
+    if (!session || session.role !== 'AGENCY') return;
 
     // Verify ownership
-    const agency = await prisma.agencyProfile.findUnique({ where: { userId: session.user.id } });
+    const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
     if (!agency) return;
 
     await prisma.tour.deleteMany({
@@ -299,16 +282,16 @@ export async function deleteTour(id: string) {
 }
 
 export async function deleteUser(userId: string) {
-    const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') return;
+    const session = await getSession();
+    if (!session || session.role !== 'ADMIN') return;
 
     await prisma.user.delete({ where: { id: userId } });
     revalidatePath('/dashboard/admin');
 }
 
 export async function updateUserProfile(prevState: any, formData: FormData) {
-    const session = await auth();
-    if (!session?.user?.id) return { message: "No autorizado" };
+    const session = await getSession();
+    if (!session?.userId) return { message: "No autorizado" };
 
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
@@ -333,7 +316,7 @@ export async function updateUserProfile(prevState: any, formData: FormData) {
     }
 
     // Validate Email uniqueness if changed
-    if (email && email !== session.user.email) {
+    if (email && email !== session.email) {
         const existingUser = await prisma.user.findUnique({
             where: { email }
         });
@@ -349,7 +332,7 @@ export async function updateUserProfile(prevState: any, formData: FormData) {
 
     try {
         await prisma.user.update({
-            where: { id: session.user.id },
+            where: { id: String(session.userId) },
             data
         });
         revalidatePath('/dashboard/user');
@@ -361,8 +344,8 @@ export async function updateUserProfile(prevState: any, formData: FormData) {
 }
 
 export async function updateAgencyProfile(prevState: any, formData: FormData) {
-    const session = await auth();
-    if (!session?.user?.id || session.user.role !== 'AGENCY') return { message: "No autorizado", success: false };
+    const session = await getSession();
+    if (!session?.userId || session.role !== 'AGENCY') return { message: "No autorizado", success: false };
 
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
@@ -373,7 +356,7 @@ export async function updateAgencyProfile(prevState: any, formData: FormData) {
 
     try {
         await prisma.agencyProfile.update({
-            where: { userId: session.user.id },
+            where: { userId: String(session.userId) },
             data: {
                 name,
                 phone,
@@ -386,7 +369,7 @@ export async function updateAgencyProfile(prevState: any, formData: FormData) {
 
         // Also update the base user name for consistency
         await prisma.user.update({
-            where: { id: session.user.id },
+            where: { id: String(session.userId) },
             data: { name }
         });
 

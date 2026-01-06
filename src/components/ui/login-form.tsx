@@ -1,24 +1,54 @@
 'use client';
 
-import { useActionState } from 'react';
-import { authenticate } from '@/lib/actions';
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginForm() {
-    const [errorMessage, formAction, isPending] = useActionState(
-        authenticate,
-        undefined
-    );
+    const { signInWithGoogle, loginWithEmail } = useAuth();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isPending, setIsPending] = useState(false);
+
+    const handleGoogleLogin = async () => {
+        setIsPending(true);
+        setErrorMessage(null);
+        try {
+            await signInWithGoogle();
+        } catch (error: any) {
+            setErrorMessage("Error al iniciar sesión con Google.");
+        } finally {
+            setIsPending(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsPending(true);
+        setErrorMessage(null);
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        try {
+            await loginWithEmail(email, password);
+        } catch (error: any) {
+            if (error.code === 'auth/invalid-credential') {
+                setErrorMessage("Credenciales inválidas.");
+            } else {
+                setErrorMessage("Error al iniciar sesión.");
+            }
+        } finally {
+            setIsPending(false);
+        }
+    };
 
     return (
         <div className="space-y-6 w-full">
             {/* Google Login Button */}
-            {/* Google Login Button */}
             <button
                 type="button"
-                onClick={() => {
-                    window.location.href = '/api/auth/signin/google?callbackUrl=/dashboard';
-                }}
-                className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-700 font-bold"
+                onClick={handleGoogleLogin}
+                disabled={isPending}
+                className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-700 font-bold disabled:opacity-50"
             >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -38,7 +68,7 @@ export default function LoginForm() {
                         fill="#EA4335"
                     />
                 </svg>
-                Continuar con Google
+                {isPending ? 'Conectando...' : 'Continuar con Google'}
             </button>
 
             <div className="relative">
@@ -50,7 +80,7 @@ export default function LoginForm() {
                 </div>
             </div>
 
-            <form action={formAction} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-bold text-gray-700 mb-1" htmlFor="email">
                         Correo Electrónico

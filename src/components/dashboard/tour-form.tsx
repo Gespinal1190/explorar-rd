@@ -14,6 +14,7 @@ interface TourFormProps {
         duration: string | null;
         address?: string | null;
         requirements?: string | null;
+        startTime?: string | null;
         includes: string | null; // JSON String or string
         latitude?: number | null;
         longitude?: number | null;
@@ -197,6 +198,19 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
                         name="duration"
                         placeholder="Ej. 8 horas"
                         defaultValue={initialData?.duration || ""}
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="startTime">
+                        Hora de Inicio
+                    </label>
+                    <input
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                        id="startTime"
+                        type="time"
+                        name="startTime"
+                        defaultValue={initialData?.startTime || ""}
                     />
                 </div>
 

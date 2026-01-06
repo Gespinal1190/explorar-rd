@@ -1,108 +1,31 @@
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
-import Credentials from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import prisma from "@/lib/prisma"
-import bcrypt from "bcryptjs"
-import { z } from "zod"
+import { getSession } from "@/lib/session";
+import { logoutAction } from "@/lib/auth-actions";
+import { redirect } from "next/navigation";
 
-async function getUser(email: string) {
-    try {
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: { agencyProfile: true }
-        });
-        return user;
-    } catch (error) {
-        console.error('Failed to fetch user:', error);
-        throw new Error('Failed to fetch user.');
-    }
+export async function auth() {
+    const session = await getSession();
+
+    // Return null if no session or user ID
+    if (!session?.userId) return null;
+
+    // Format closer to NextAuth Session shape if needed
+    // Note: 'image' is not in our cookie, so it will be null unless we fetch user
+    return {
+        user: {
+            id: session.userId as string,
+            email: session.email as string,
+            role: session.role as string,
+            name: (session.email as string)?.split('@')[0], // Simple fallback
+            image: null,
+        }
+    };
 }
 
-const providers: any[] = [
-    Credentials({
-        async authorize(credentials) {
-            const parsedCredentials = z
-                .object({ email: z.string().email(), password: z.string().min(6) })
-                .safeParse(credentials);
-
-            if (parsedCredentials.success) {
-                const { email, password } = parsedCredentials.data;
-                const user = await getUser(email);
-                if (!user) return null;
-
-                if (!user.password) return null;
-
-                // In real app, use bcrypt.compare
-                // For seed data compatibility (which is plain text "password123"), we check both
-                const passwordsMatch = await bcrypt.compare(password, user.password);
-                const isPlainTextMatch = password === user.password; // Fallback for seed data
-
-                if (passwordsMatch || isPlainTextMatch) return user;
-            }
-
-            console.log('Invalid credentials');
-            return null;
-        },
-    }),
-];
-
-if (true) {
-    providers.push(Google({
-        clientId: process.env.AUTH_GOOGLE_ID ?? "",
-        clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
-        allowDangerousEmailAccountLinking: true
-    }));
+// Deprecated or redirecting stubs for functions previously exported by NextAuth
+export async function signIn() {
+    redirect('/login');
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-    debug: true,
-    trustHost: true,
-    logger: {
-        error(code, ...message) {
-            console.error(code, message)
-        },
-        warn(code, ...message) {
-            console.warn(code, message)
-        },
-        debug(code, ...message) {
-            console.log(code, message)
-        }
-    },
-    secret: process.env.AUTH_SECRET || "secret_random_password_123",
-    adapter: PrismaAdapter(prisma),
-    pages: {
-        signIn: '/login',
-    },
-    providers,
-    callbacks: {
-        async session({ session, token }) {
-            if (token.sub && session.user) {
-                session.user.id = token.sub;
-
-                // Fetch role again from DB to keep it properly synced
-                // Wrap in try/catch to prevents crashing if DB is momentarily unreachable
-                try {
-                    const user = await prisma.user.findUnique({ where: { id: token.sub } });
-                    if (user) {
-                        session.user.role = user.role;
-                    }
-                } catch (e) {
-                    console.error("Session callback DB error:", e);
-                    // Fallback to token role if available, or default 'USER'
-                    session.user.role = (token.role as string) || 'USER';
-                }
-            }
-            return session;
-        },
-        async jwt({ token, user }) {
-            if (user) {
-                token.role = user.role;
-            }
-            return token;
-        }
-    },
-    session: {
-        strategy: "jwt"
-    },
-})
+export async function signOut() {
+    await logoutAction();
+}
