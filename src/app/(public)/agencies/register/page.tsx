@@ -45,33 +45,53 @@ export default function AgencyRegisterPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Reset states
+        // Reset states explicitly
         setUploading(true);
         setUploadProgress(0);
         setUploadError("");
 
-        const storageRef = ref(storage, `agency-uploads/${Date.now()}_${file.name}`);
+        // Create a unique filename
+        const filename = `agency-uploads/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const storageRef = ref(storage, filename);
+
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on('state_changed',
             (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setUploadProgress(progress);
+                // Ensure we don't divide by zero
+                if (snapshot.totalBytes > 0) {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setUploadProgress(progress);
+                }
             },
             (error: any) => {
                 console.error("Upload error:", error);
                 setUploading(false);
+                setUploadProgress(0); // Reset progress on error
+
                 if (error.code === 'storage/unauthorized') {
-                    setUploadError("⚠️ Permiso denegado: Verifica las reglas de Firebase Storage.");
+                    setUploadError("⚠️ Permiso denegado: No tienes permisos para subir archivos.");
+                } else if (error.code === 'storage/canceled') {
+                    setUploadError("⚠️ Subida cancelada.");
                 } else {
-                    setUploadError("❌ Error al subir: " + error.message);
+                    setUploadError(`❌ Error: ${error.message}`);
                 }
             },
             async () => {
-                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                setFormData(prev => ({ ...prev, [field]: downloadURL }));
-                setUploading(false);
-                setUploadProgress(100);
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setFormData(prev => ({ ...prev, [field]: downloadURL }));
+                    // Force complete state
+                    setUploadProgress(100);
+                    // Add a small delay before hiding "uploading" to let user see 100%
+                    setTimeout(() => {
+                        setUploading(false);
+                    }, 500);
+                } catch (err) {
+                    console.error("Error getting download URL", err);
+                    setUploadError("Error al obtener el enlace del archivo.");
+                    setUploading(false);
+                }
             }
         );
     };
