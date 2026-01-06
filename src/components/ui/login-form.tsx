@@ -33,8 +33,8 @@ export default function LoginForm() {
 
         if (!emailDomain || !allowedDomains.includes(emailDomain)) {
             setErrorMessage("Por seguridad, solo se permiten correos de proveedores principales (Gmail, Outlook, etc).");
-            setIsLoading(false);
             setIsPending(false);
+            return;
             return;
         }
 
