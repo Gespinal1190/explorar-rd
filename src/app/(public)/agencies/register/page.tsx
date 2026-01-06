@@ -344,14 +344,43 @@ export default function AgencyRegisterPage() {
 
                                     <div>
                                         <label className="block text-xs font-bold text-gray-600 mb-1">Licencia de Operador (Si aplica)</label>
-                                        <input
-                                            name="licenseUrl"
-                                            type="text"
-                                            value={formData.licenseUrl}
-                                            onChange={handleChange}
-                                            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
-                                            placeholder="URL o Número de licencia"
-                                        />
+                                        <div className="space-y-2">
+                                            <input
+                                                type="file"
+                                                accept="image/*,application/pdf"
+                                                id="license-upload"
+                                                disabled={uploading}
+                                                onChange={(e) => handleFileUpload(e, 'licenseUrl')}
+                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
+                                            />
+
+                                            {/* Progress Bar (License) */}
+                                            {uploading && (
+                                                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                                                </div>
+                                            )}
+
+                                            {/* Success/Preview License */}
+                                            {!uploading && !uploadError && formData.licenseUrl && (
+                                                <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg">📄</span>
+                                                        <span className="text-xs text-green-700 font-bold truncate max-w-[200px]">Documento cargado</span>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const input = document.getElementById('license-upload') as HTMLInputElement;
+                                                            if (input) input.value = '';
+                                                        }}
+                                                        className="text-[10px] text-gray-500 hover:text-gray-900 underline"
+                                                    >
+                                                        Cambiar
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div>
