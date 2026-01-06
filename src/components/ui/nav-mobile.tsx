@@ -128,7 +128,7 @@ export function NavMobile({ session }: NavMobileProps) {
                                     Iniciar Sesión
                                 </Link>
                                 <Link
-                                    href="/agencies/register"
+                                    href="/register?role=AGENCY"
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full py-5 bg-[#14B8A6] text-white rounded-2xl text-center font-bold shadow-xl shadow-[#14B8A6]/30 active:scale-[0.98] transition-all"
                                 >
