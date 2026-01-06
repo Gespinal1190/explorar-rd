@@ -15,10 +15,13 @@ export default function AgencyRegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Validation & Upload State
-    const [uploadProgress, setUploadProgress] = useState(0);
-    const [uploadError, setUploadError] = useState("");
-    const [uploading, setUploading] = useState(false);
+    // Independent Upload State for each field
+    const [uploadStates, setUploadStates] = useState<{
+        [key: string]: { uploading: boolean; progress: number; error: string; }
+    }>({
+        licenseUrl: { uploading: false, progress: 0, error: "" },
+        premisesUrl: { uploading: false, progress: 0, error: "" }
+    });
 
     const [formData, setFormData] = useState({
         name: "",
@@ -41,14 +44,19 @@ export default function AgencyRegisterPage() {
         setFormData({ ...formData, [e.target.name]: value });
     };
 
+    const updateUploadState = (field: string, changes: Partial<{ uploading: boolean; progress: number; error: string }>) => {
+        setUploadStates(prev => ({
+            ...prev,
+            [field]: { ...prev[field], ...changes }
+        }));
+    };
+
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Reset states explicitly
-        setUploading(true);
-        setUploadProgress(0);
-        setUploadError("");
+        // Reset state for this field
+        updateUploadState(field, { uploading: true, progress: 0, error: "" });
 
         // Create a unique filename
         const filename = `agency-uploads/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
@@ -58,39 +66,37 @@ export default function AgencyRegisterPage() {
 
         uploadTask.on('state_changed',
             (snapshot) => {
-                // Ensure we don't divide by zero
                 if (snapshot.totalBytes > 0) {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setUploadProgress(progress);
+                    updateUploadState(field, { progress });
                 }
             },
             (error: any) => {
                 console.error("Upload error:", error);
-                setUploading(false);
-                setUploadProgress(0); // Reset progress on error
 
+                let errorMessage = `❌ Error: ${error.message}`;
                 if (error.code === 'storage/unauthorized') {
-                    setUploadError("⚠️ Permiso denegado: No tienes permisos para subir archivos.");
+                    errorMessage = "⚠️ Permiso denegado: No tienes permisos para subir archivos.";
                 } else if (error.code === 'storage/canceled') {
-                    setUploadError("⚠️ Subida cancelada.");
-                } else {
-                    setUploadError(`❌ Error: ${error.message}`);
+                    errorMessage = "⚠️ Subida cancelada.";
                 }
+
+                updateUploadState(field, { uploading: false, progress: 0, error: errorMessage });
             },
             async () => {
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                     setFormData(prev => ({ ...prev, [field]: downloadURL }));
-                    // Force complete state
-                    setUploadProgress(100);
-                    // Add a small delay before hiding "uploading" to let user see 100%
+
+                    updateUploadState(field, { progress: 100 });
+
+                    // Add a small delay before hiding "uploading"
                     setTimeout(() => {
-                        setUploading(false);
+                        updateUploadState(field, { uploading: false });
                     }, 500);
                 } catch (err) {
                     console.error("Error getting download URL", err);
-                    setUploadError("Error al obtener el enlace del archivo.");
-                    setUploading(false);
+                    updateUploadState(field, { uploading: false, error: "Error al obtener el enlace del archivo." });
                 }
             }
         );
@@ -388,19 +394,17 @@ export default function AgencyRegisterPage() {
                                         <div className="space-y-2">
                                             <input
                                                 type="file"
-                                                accept="image/*"
+                                                accept="image/*,application/pdf"
+                                                id="premises-upload"
                                                 disabled={uploading}
                                                 onChange={(e) => handleFileUpload(e, 'premisesUrl')}
                                                 className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
                                             />
 
-                                            {/* Progress Bar */}
+                                            {/* Progress Bar (Premises) */}
                                             {uploading && (
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div
-                                                        className="bg-primary h-2.5 rounded-full transition-all duration-300"
-                                                        style={{ width: `${uploadProgress}%` }}
-                                                    ></div>
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
                                                     <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadProgress)}% subido</p>
                                                 </div>
                                             )}
@@ -412,11 +416,24 @@ export default function AgencyRegisterPage() {
                                                 </p>
                                             )}
 
-                                            {/* Success Message */}
+                                            {/* Success/Preview Premises */}
                                             {!uploading && !uploadError && formData.premisesUrl && (
-                                                <p className="text-xs text-green-600 flex items-center gap-1 font-bold">
-                                                    ✅ Imagen cargada correctamente
-                                                </p>
+                                                <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg">🖼️</span>
+                                                        <span className="text-xs text-green-700 font-bold truncate max-w-[200px]">Imagen cargada</span>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const input = document.getElementById('premises-upload') as HTMLInputElement;
+                                                            if (input) input.value = '';
+                                                        }}
+                                                        className="text-[10px] text-gray-500 hover:text-gray-900 underline"
+                                                    >
+                                                        Cambiar
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
