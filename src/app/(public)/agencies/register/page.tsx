@@ -6,7 +6,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { registerAction } from "@/lib/auth-actions";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function AgencyRegisterPage() {
     const router = useRouter();
@@ -30,9 +31,30 @@ export default function AgencyRegisterPage() {
         acceptTerms: false,
     });
 
+    const [uploading, setUploading] = useState(false);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value });
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            const storageRef = ref(storage, `agency-uploads/${Date.now()}_${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            setFormData(prev => ({ ...prev, [field]: downloadURL }));
+        } catch (error) {
+            console.error("Upload error:", error);
+            setError("Error al subir la imagen. Intenta de nuevo.");
+        } finally {
+            setUploading(false);
+        }
     };
 
     const handleNext = () => {
@@ -287,14 +309,20 @@ export default function AgencyRegisterPage() {
 
                                     <div>
                                         <label className="block text-xs font-bold text-gray-600 mb-1">Foto del Local o Equipo (Opcional)</label>
-                                        <input
-                                            name="premisesUrl"
-                                            type="text"
-                                            value={formData.premisesUrl}
-                                            onChange={handleChange}
-                                            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
-                                            placeholder="URL de la imagen (Google Drive, etc)"
-                                        />
+                                        <div className="flex gap-2 items-center">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'premisesUrl')}
+                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                                            />
+                                            {uploading && <span className="text-xs text-blue-500 animate-pulse">Subiendo...</span>}
+                                        </div>
+                                        {formData.premisesUrl && (
+                                            <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+                                                ✅ Imagen cargada exitosamente
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
