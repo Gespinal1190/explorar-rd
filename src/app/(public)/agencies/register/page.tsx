@@ -379,6 +379,10 @@ export default function AgencyRegisterPage() {
                                                         onClick={() => {
                                                             const input = document.getElementById('license-upload') as HTMLInputElement;
                                                             if (input) input.value = '';
+                                                            // Explicitly reset upload state to null/initial to allowing re-upload UI to show if needed, 
+                                                            // though we are showing the input above anyway.
+                                                            // The input needs to be active.
+                                                            setFormData(prev => ({ ...prev, licenseUrl: "" }));
                                                         }}
                                                         className="text-[10px] text-gray-500 hover:text-gray-900 underline"
                                                     >
@@ -428,6 +432,7 @@ export default function AgencyRegisterPage() {
                                                         onClick={() => {
                                                             const input = document.getElementById('premises-upload') as HTMLInputElement;
                                                             if (input) input.value = '';
+                                                            setFormData(prev => ({ ...prev, premisesUrl: "" }));
                                                         }}
                                                         className="text-[10px] text-gray-500 hover:text-gray-900 underline"
                                                     >
