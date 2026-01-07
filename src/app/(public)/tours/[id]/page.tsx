@@ -56,7 +56,10 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     // Parse includes/excludes if they are JSON strings
     const includesList = tour.includes ? JSON.parse(tour.includes) : [];
 
-    const availableDates = tour.dates?.map((d: any) => d.date.toISOString().split('T')[0]) || [];
+    const availableDates = tour.dates?.map((d: any) => ({
+        date: d.date.toISOString().split('T')[0],
+        time: d.startTime || tour.startTime // Fallback to global start time
+    })) || [];
 
     const whatsappMessage = `Hola, vengo de DescubreRD y me interesa el tour: ${tour.title || ''} `;
 

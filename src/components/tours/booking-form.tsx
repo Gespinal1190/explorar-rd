@@ -3,15 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface BookingOptions {
+    date: string;
+    time?: string;
+}
+
 interface BookingFormProps {
     tourId: string;
     price: number;
     currency?: string;
     whatsappLink: string;
-    availableDates?: string[];
+    availableDates?: BookingOptions[];
+    startTime?: string; // Global fallback
 }
 
-export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [], startTime }: BookingFormProps & { startTime?: string }) {
+export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [], startTime }: BookingFormProps) {
     const router = useRouter();
     const [date, setDate] = useState("");
     const [guests, setGuests] = useState(2);
@@ -46,12 +52,12 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         className="w-full bg-transparent outline-none font-bold text-gray-900 cursor-pointer appearance-none"
-                        style={{ backgroundImage: 'none' }} // Remove default arrow in some browsers if needed, or keeping it is fine
+                        style={{ backgroundImage: 'none' }}
                     >
                         <option value="" disabled>Selecciona una fecha...</option>
                         {availableDates.map((d) => (
-                            <option key={d} value={d}>
-                                {new Date(d).toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                            <option key={d.date} value={d.date}>
+                                {new Date(d.date).toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                             </option>
                         ))}
                     </select>
@@ -64,13 +70,16 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
                         onChange={(e) => setDate(e.target.value)}
                     />
                 )}
-                )}
 
                 {/* Dynamic Start Time Display */}
-                {date && availableDates.length > 0 && startTime && (
+                {date && (
                     <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 bg-blue-50/50 p-2 rounded-lg border border-blue-100">
                         <span>⏰</span>
-                        <span className="font-medium">Hora de salida: <strong>{startTime}</strong></span>
+                        <span className="font-medium">
+                            Hora de salida: <strong>
+                                {availableDates.find(d => d.date === date)?.time || startTime || "Consultar"}
+                            </strong>
+                        </span>
                     </div>
                 )}
             </div>

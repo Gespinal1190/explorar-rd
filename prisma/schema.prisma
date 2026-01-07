@@ -161,6 +161,7 @@ model TourDate {
   tourId    String
   tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
   date      DateTime
+  startTime String? // Specific start time for this date (e.g. "14:00")
   availableSlots Int? @default(20) // Optional capacity limit per date
   
   createdAt DateTime @default(now())

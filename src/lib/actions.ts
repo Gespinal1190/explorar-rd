@@ -128,7 +128,10 @@ export async function createTour(prevState: string | undefined, formData: FormDa
 
     // Process dates
     const datesToCreate = availableDates
-        ? (JSON.parse(availableDates) as string[]).map(dateStr => ({ date: new Date(dateStr) }))
+        ? (JSON.parse(availableDates) as { date: string, time?: string }[]).map(d => ({
+            date: new Date(d.date),
+            startTime: d.time
+        }))
         : [];
 
     try {
@@ -154,7 +157,6 @@ export async function createTour(prevState: string | undefined, formData: FormDa
                 images: {
                     create: imagesToCreate
                 },
-                // @ts-ignore - 'dates' is valid relation but client is stale
                 dates: {
                     create: datesToCreate
                 }
@@ -236,7 +238,10 @@ export async function updateTour(
 
         // Update Dates (Replace Strategy)
         if (availableDates) {
-            const datesToCreate = (JSON.parse(availableDates) as string[]).map(dateStr => ({ date: new Date(dateStr) }));
+            const datesToCreate = (JSON.parse(availableDates) as { date: string, time?: string }[]).map(d => ({
+                date: new Date(d.date),
+                startTime: d.time
+            }));
 
             // Delete existing dates
             // @ts-ignore - tourDate model exists

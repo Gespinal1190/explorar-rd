@@ -20,7 +20,7 @@ interface TourFormProps {
         longitude?: number | null;
         instagramUrl?: string | null;
         images?: { url: string }[];
-        dates?: { date: Date | string }[] | null; // Updated type
+        dates?: { date: Date | string, startTime?: string | null }[] | null; // Updated type
     };
     isEditing?: boolean;
 }
@@ -48,8 +48,14 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
             setPreviews(initialData.images.map(img => img.url));
         }
         if (initialData?.dates && initialData.dates.length > 0) {
-            // Convert dates to YYYY-MM-DD string for consistency with date input
-            setSelectedDates(initialData.dates.map(d => new Date(d.date).toISOString().split('T')[0]));
+            // Convert dates to JSON string of {date, time} for state.
+            // Ensure we handle time if it exists in the backend data.
+            // The backend returns dates usually as Date objects or strings.
+            // We need to map them to our internal stringified JSON format.
+            setSelectedDates(initialData.dates.map(d => JSON.stringify({
+                date: new Date(d.date).toISOString().split('T')[0],
+                time: d.startTime || "08:00"
+            })));
         }
     }, [initialData]);
 
@@ -301,15 +307,28 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
                             className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
                             id="date-picker-input"
                         />
+                        <input
+                            type="time"
+                            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                            id="time-picker-input"
+                        />
                         <button
                             type="button"
                             onClick={() => {
-                                const input = document.getElementById('date-picker-input') as HTMLInputElement;
-                                if (input.value) {
-                                    if (!selectedDates.includes(input.value)) {
-                                        setSelectedDates([...selectedDates, input.value].sort());
+                                const dateInput = document.getElementById('date-picker-input') as HTMLInputElement;
+                                const timeInput = document.getElementById('time-picker-input') as HTMLInputElement;
+
+                                if (dateInput.value) {
+                                    // Store as JSON string to keep it simple in the state array, or verify structure
+                                    // Ideally, we want unique dates. If time differs, it's a new slot.
+                                    const entry = JSON.stringify({ date: dateInput.value, time: timeInput.value || "08:00" });
+
+                                    if (!selectedDates.includes(entry)) {
+                                        setSelectedDates([...selectedDates, entry]);
                                     }
-                                    input.value = '';
+                                    dateInput.value = '';
+                                    // Keep time or reset? Resetting usually better.
+                                    timeInput.value = '';
                                 }
                             }}
                             className="px-4 py-2 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition-colors"
@@ -318,23 +337,32 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
                         </button>
                     </div>
 
-                    {/* Hidden input for server submission */}
-                    <input type="hidden" name="availableDates" value={JSON.stringify(selectedDates)} />
+                    {/* Hidden input for server submission - Need to ensure format matches what action expects */}
+                    {/* The action expects logic: JSON.parse(availableDates) -> array of objects */}
+                    {/* selectedDates is now array of STRINGIFIED objects. So we need to parse them, then stringify the whole array? */}
+                    {/* Or we can just keep selectedDates as string[] (of JSONs) and wrap it. This is getting tricky with the existing action logic. */}
+                    {/* Let's adjust selectedDates to be simpler strings or just fix the hidden input value. */}
+
+                    <input type="hidden" name="availableDates" value={`[${selectedDates.join(',')}]`} />
 
                     {selectedDates.length > 0 ? (
                         <div className="flex flex-wrap gap-2 mt-2">
-                            {selectedDates.map((date) => (
-                                <span key={date} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-primary/10 text-primary border border-primary/20">
-                                    {new Date(date).toLocaleDateString()}
-                                    <button
-                                        type="button"
-                                        onClick={() => setSelectedDates(selectedDates.filter(d => d !== date))}
-                                        className="hover:text-red-600 transition-colors"
-                                    >
-                                        ×
-                                    </button>
-                                </span>
-                            ))}
+                            {selectedDates.map((entryStr, idx) => {
+                                const entry = JSON.parse(entryStr);
+                                return (
+                                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-primary/10 text-primary border border-primary/20">
+                                        📅 {new Date(entry.date).toLocaleDateString()}
+                                        <span className="text-gray-500 font-medium ml-1">⏰ {entry.time}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSelectedDates(selectedDates.filter((_, i) => i !== idx))}
+                                            className="hover:text-red-600 transition-colors ml-1"
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                );
+                            })}
                         </div>
                     ) : (
                         <p className="text-xs text-gray-400 italic">No has seleccionado fechas. Si no seleccionas ninguna, el tour podría no estar disponible para reservar.</p>
