@@ -54,7 +54,22 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
     const tour = tourRaw as any;
 
     // Parse includes/excludes if they are JSON strings
-    const includesList = tour.includes ? JSON.parse(tour.includes) : [];
+    let includesList = [];
+    if (tour.includes) {
+        try {
+            includesList = JSON.parse(tour.includes);
+            // Ensure it's an array
+            if (!Array.isArray(includesList)) {
+                // If it's a string inside JSON, or something else
+                includesList = [includesList.toString()];
+            }
+        } catch (e) {
+            // Fallback: assume it's a comma-separated string or just plain text
+            includesList = tour.includes.includes(',')
+                ? tour.includes.split(',').map((s: string) => s.trim())
+                : [tour.includes];
+        }
+    }
 
     const availableDates = tour.dates?.map((d: any) => ({
         date: d.date.toISOString().split('T')[0],
