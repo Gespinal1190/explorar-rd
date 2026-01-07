@@ -15,7 +15,7 @@ export default async function RegisterPage(props: {
             {/* Left Side - Image */}
             <div className="hidden lg:flex w-1/2 relative bg-gray-900">
                 <Image
-                    src="https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?q=80&w=2071&auto=format&fit=crop" // Different DR image
+                    src="https://images.unsplash.com/photo-1524777313293-6b83445eb04b?q=80&w=2070&auto=format&fit=crop" // Iconic DR Palms
                     alt="Dominican Republic Nature"
                     fill
                     className="object-cover opacity-60 mix-blend-overlay"
