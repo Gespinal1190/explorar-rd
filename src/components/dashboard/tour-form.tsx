@@ -207,18 +207,7 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
                     />
                 </div>
 
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="startTime">
-                        Hora de Inicio
-                    </label>
-                    <input
-                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                        id="startTime"
-                        type="time"
-                        name="startTime"
-                        defaultValue={initialData?.startTime || ""}
-                    />
-                </div>
+
 
                 <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="includes">
@@ -339,11 +328,13 @@ export default function TourForm({ initialData, isEditing = false }: TourFormPro
 
                     {/* Hidden input for server submission - Need to ensure format matches what action expects */}
                     {/* The action expects logic: JSON.parse(availableDates) -> array of objects */}
-                    {/* selectedDates is now array of STRINGIFIED objects. So we need to parse them, then stringify the whole array? */}
-                    {/* Or we can just keep selectedDates as string[] (of JSONs) and wrap it. This is getting tricky with the existing action logic. */}
-                    {/* Let's adjust selectedDates to be simpler strings or just fix the hidden input value. */}
-
-                    <input type="hidden" name="availableDates" value={`[${selectedDates.join(',')}]`} />
+                    {/* selectedDates contains strings like '{"date":"2023-01-01","time":"10:00"}' */}
+                    {/* We need to reconstruct this into a valid JSON array string: '[{"date":"...","time":"..."}, ...]' */}
+                    <input
+                        type="hidden"
+                        name="availableDates"
+                        value={`[${selectedDates.join(',')}]`}
+                    />
 
                     {selectedDates.length > 0 ? (
                         <div className="flex flex-wrap gap-2 mt-2">
