@@ -101,12 +101,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                         <div className="prose prose-lg text-gray-600 leading-relaxed whitespace-pre-line">
                             {tour.description}
                         </div>
-                        {tour.startTime && (
-                            <div className="mt-6 flex items-center gap-3 p-4 bg-blue-50 text-blue-800 rounded-xl font-medium border border-blue-100">
-                                <span className="text-xl">⏰</span>
-                                <span>Hora de salida: <strong>{tour.startTime}</strong></span>
-                            </div>
-                        )}
+
                     </div>
 
                     {/* Includes Tab */}
@@ -182,6 +177,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             currency={tour.currency || 'DOP'}
                             whatsappLink={whatsappLink}
                             availableDates={availableDates}
+                            startTime={tour.startTime}
                         />
                     </div>
 
@@ -193,6 +189,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
                             currency={tour.currency || 'DOP'}
                             whatsappLink={whatsappLink}
                             availableDates={availableDates}
+                            startTime={tour.startTime}
                         />
                     </div>
                 </div>

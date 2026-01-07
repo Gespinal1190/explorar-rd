@@ -11,7 +11,7 @@ interface BookingFormProps {
     availableDates?: string[];
 }
 
-export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [] }: BookingFormProps) {
+export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [], startTime }: BookingFormProps & { startTime?: string }) {
     const router = useRouter();
     const [date, setDate] = useState("");
     const [guests, setGuests] = useState(2);
@@ -63,6 +63,15 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                     />
+                )}
+                )}
+
+                {/* Dynamic Start Time Display */}
+                {date && availableDates.length > 0 && startTime && (
+                    <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 bg-blue-50/50 p-2 rounded-lg border border-blue-100">
+                        <span>⏰</span>
+                        <span className="font-medium">Hora de salida: <strong>{startTime}</strong></span>
+                    </div>
                 )}
             </div>
 
