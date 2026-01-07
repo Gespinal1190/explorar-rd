@@ -260,6 +260,9 @@ export async function updateTour(
             }
         }
 
+        revalidatePath(`/tours/${id}`);
+        revalidatePath('/tours');
+
     } catch (error) {
         console.error("Error updating tour", error);
         return "Error al actualizar tour";

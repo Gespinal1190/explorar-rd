@@ -19,12 +19,17 @@ interface BookingFormProps {
 
 export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, availableDates = [], startTime }: BookingFormProps) {
     const router = useRouter();
-    const [date, setDate] = useState("");
     const [guests, setGuests] = useState(2);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedSlot, setSelectedSlot] = useState("");
+
+    // Parse the selected slot back to object to get date/time for display/logic
+    const selected = selectedSlot ? JSON.parse(selectedSlot) : null;
+    const date = selected?.date || "";
+    const time = selected?.time || startTime || "Consultar";
 
     const handleBooking = () => {
-        if (!date) {
+        if (!selectedSlot) {
             alert("Por favor selecciona una fecha");
             return;
         }
@@ -32,7 +37,8 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
         // Redirect to checkout with query params
         const params = new URLSearchParams({
             tourId,
-            date,
+            date: date,
+            time: time,
             guests: guests.toString(),
             totalPrice: (price * guests).toString()
         });
@@ -49,17 +55,21 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
 
                 {availableDates.length > 0 ? (
                     <select
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                        value={selectedSlot}
+                        onChange={(e) => setSelectedSlot(e.target.value)}
                         className="w-full bg-transparent outline-none font-bold text-gray-900 cursor-pointer appearance-none"
                         style={{ backgroundImage: 'none' }}
                     >
                         <option value="" disabled>Selecciona una fecha...</option>
-                        {availableDates.map((d) => (
-                            <option key={d.date} value={d.date}>
-                                {new Date(d.date).toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                            </option>
-                        ))}
+                        {availableDates.map((d, idx) => {
+                            const val = JSON.stringify({ date: d.date, time: d.time });
+                            return (
+                                <option key={`${d.date}-${d.time}-${idx}`} value={val}>
+                                    {new Date(d.date).toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                                    {d.time ? ` - ${d.time}` : ''}
+                                </option>
+                            );
+                        })}
                     </select>
                 ) : (
                     <input
@@ -67,18 +77,16 @@ export function BookingForm({ tourId, price, currency = 'DOP', whatsappLink, ava
                         className="w-full bg-transparent outline-none font-bold text-gray-900"
                         min={new Date().toISOString().split('T')[0]}
                         value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                        onChange={(e) => setSelectedSlot(JSON.stringify({ date: e.target.value, time: startTime }))}
                     />
                 )}
 
                 {/* Dynamic Start Time Display */}
-                {date && (
+                {selectedSlot && (
                     <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 bg-blue-50/50 p-2 rounded-lg border border-blue-100">
                         <span>⏰</span>
                         <span className="font-medium">
-                            Hora de salida: <strong>
-                                {availableDates.find(d => d.date === date)?.time || startTime || "Consultar"}
-                            </strong>
+                            Hora de salida: <strong>{time}</strong>
                         </span>
                     </div>
                 )}
