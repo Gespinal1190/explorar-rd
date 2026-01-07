@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 interface CheckoutClientProps {
     tour: any;
     date: string;
+    time?: string;
     guests: number;
     user: any;
 }
 
-export function CheckoutClient({ tour, date, guests, user }: CheckoutClientProps) {
+export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClientProps) {
     const [paymentMethod, setPaymentMethod] = useState("transfer");
     const [isProcessing, setIsProcessing] = useState(false);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -38,6 +39,7 @@ export function CheckoutClient({ tour, date, guests, user }: CheckoutClientProps
                 body: JSON.stringify({
                     tourId: tour.id,
                     date,
+                    time,
                     people: guests,
                     totalPrice: tour.price * guests,
                     paymentMethod,

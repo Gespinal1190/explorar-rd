@@ -177,6 +177,7 @@ model Booking {
   tour        Tour     @relation(fields: [tourId], references: [id])
   
   date        DateTime
+  startTime   String?   // Store specific tour time (e.g. "09:00")
   people      Int      @default(1)
   totalPrice  Float
   status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED

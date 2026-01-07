@@ -7,14 +7,14 @@ import Navbar from "@/components/ui/navbar";
 export default async function CheckoutPage({
     searchParams,
 }: {
-    searchParams: Promise<{ tourId: string; date: string; guests: string }>;
+    searchParams: Promise<{ tourId: string; date: string; time?: string; guests: string }>;
 }) {
     const session = await auth();
     if (!session) {
         redirect("/login?callbackUrl=/checkout");
     }
 
-    const { tourId, date, guests } = await searchParams;
+    const { tourId, date, time, guests } = await searchParams;
 
     if (!tourId || !date || !guests) {
         redirect("/tours");
@@ -49,6 +49,7 @@ export default async function CheckoutPage({
                         <CheckoutClient
                             tour={tour}
                             date={date}
+                            time={time}
                             guests={parseInt(guests)}
                             user={user}
                         />
@@ -73,7 +74,10 @@ export default async function CheckoutPage({
                             <div className="space-y-3 text-sm text-gray-600">
                                 <div className="flex justify-between">
                                     <span>Fecha</span>
-                                    <span className="font-bold text-gray-900">{date}</span>
+                                    <div className="text-right">
+                                        <span className="font-bold text-gray-900 block">{date}</span>
+                                        {time && <span className="text-xs text-blue-600 block">⏰ {time}</span>}
+                                    </div>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Viajeros</span>

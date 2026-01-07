@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
         const body = await req.json();
         console.log("Booking Request Body (Raw):", body);
-        const { tourId, date, people, totalPrice, paymentMethod, phone } = body;
+        const { tourId, date, time, people, totalPrice, paymentMethod, phone } = body;
 
         if (!tourId || !date || !people) {
             console.error("Missing fields:", { tourId, date, people });
@@ -42,6 +42,7 @@ export async function POST(req: Request) {
             userId: session.user.id,
             tourId,
             date: new Date(date),
+            startTime: time,
             people: Number(people), // Ensure number
             totalPrice: Number(totalPrice), // Ensure number
             paymentMethod
@@ -53,6 +54,7 @@ export async function POST(req: Request) {
                 userId: session.user.id,
                 tourId: tourId,
                 date: new Date(date),
+                startTime: time,
                 people: Number(people),
                 totalPrice: Number(totalPrice),
                 status: 'PENDING',
