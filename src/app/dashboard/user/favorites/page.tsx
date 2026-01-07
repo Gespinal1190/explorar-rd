@@ -41,6 +41,9 @@ export default async function UserFavoritesPage() {
                             location={tour.location}
                             image={tour.images[0]?.url}
                             agencyName={tour.agency.name}
+                            isAgencyPro={tour.agency?.tier === 'PRO'}
+                            currency={tour.currency || 'DOP'}
+                            isFavorite={true}
                         />
                     ))}
                 </div>

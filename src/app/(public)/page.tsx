@@ -4,7 +4,21 @@ import prisma from "@/lib/prisma";
 import Navbar from "@/components/ui/navbar";
 import { SearchOverlay } from "@/components/ui/search-overlay";
 
+import { getSession } from "@/lib/session";
+
 export default async function Home() {
+  const session = await getSession();
+  const userId = session?.userId ? String(session.userId) : null;
+
+  let userFavorites: string[] = [];
+  if (userId) {
+    const favs = await prisma.favorite.findMany({
+      where: { userId },
+      select: { tourId: true }
+    });
+    userFavorites = favs.map(f => f.tourId);
+  }
+
   const now = new Date();
 
   // Sort priority for plans
@@ -194,6 +208,8 @@ export default async function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {featuredTours.map((tour: any) => {
               const isFeatured = tour?.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
+              const isFavorite = userFavorites.includes(tour.id);
+
               return (
                 <TourCard
                   key={tour?.id}
@@ -207,6 +223,7 @@ export default async function Home() {
                   isFeatured={isFeatured}
                   featuredPlan={tour?.featuredPlan}
                   isAgencyPro={tour?.agency?.tier === 'PRO'}
+                  isFavorite={isFavorite}
                 />
               );
             })}

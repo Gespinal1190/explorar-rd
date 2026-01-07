@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { toggleFavorite } from "@/lib/actions";
 
 interface TourProps {
     id: string;
@@ -11,10 +15,36 @@ interface TourProps {
     currency?: string;
     isFeatured?: boolean;
     featuredPlan?: string;
-    rating?: number; // Added rating prop (optional)
+    rating?: number;
+    isFavorite?: boolean; // Initial state
 }
 
-export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan }: TourProps) {
+export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false }: TourProps) {
+    const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleToggleFavorite = async (e: React.MouseEvent) => {
+        e.preventDefault(); // Prevent navigating to tour details
+        if (isLoading) return;
+
+        // Optimistic UI Update
+        const previousState = isFavorite;
+        setIsFavorite(!isFavorite);
+        setIsLoading(true);
+
+        const result = await toggleFavorite(id);
+
+        if (!result.success) {
+            // Revert on failure
+            setIsFavorite(previousState);
+            if (result.message === "Debes iniciar sesión") {
+                // Optional: Redirect to login or show toast
+                alert("Debes iniciar sesión para agregar favoritos.");
+            }
+        }
+        setIsLoading(false);
+    };
+
     return (
         <div className={`relative bg-white rounded-2xl md:rounded-3xl transition-all duration-500 overflow-hidden border group flex flex-col h-full ${isFeatured ? 'border-amber-400 shadow-[0_8px_30px_rgba(251,191,36,0.15)]' : 'border-gray-100 shadow-sm hover:shadow-xl'}`}>
             {isFeatured && (
@@ -46,8 +76,11 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                     )}
                 </div>
 
-                <button className="absolute top-3 right-3 md:top-4 md:right-4 p-2 bg-white/50 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-red-500 transition-colors z-20 shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 md:w-5 md:h-5">
+                <button
+                    onClick={handleToggleFavorite}
+                    className={`absolute top-3 right-3 md:top-4 md:right-4 p-2 backdrop-blur-md rounded-full transition-all z-20 shadow-sm ${isFavorite ? 'bg-white text-red-500 scale-110' : 'bg-white/50 text-white hover:bg-white hover:text-red-500'}`}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill={isFavorite ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 md:w-5 md:h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>

@@ -7,12 +7,26 @@ export const metadata = {
     title: 'Explorar Tours | Explorar RD',
 };
 
+import { getSession } from "@/lib/session";
+
 export default async function ToursPage(props: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const searchParams = await props.searchParams;
     const search = typeof searchParams?.search === 'string' ? searchParams.search : undefined;
     const location = typeof searchParams?.location === 'string' ? searchParams.location : undefined;
+
+    const session = await getSession();
+    const userId = session?.userId ? String(session.userId) : null;
+
+    let userFavorites: string[] = [];
+    if (userId) {
+        const favs = await prisma.favorite.findMany({
+            where: { userId },
+            select: { tourId: true }
+        });
+        userFavorites = favs.map(f => f.tourId);
+    }
 
     const query = search || location;
     const now = new Date();
@@ -149,6 +163,7 @@ export default async function ToursPage(props: {
                                     currency={tour.currency || 'DOP'}
                                     isFeatured={true}
                                     featuredPlan={tour.featuredPlan}
+                                    isFavorite={userFavorites.includes(tour.id)}
                                 />
                             ))}
                         </div>
@@ -186,6 +201,7 @@ export default async function ToursPage(props: {
                                     agencyName={tour.agency?.name || 'Agencia Local'}
                                     isAgencyPro={tour.agency?.tier === 'PRO'}
                                     currency={tour.currency || 'DOP'}
+                                    isFavorite={userFavorites.includes(tour.id)}
                                 />
                             ))}
                         </div>

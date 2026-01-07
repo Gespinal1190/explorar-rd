@@ -404,3 +404,50 @@ export async function resetPasswordRequest(prevState: any, formData: FormData) {
     // but in this mock user can assume it worked.
     return { success: true, email };
 }
+// Favorites System
+export async function toggleFavorite(tourId: string) {
+    const session = await getSession();
+    if (!session?.userId) {
+        return { message: "Debes iniciar sesión", success: false, isFavorite: false };
+    }
+
+    const userId = String(session.userId);
+
+    try {
+        const existing = await prisma.favorite.findUnique({
+            where: {
+                userId_tourId: {
+                    userId,
+                    tourId
+                }
+            }
+        });
+
+        if (existing) {
+            await prisma.favorite.delete({
+                where: {
+                    userId_tourId: {
+                        userId,
+                        tourId
+                    }
+                }
+            });
+            revalidatePath('/');
+            revalidatePath('/tours');
+            return { message: "Eliminado de favoritos", success: true, isFavorite: false };
+        } else {
+            await prisma.favorite.create({
+                data: {
+                    userId,
+                    tourId
+                }
+            });
+            revalidatePath('/');
+            revalidatePath('/tours');
+            return { message: "Añadido a favoritos", success: true, isFavorite: true };
+        }
+    } catch (error) {
+        console.error("Error toggling favorite:", error);
+        return { message: "Error al procesar", success: false, isFavorite: false };
+    }
+}
