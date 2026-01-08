@@ -322,7 +322,9 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div>
-              <h3 className="text-2xl font-bold mb-6">Descubre<span className="text-primary">RD</span></h3>
+              <div className="mb-6">
+                <img src="/logo-footer.png" alt="DescubreRD" className="h-8 w-auto" />
+              </div>
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
                 La plataforma líder en turismo interno de República Dominicana. Conectando viajeros con experiencias inolvidables.
               </p>
