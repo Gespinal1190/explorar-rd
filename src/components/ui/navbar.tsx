@@ -12,7 +12,7 @@ export default async function Navbar() {
             <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
-                    <Logo className="h-8 w-auto" />
+                    <Logo className="h-12 w-auto" />
                 </Link>
 
                 {/* Center Links (Desktop) */}

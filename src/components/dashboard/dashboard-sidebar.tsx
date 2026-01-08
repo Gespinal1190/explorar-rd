@@ -44,7 +44,7 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
             {/* Logo Area - Visible on both Mobile (drawer) and Desktop (sidebar header) */}
             <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
-                    <Logo className="h-8 w-auto" />
+                    <Logo className="h-12 w-auto" />
                     <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">PANEL</span>
                 </Link>
 

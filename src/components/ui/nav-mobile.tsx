@@ -48,7 +48,7 @@ export function NavMobile({ session }: NavMobileProps) {
                     {/* Header with Logo and Close Button */}
                     <div className="flex items-center justify-between mb-12">
                         <div className="flex items-center">
-                            <Logo className="h-10 w-auto" />
+                            <Logo className="h-12 w-auto" />
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}

@@ -29,7 +29,7 @@ export default function LoginPage() {
                 <div className="w-full max-w-[450px]">
                     <div className="text-center mb-10">
                         <Link href="/" className="inline-block mb-6">
-                            <Logo className="h-12 w-auto mx-auto" />
+                            <Logo className="h-20 w-auto mx-auto" />
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">Bienvenido de vuelta</h1>
                         <p className="text-gray-500">Ingresa tus credenciales para continuar.</p>

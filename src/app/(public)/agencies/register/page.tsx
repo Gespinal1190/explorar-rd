@@ -187,7 +187,7 @@ export default function AgencyRegisterPage() {
                 <div className="relative z-10 p-16 flex flex-col justify-between h-full">
                     <div>
                         <Link href="/" className="inline-block text-white">
-                            <Logo className="h-12 w-auto" />
+                            <Logo className="h-16 w-auto" />
                         </Link>
                     </div>
 
@@ -225,7 +225,7 @@ export default function AgencyRegisterPage() {
                 <div className="max-w-md w-full mx-auto space-y-8">
                     <div className="lg:hidden text-center">
                         <Link href="/" className="inline-block text-gray-900">
-                            <Logo className="h-10 w-auto mx-auto" />
+                            <Logo className="h-16 w-auto mx-auto" />
                         </Link>
                     </div>
 
