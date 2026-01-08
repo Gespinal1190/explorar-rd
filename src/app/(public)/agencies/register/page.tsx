@@ -8,6 +8,7 @@ import { registerAction } from "@/lib/auth-actions";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, storage } from "@/lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { Logo } from "@/components/ui/logo";
 
 export default function AgencyRegisterPage() {
     const router = useRouter();
@@ -185,10 +186,8 @@ export default function AgencyRegisterPage() {
 
                 <div className="relative z-10 p-16 flex flex-col justify-between h-full">
                     <div>
-                        <Link href="/" className="inline-block">
-                            <span className="text-4xl font-black tracking-tighter text-white">
-                                Descubre<span className="text-teal-300">RD</span>
-                            </span>
+                        <Link href="/" className="inline-block text-white">
+                            <Logo className="h-12 w-auto" />
                         </Link>
                     </div>
 
@@ -225,10 +224,8 @@ export default function AgencyRegisterPage() {
             <div className="w-full lg:w-1/2 flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-20 bg-white overflow-y-auto">
                 <div className="max-w-md w-full mx-auto space-y-8">
                     <div className="lg:hidden text-center">
-                        <Link href="/" className="inline-block">
-                            <span className="text-3xl font-black tracking-tighter text-gray-900">
-                                Descubre<span className="text-primary">RD</span>
-                            </span>
+                        <Link href="/" className="inline-block text-gray-900">
+                            <Logo className="h-10 w-auto mx-auto" />
                         </Link>
                     </div>
 

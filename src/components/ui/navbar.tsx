@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { SignOut } from "@/components/ui/sign-out";
 import { NavMobile } from "./nav-mobile";
+import { Logo } from "./logo";
 
 export default async function Navbar() {
     const session = await auth();
@@ -11,9 +12,7 @@ export default async function Navbar() {
             <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-gray-900 tracking-tight">
-                        Descubre<span className="text-primary">RD</span>
-                    </span>
+                    <Logo className="h-8 w-auto" />
                 </Link>
 
                 {/* Center Links (Desktop) */}

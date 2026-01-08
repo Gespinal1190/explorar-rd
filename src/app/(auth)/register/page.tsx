@@ -1,6 +1,7 @@
 import RegisterForm from "@/components/ui/register-form";
 import Link from "next/link";
 import Image from "next/image";
+import { Logo } from "@/components/ui/logo";
 
 export default async function RegisterPage(props: {
     searchParams: Promise<{ role?: string }>;
@@ -78,9 +79,7 @@ export default async function RegisterPage(props: {
                 <div className="w-full max-w-[450px]">
                     <div className="text-center mb-10">
                         <Link href="/" className="inline-block mb-6">
-                            <span className="text-4xl font-black text-gray-900 tracking-tighter">
-                                Descubre<span className="text-primary">RD</span>
-                            </span>
+                            <Logo className="h-12 w-auto mx-auto" />
                         </Link>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
                             {isAgency ? 'Registra tu empresa' : 'Crea tu cuenta'}
