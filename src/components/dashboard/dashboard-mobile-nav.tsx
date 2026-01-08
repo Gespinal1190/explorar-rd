@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { Logo } from "@/components/ui/logo";
 
 interface DashboardMobileNavProps {
     userRole: string;
@@ -16,9 +17,7 @@ export function DashboardMobileNav({ userRole, userName, userPhone }: DashboardM
         <>
             {/* Mobile Header Bar */}
             <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 sticky top-0 z-30">
-                <span className="font-black text-lg text-gray-900 tracking-tight">
-                    Descubre<span className="text-primary">RD</span>
-                </span>
+                <Logo className="h-8 w-auto" />
 
                 <button
                     onClick={() => setIsOpen(true)}
