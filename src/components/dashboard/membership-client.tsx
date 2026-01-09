@@ -4,6 +4,7 @@ import { useState } from 'react';
 import MembershipModal from './membership-modal';
 
 interface Agency {
+    id: string;
     tier: string;
     tierExpiresAt: Date | string | null;
 }
@@ -159,6 +160,7 @@ export default function MembershipClient({ agency, plans }: { agency: Agency, pl
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 plans={plans}
+                agencyId={agency.id}
             />
         </div>
     );

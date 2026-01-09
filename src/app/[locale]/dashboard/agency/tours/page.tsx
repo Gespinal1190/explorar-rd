@@ -30,7 +30,7 @@ export default async function AgencyToursPage() {
                 </Link>
             </div>
 
-            <AgencyToursList tours={agency.tours} plans={plans} />
+            <AgencyToursList tours={agency.tours} plans={plans} agencyId={agency.id} />
         </div>
     );
 }

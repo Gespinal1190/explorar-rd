@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { upgradeAgencyTier } from '@/lib/membership-actions';
+import { PayPalPaymentButton } from '../payments/paypal-button';
 
 interface Plan {
     id: string;
@@ -14,7 +15,7 @@ interface Plan {
 
 type Step = 'select' | 'pay' | 'success';
 
-export default function MembershipModal({ isOpen, onClose, plans }: { isOpen: boolean, onClose: () => void, plans: Plan[] }) {
+export default function MembershipModal({ isOpen, onClose, plans, agencyId }: { isOpen: boolean, onClose: () => void, plans: Plan[], agencyId: string }) {
     const [step, setStep] = useState<Step>('select');
     const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -110,54 +111,63 @@ export default function MembershipModal({ isOpen, onClose, plans }: { isOpen: bo
 
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-gray-900">Pasarela de Pago Segura</h2>
-                            <p className="text-sm text-gray-500 font-medium">Estás a un paso de ser Socio PRO. Total: <span className="text-gray-900 font-black">RD$ {selectedPlan.price.toLocaleString()}</span></p>
+                            <p className="text-sm text-gray-500 font-medium">Estás a un paso de ser Socio PRO. Total: <span className="text-gray-900 font-black">US$ {(selectedPlan.price / 58).toFixed(2)}</span> ({selectedPlan.price.toLocaleString()} DOP)</p>
                         </div>
 
-                        <form onSubmit={handlePayment} className="space-y-4">
-                            <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-4">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Número de Tarjeta</label>
-                                    <div className="relative">
-                                        <input required type="text" placeholder="#### #### #### ####" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-mono text-lg font-bold focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
-                                            <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                                            <div className="w-8 h-5 bg-gray-300 rounded"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Vencimiento</label>
-                                        <input required type="text" placeholder="MM / AA" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-mono text-lg font-bold focus:ring-2 focus:ring-primary outline-none transition-all" />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">CVC</label>
-                                        <input required type="text" placeholder="123" className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-mono text-lg font-bold focus:ring-2 focus:ring-primary outline-none transition-all" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 p-4 bg-blue-50/50 rounded-xl">
-                                <span className="text-blue-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                        <div className="space-y-6">
+                            <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 flex items-start gap-3">
+                                <span className="text-blue-500 mt-0.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clipRule="evenodd" />
                                     </svg>
                                 </span>
-                                <p className="text-[10px] text-blue-600 font-bold leading-tight">Tu información está encriptada con tecnología SSL de 256 bits. DescubreRD no almacena datos de tu tarjeta.</p>
+                                <p className="text-xs text-blue-700 leading-relaxed font-medium">El pago se procesará en Dólares Estadounidenses (USD) a través de PayPal. El acceso a los beneficios PRO será inmediato tras la confirmación.</p>
                             </div>
 
-                            <button
-                                disabled={isProcessing}
-                                className="w-full py-4 bg-primary text-white font-black text-lg rounded-2xl hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 disabled:opacity-50"
-                            >
-                                {isProcessing ? (
-                                    <>
-                                        <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        Procesando Pago...
-                                    </>
-                                ) : `Completar Pago de RD$ ${selectedPlan.price.toLocaleString()}`}
-                            </button>
-                        </form>
+                            <PayPalPaymentButton
+                                amount={parseFloat((selectedPlan.price / 58).toFixed(2))}
+                                currency="USD"
+                                description={`Membresía PRO - ${selectedPlan.name}`}
+                                metadata={{
+                                    planId: selectedPlan.id,
+                                    slug: selectedPlan.slug,
+                                    agencyId: agencyId // Need to pass agencyId prop to modal too!
+                                }}
+                                onSuccess={async (details) => {
+                                    setIsProcessing(true);
+                                    try {
+                                        const res = await fetch("/api/payments/verify", {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({
+                                                orderId: details.id,
+                                                payerId: details.payer.payer_id,
+                                                amount: details.purchase_units[0].amount.value,
+                                                currency: details.purchase_units[0].amount.currency_code,
+                                                type: "MEMBERSHIP_PRO",
+                                                agencyId: agencyId, // Need agencyId here
+                                                metadata: {
+                                                    planId: selectedPlan.id,
+                                                    planName: selectedPlan.name
+                                                }
+                                            })
+                                        });
+
+                                        if (res.ok) {
+                                            setStep('success');
+                                        } else {
+                                            const err = await res.json();
+                                            alert("Error registrando el pago: " + err.error);
+                                        }
+                                    } catch (e) {
+                                        console.error(e);
+                                        alert("Error de conexión");
+                                    } finally {
+                                        setIsProcessing(false);
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
                 )}
 

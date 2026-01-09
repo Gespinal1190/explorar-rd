@@ -94,6 +94,7 @@ model AgencyProfile {
   updatedAt   DateTime @updatedAt
 
   bankAccounts BankAccount[]
+  payments     Payment[]
 }
 
 model BankAccount {
@@ -236,3 +237,36 @@ enum AgencyStatus {
   PAUSED
   SUSPENDED
 }
+
+model Payment {
+  id              String        @id @default(cuid())
+  agencyProfileId String
+  agencyProfile   AgencyProfile @relation(fields: [agencyProfileId], references: [id], onDelete: Cascade)
+  
+  amount          Float
+  currency        String        @default("USD")
+  type            PaymentType   // MEMBERSHIP_PRO, AD_PROMOTION
+  status          PaymentStatus @default(PENDING)
+  
+  paypalOrderId   String?       @unique // PayPal Order ID
+  paypalPayerId   String?       // PayPal Payer ID
+  
+  metadata        String?       // Any extra JSON info (plan_id, tour_id to promote, etc)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum PaymentType {
+  MEMBERSHIP_PRO
+  AD_PROMOTION
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// ... existing enums

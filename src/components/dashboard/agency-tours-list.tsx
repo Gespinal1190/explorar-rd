@@ -16,7 +16,7 @@ interface Tour {
     status: string; // Added status
 }
 
-export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans: any[] }) {
+export default function AgencyToursList({ tours, plans, agencyId }: { tours: Tour[], plans: any[], agencyId: string }) {
     const t = useTranslations("AgencyTours");
     const [promoteId, setPromoteId] = useState<string | null>(null);
     const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
@@ -212,6 +212,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                     isOpen={!!promoteId}
                     onClose={() => setPromoteId(null)}
                     plans={plans}
+                    agencyId={agencyId}
                 />
             )}
         </div>
