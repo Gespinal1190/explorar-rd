@@ -4,12 +4,13 @@ import BookingList from "@/components/agency/booking-list";
 
 export default async function AgencyBookingsPage() {
     const session = await auth();
-    if (!session?.user?.id) return null;
+    const userId = session?.user?.id;
+    if (!userId) return null;
 
     let agency;
     try {
         agency = await prisma.agencyProfile.findUnique({
-            where: { userId: session.user.id },
+            where: { userId: userId },
             include: {
                 tours: {
                     include: {

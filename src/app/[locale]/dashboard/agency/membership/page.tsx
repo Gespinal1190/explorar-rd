@@ -5,11 +5,12 @@ import MembershipClient from "@/components/dashboard/membership-client";
 
 export default async function AgencyMembershipPage() {
     const session = await auth();
-    if (!session || session.user.role !== 'AGENCY') return null;
+    const userId = session?.user?.id;
+    if (!userId || session.user.role !== 'AGENCY') return null;
 
     const [agency, plans] = await Promise.all([
         prisma.agencyProfile.findUnique({
-            where: { userId: session.user.id }
+            where: { userId: userId }
         }),
         getPlans('MEMBERSHIP')
     ]);

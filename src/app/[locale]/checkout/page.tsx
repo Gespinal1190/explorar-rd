@@ -10,14 +10,17 @@ export default async function CheckoutPage({
     searchParams: Promise<{ tourId: string; date: string; time?: string; guests: string }>;
 }) {
     const session = await auth();
-    if (!session) {
+    const userId = session?.user?.id;
+    if (!userId) {
         redirect("/login?callbackUrl=/checkout");
+        return null;
     }
 
     const { tourId, date, time, guests } = await searchParams;
 
     if (!tourId || !date || !guests) {
         redirect("/tours");
+        return null; // Safety
     }
 
     const tour = await prisma.tour.findUnique({
@@ -30,7 +33,7 @@ export default async function CheckoutPage({
     }
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id }
+        where: { id: userId }
     });
 
     if (!user) {

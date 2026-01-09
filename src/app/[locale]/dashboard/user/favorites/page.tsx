@@ -5,10 +5,14 @@ import { redirect } from "next/navigation";
 
 export default async function UserFavoritesPage() {
     const session = await auth();
-    if (!session?.user?.id) redirect("/login");
+    const userId = session?.user?.id;
+    if (!userId) {
+        redirect("/login");
+        return null;
+    }
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
+        where: { id: userId },
         include: {
             favorites: {
                 include: {

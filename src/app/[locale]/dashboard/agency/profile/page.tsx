@@ -7,20 +7,24 @@ import { redirect } from "next/navigation";
 
 export default async function AgencyProfilePage() {
     const session = await auth();
-    if (!session || session.user.role !== "AGENCY") {
+    const userRole = session?.user?.role;
+    const sessionUserId = session?.user?.id;
+
+    if (!sessionUserId || userRole !== "AGENCY") {
         redirect("/dashboard");
+        return null;
     }
 
     const [agency, user] = await Promise.all([
         prisma.agencyProfile.findUnique({
-            where: { userId: session.user.id },
+            where: { userId: sessionUserId },
             include: {
                 // @ts-ignore - bankAccounts relation exists but client is stale
                 bankAccounts: true
             }
         }),
         prisma.user.findUnique({
-            where: { id: session.user.id }
+            where: { id: sessionUserId }
         })
     ]);
 

@@ -5,14 +5,16 @@ import { notFound, redirect } from "next/navigation";
 
 export default async function EditTourPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await auth();
-    if (!session || session.user.role !== 'AGENCY') {
+    const user = session?.user;
+    if (!user || user.role !== 'AGENCY') {
         redirect('/dashboard/agency/tours');
+        return null;
     }
 
     const { id } = await params;
 
     const agency = await prisma.agencyProfile.findUnique({
-        where: { userId: session.user.id }
+        where: { userId: user.id }
     });
 
     if (!agency) {
