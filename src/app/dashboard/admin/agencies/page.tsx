@@ -12,6 +12,19 @@ async function toggleVerification(agencyId: string, currentStatus: boolean) {
     revalidatePath("/dashboard/admin/agencies");
 }
 
+async function togglePause(agencyId: string, currentStatus: string) {
+    "use server";
+    // If it's PAUSED, set to ACTIVE. Otherwise set to PAUSED.
+    // Handles 'PENDING', 'ACTIVE', 'SUSPENDED' -> 'PAUSED'
+    const newStatus = currentStatus === 'PAUSED' ? 'ACTIVE' : 'PAUSED';
+
+    await prisma.agencyProfile.update({
+        where: { id: agencyId },
+        data: { status: newStatus as any }
+    });
+    revalidatePath("/dashboard/admin/agencies");
+}
+
 export default async function AdminAgenciesPage(props: {
     searchParams?: Promise<{ search?: string; status?: string }>;
 }) {
@@ -186,13 +199,27 @@ export default async function AdminAgenciesPage(props: {
                                                     PENDIENTE
                                                 </span>
                                             )}
+                                            {agency.status === 'PAUSED' && (
+                                                <span className="ml-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-gray-100 text-gray-600 border border-gray-200">
+                                                    ⏸️ PAUSADA
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="px-8 py-6 text-right">
                                             <div className="flex items-center justify-end gap-3">
+                                                <form action={togglePause.bind(null, agency.id, agency.status)}>
+                                                    <button
+                                                        title={agency.status === 'PAUSED' ? "Reactivar Agencia" : "Pausar Agencia (Ocultar Tours)"}
+                                                        className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${agency.status === 'PAUSED' ? 'bg-green-50 text-green-600 hover:bg-green-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                                                    >
+                                                        {agency.status === 'PAUSED' ? '▶️' : '⏸️'}
+                                                    </button>
+                                                </form>
+
                                                 <form action={toggleVerification.bind(null, agency.id, agency.isVerified)}>
                                                     <button
                                                         title={agency.isVerified ? "Revocar verificación" : "Aprobar agencia"}
-                                                        className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${agency.isVerified ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}
+                                                        className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${agency.isVerified ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
                                                     >
                                                         {agency.isVerified ? '✕' : '✓'}
                                                     </button>
