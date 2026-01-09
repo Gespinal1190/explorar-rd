@@ -12,7 +12,8 @@
         "myTrips": "Mis Viajes",
         "rolePartner": "Partner",
         "roleStaff": "Staff",
-        "roleTraveler": "Viajero"
+        "roleTraveler": "Viajero",
+        "logout": "Cerrar Sesión"
     },
     "Hero": {
         "verifiedPlatform": "Plataforma Verificada",

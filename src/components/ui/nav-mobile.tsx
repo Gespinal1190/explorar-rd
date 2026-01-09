@@ -20,6 +20,13 @@ export function NavMobile({ session }: NavMobileProps) {
         { name: t('agencies'), href: '/agencies' }
     ];
 
+    const getUserRoleLabel = () => {
+        if (!session?.user?.role) return t('roleTraveler');
+        if (session.user.role === 'AGENCY') return t('rolePartner');
+        if (session.user.role === 'ADMIN') return t('roleStaff');
+        return t('roleTraveler');
+    };
+
     return (
         <div className="md:hidden">
             {/* Hamburger Button */}
@@ -95,12 +102,12 @@ export function NavMobile({ session }: NavMobileProps) {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4 p-5 bg-white/40 backdrop-blur-md rounded-3xl border border-white/40 shadow-sm">
                                     <div className="w-12 h-12 bg-gradient-to-tr from-[#14B8A6] to-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md">
-                                        {session.user.name?.charAt(0)}
+                                        {session.user.name?.charAt(0) || 'U'}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="font-bold text-gray-900 truncate">{session.user.name}</p>
                                         <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black leading-none mt-1">
-                                            {session.user.role === 'AGENCY' ? t('rolePartner') : session.user.role === 'ADMIN' ? t('roleStaff') : t('roleTraveler')}
+                                            {getUserRoleLabel()}
                                         </p>
                                     </div>
                                 </div>
@@ -124,7 +131,7 @@ export function NavMobile({ session }: NavMobileProps) {
                                 <Link
                                     href="/login"
                                     onClick={() => setIsOpen(false)}
-                                    className="flex items-center justify-center gap-2 w-full py-4.5 bg-transparent text-[#14B8A6] font-bold rounded-2xl border-2 border-[#14B8A6] active:scale-[0.98] transition-all"
+                                    className="flex items-center justify-center gap-2 w-full py-4 bg-transparent text-[#14B8A6] font-bold rounded-2xl border-2 border-[#14B8A6] active:scale-[0.98] transition-all"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -146,3 +153,4 @@ export function NavMobile({ session }: NavMobileProps) {
         </div>
     );
 }
+

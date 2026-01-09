@@ -66,9 +66,11 @@ export default async function Navbar() {
                             {/* User Profile */}
                             <div className="flex items-center gap-3">
                                 <div className="hidden lg:block text-right leading-tight">
-                                    <p className="text-sm font-bold text-gray-900">{session.user.name?.split(' ')[0]}</p>
+                                    <p className="text-sm font-bold text-gray-900">{session.user.name?.split(' ')[0] || 'User'}</p>
                                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-                                        {session.user.role === 'AGENCY' ? t('rolePartner') : session.user.role === 'ADMIN' ? t('roleStaff') : t('roleTraveler')}
+                                        {session.user.role === 'AGENCY' ? t('rolePartner') :
+                                            session.user.role === 'ADMIN' ? t('roleStaff') :
+                                                t('roleTraveler')}
                                     </p>
                                 </div>
                                 <Link
@@ -82,7 +84,7 @@ export default async function Navbar() {
                                     {session.user.image ? (
                                         <img src={session.user.image} alt={session.user.name || ""} className="w-full h-full object-cover" />
                                     ) : (
-                                        session.user.name?.charAt(0)
+                                        session.user.name?.charAt(0) || 'U'
                                     )}
                                 </Link>
                             </div>
