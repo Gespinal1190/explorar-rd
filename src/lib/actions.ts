@@ -138,6 +138,11 @@ export async function createTour(prevState: string | undefined, formData: FormDa
         const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
         if (!agency) return "Perfil de agencia no encontrado";
 
+        // CHECK IF PAUSED
+        if (agency.status === 'PAUSED') {
+            return "Tu agencia ha sido pausada temporalmente por la administración. No puedes crear nuevos anuncios en este momento.";
+        }
+
         // MAPPING 'address' input to 'requirements' DB column because migration failed (EPERM)
         await prisma.tour.create({
             data: {

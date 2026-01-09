@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link";
 import PromoteModal from "@/components/dashboard/promote-modal";
-import { toggleTourStatus } from "@/lib/actions";
+import { toggleTourStatus, deleteTour } from "@/lib/actions";
 
 interface Tour {
     id: string;
@@ -92,6 +92,20 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                             <Link href={`/dashboard/agency/tours/${tour.id}/edit`} className="text-blue-600 hover:text-blue-800 text-xs font-bold">
                                                 Editar
                                             </Link>
+
+                                            <div className="h-4 w-px bg-gray-200"></div>
+
+                                            <button
+                                                onClick={async () => {
+                                                    if (confirm('¿Estás seguro de que quieres eliminar este tour permanentemente?')) {
+                                                        await deleteTour(tour.id);
+                                                    }
+                                                }}
+                                                className="text-red-500 hover:text-red-700 text-xs font-bold"
+                                                title="Eliminar Anuncio"
+                                            >
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -151,6 +165,17 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                 >
                                     ✏️ Editar
                                 </Link>
+                                <button
+                                    onClick={async () => {
+                                        if (confirm('¿Eliminar permanentemente?')) {
+                                            await deleteTour(tour.id);
+                                        }
+                                    }}
+                                    className="py-2 px-3 rounded-lg text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors"
+                                    title="Eliminar"
+                                >
+                                    🗑️
+                                </button>
                             </div>
                         </div>
                     );
