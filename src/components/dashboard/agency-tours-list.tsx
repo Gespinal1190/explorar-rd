@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from "next/link";
+import { Link } from "@/navigation";
 import PromoteModal from "@/components/dashboard/promote-modal";
 import { toggleTourStatus, deleteTour } from "@/lib/actions";
 import { useTranslations } from "next-intl";
@@ -41,7 +41,10 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.title')}</th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.location')}</th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.price')}</th>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.status')}</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+                                {t('table.status')}
+                                <span className="text-[10px] text-gray-300 font-normal cursor-help" title={t('status.toolTip') || "Pausar no elimina tu tour"}>ℹ️</span>
+                            </th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">{t('table.actions')}</th>
                         </tr>
                     </thead>
@@ -103,9 +106,10 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                                         await deleteTour(tour.id);
                                                     }
                                                 }}
-                                                className="text-red-500 hover:text-red-700 text-xs font-bold"
+                                                className="text-gray-400 hover:text-red-600 text-[10px] font-bold opacity-60 hover:opacity-100 transition-all flex items-center gap-1 group"
                                                 title={t('actions.delete')}
                                             >
+                                                <span className="group-hover:scale-110 transition-transform">🗑️</span>
                                                 {t('actions.delete')}
                                             </button>
                                         </div>

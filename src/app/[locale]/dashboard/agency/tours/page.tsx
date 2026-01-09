@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import AgencyToursList from "@/components/dashboard/agency-tours-list";
 import { getPlans } from "@/lib/plans";
 import { getTranslations } from "next-intl/server";

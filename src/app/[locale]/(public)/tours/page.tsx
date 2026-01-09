@@ -58,12 +58,32 @@ export default async function ToursPage(props: {
         }
     }
 
+    // Duration Filter
+    const durationParam = typeof searchParams?.duration === 'string' ? searchParams.duration : undefined;
+    let durationFilter = {};
+    if (durationParam) {
+        // NOTE: This assumes we have a 'duration' or similar field that we can map. 
+        // Since schema might store duration as string (e.g. "4 hours"), we do a loose contains match or basic logic.
+        // For accurate filtering, we would need a durationInMinutes integer field. 
+        // We will default to a broad string match for now as a "best effort" if schema isn't fully robust.
+        if (durationParam === 'short') { // 1-4 hours
+            durationFilter = { OR: [{ duration: { contains: 'hora' } }, { duration: { contains: 'hour' } }] };
+        } else if (durationParam === 'half') { // Half day
+            durationFilter = { duration: { contains: 'medio' } };
+        } else if (durationParam === 'full') { // Full day
+            durationFilter = { duration: { contains: 'completo' } };
+        } else if (durationParam === 'multi') { // 2+ days
+            durationFilter = { duration: { contains: 'días' } };
+        }
+    }
+
     // Combine filters
     const whereClause = {
         featuredExpiresAt: { gt: now },
         status: 'PUBLISHED',
         ...searchFilter,
-        ...priceFilter
+        ...priceFilter,
+        ...durationFilter
     };
 
     const planPriority: Record<string, number> = {
@@ -101,7 +121,8 @@ export default async function ToursPage(props: {
                 ],
                 status: 'PUBLISHED', // Only show published tours
                 ...searchFilter,
-                ...priceFilter
+                ...priceFilter,
+                ...durationFilter
             } as any,
             include: { images: true, agency: true },
             orderBy: [
@@ -161,9 +182,9 @@ export default async function ToursPage(props: {
                             <div className="space-y-2">
                                 {[
                                     { label: t('all'), value: '' },
-                                    { label: t('lessThan', { amount: '$50 USD' }), value: '0-50' },
-                                    { label: t('range', { min: '$50 USD', max: '$150 USD' }), value: '50-150' },
-                                    { label: t('moreThan', { amount: '$150 USD' }), value: '150-10000' },
+                                    { label: t('lessThan', { amount: '50 US$' }), value: '0-50' },
+                                    { label: t('range', { min: '50 US$', max: '150 US$' }), value: '50-150' },
+                                    { label: t('moreThan', { amount: '150 US$' }), value: '150-10000' },
                                 ].map((option, idx) => (
                                     <Link
                                         key={idx}
@@ -185,17 +206,28 @@ export default async function ToursPage(props: {
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-4">{t('duration')}</h3>
                             <div className="space-y-3">
                                 {[
-                                    `1-4 ${t('hours')}`,
-                                    t('halfDay'),
-                                    t('fullDay'),
-                                    `2+ ${t('days')}`
-                                ].map((d, i) => (
-                                    <label key={i} className="flex items-center gap-2 text-sm text-gray-600 cursor-not-allowed opacity-60">
-                                        <input type="checkbox" disabled className="rounded border-gray-300" />
-                                        {d}
-                                    </label>
-                                ))}
-                                <p className="text-[10px] text-gray-400 italic">{t('comingSoon')}</p>
+                                    { label: `1-4 ${t('hours')}`, value: 'short' },
+                                    { label: t('halfDay'), value: 'half' },
+                                    { label: t('fullDay'), value: 'full' },
+                                    { label: `2+ ${t('days')}`, value: 'multi' }
+                                ].map((d, i) => {
+                                    const isSelected = searchParams?.duration === d.value;
+                                    return (
+                                        <Link
+                                            key={i}
+                                            href={isSelected
+                                                ? `/tours?search=${search || ''}${priceParam ? `&price=${priceParam}` : ''}`
+                                                : `/tours?search=${search || ''}&duration=${d.value}${priceParam ? `&price=${priceParam}` : ''}`
+                                            }
+                                            className={`flex items-center gap-2 text-sm cursor-pointer ${isSelected ? 'text-primary font-bold' : 'text-gray-600 hover:text-gray-900'}`}
+                                        >
+                                            <div className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? 'border-primary bg-primary text-white' : 'border-gray-300'}`}>
+                                                {isSelected && <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                            </div>
+                                            {d.label}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -232,6 +264,7 @@ export default async function ToursPage(props: {
                                             isFeatured={true}
                                             featuredPlan={tour.featuredPlan}
                                             isFavorite={userFavorites.includes(tour.id)}
+                                            duration={tour.duration || undefined}
                                         />
                                     ))}
                                 </div>
@@ -270,6 +303,7 @@ export default async function ToursPage(props: {
                                             isAgencyPro={tour.agency?.tier === 'PRO'}
                                             currency={tour.currency || 'DOP'}
                                             isFavorite={userFavorites.includes(tour.id)}
+                                            duration={tour.duration || undefined}
                                         />
                                     ))}
                                 </div>

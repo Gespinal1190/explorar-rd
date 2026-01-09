@@ -3,7 +3,7 @@
 import { Link } from "@/navigation";
 import { useState } from "react";
 import { toggleFavorite } from "@/lib/actions";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface TourProps {
     id: string;
@@ -18,12 +18,14 @@ interface TourProps {
     featuredPlan?: string;
     rating?: number;
     isFavorite?: boolean; // Initial state
+    duration?: string;
 }
 
-export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false }: TourProps) {
+export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false, duration, rating }: TourProps) {
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
     const [isLoading, setIsLoading] = useState(false);
     const t = useTranslations("TourCard");
+    const locale = useLocale();
 
     const handleToggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating to tour details
@@ -116,27 +118,34 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                 <div className="grid grid-cols-2 gap-2 mb-4">
                     <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
                         <span className="text-gray-400">⏱️</span>
-                        <span className="text-xs font-bold text-gray-700">{t('durationPlaceholder')}</span> {/* Placeholder duration until prop is passed */}
+                        <span className="text-xs font-bold text-gray-700">{duration || t('durationPlaceholder')}</span>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
-                        <span className="text-gray-400">👥</span>
-                        <span className="text-xs font-bold text-gray-700">{t('smallGroups')}</span>
-                    </div>
+                    {rating ? (
+                        <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
+                            <span className="text-amber-400">⭐</span>
+                            <span className="text-xs font-bold text-gray-700">{rating} Rating</span>
+                        </div>
+                    ) : (
+                        <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
+                            <span className="text-gray-400">👥</span>
+                            <span className="text-xs font-bold text-gray-700">{t('smallGroups')}</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                     <div>
                         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">{t('totalPrice')}</p>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-xs font-bold text-gray-400">{currency === 'USD' ? 'US$' : 'RD$'}</span>
-                            <span className="text-xl font-black text-gray-900">{price.toLocaleString()}</span>
+                            <span className="text-xs font-bold text-gray-400">{currency === 'USD' ? 'US$' : currency === 'EUR' ? '€' : 'RD$'}</span>
+                            <span className="text-xl font-black text-gray-900">{price.toLocaleString(locale)}</span>
                         </div>
                     </div>
 
                     <Link href={`/tours/${id}`} className="group/btn relative px-6 py-3 bg-gray-900 overflow-hidden rounded-xl text-white text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                         <span className="relative flex items-center gap-2">
-                            {t('bookBtn')}
+                            {t('viewTour')}
                             <svg className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                         </span>
                     </Link>

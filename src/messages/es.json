@@ -72,6 +72,7 @@
         "localAgency": "Agencia Local",
         "totalPrice": "Precio Total",
         "bookBtn": "Reservar",
+        "viewTour": "Ver Tour",
         "durationPlaceholder": "4 - 6 Horas",
         "smallGroups": "Grupos Pequeños"
     },
@@ -203,7 +204,10 @@
             "featuredDest": "Destino Destacado",
             "available": "Disponibles",
             "avgRating": "Rating Promedio",
-            "seeToursIn": "Ver todos los tours en {name}"
+            "seeToursIn": "Ver todos los tours en {name}",
+            "mapTitle": "Explora tours por ubicación",
+            "mapLocationDesc": "El mapa muestra la ubicación de los tours y destinos más populares.",
+            "viewToursZone": "Ver tours en esta zona"
         }
     },
     "Tours": {

@@ -53,26 +53,29 @@ export function SearchOverlay() {
     return (
         <div className="relative z-[60]">
             {/* Trigger Button - Enhanced Design */}
-            <div
-                className="bg-white p-2 pl-6 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center w-full max-w-xl mx-auto cursor-pointer transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] group border border-gray-100/50"
-                onClick={() => setIsOpen(true)}
-            >
-                <div className="flex-1 flex items-center">
-                    <span className="mr-3 text-lg">🔍</span>
-                    <input
-                        type="text"
-                        placeholder={t('placeholderMain')}
-                        className="w-full text-base md:text-lg outline-none text-gray-700 font-medium placeholder:text-gray-400 bg-transparent cursor-pointer"
-                        readOnly
-                        value={search}
-                    />
+            {/* Trigger Button - Enhanced Design */}
+            <div className="relative w-full max-w-xl mx-auto shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-shadow group">
+                <div
+                    className="bg-white p-2 pl-6 rounded-full flex items-center w-full cursor-pointer border border-gray-100/50"
+                    onClick={() => setIsOpen(true)}
+                >
+                    <div className="flex-1 flex items-center">
+                        <span className="mr-3 text-lg">🔍</span>
+                        <input
+                            type="text"
+                            placeholder={t('placeholderMain')}
+                            className="w-full text-base md:text-lg outline-none text-gray-700 font-medium placeholder:text-gray-400 bg-transparent cursor-pointer pointer-events-none"
+                            readOnly
+                            value={search}
+                        />
+                    </div>
                 </div>
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
                         router.push('/tours');
                     }}
-                    className="bg-gray-900 text-white px-6 md:px-8 py-3 rounded-full font-bold text-sm hover:bg-black transition-all shadow-md flex items-center gap-2"
+                    className="absolute right-2 top-2 bottom-2 bg-gray-900 text-white px-6 md:px-8 rounded-full font-bold text-sm hover:bg-black transition-all shadow-md flex items-center gap-2 z-10"
                 >
                     <span className="hidden sm:inline">{t('searchBtn')}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
