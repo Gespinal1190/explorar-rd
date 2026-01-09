@@ -9,15 +9,18 @@ export default async function UserBookingsPage(props: { params: Promise<{ locale
     const session = await auth();
     const t = await getTranslations("UserBookings");
 
-    if (!session?.user?.id) {
+    const userId = session?.user?.id;
+
+    if (!userId) {
         redirect({ href: "/login", locale });
+        return null;
     }
 
     let bookings = [];
 
     try {
         bookings = await prisma.booking.findMany({
-            where: { userId: session.user.id },
+            where: { userId: userId },
             include: {
                 tour: {
                     include: {

@@ -7,12 +7,13 @@ import { getTranslations } from "next-intl/server";
 
 export default async function AgencyToursPage() {
     const session = await auth();
-    if (!session?.user?.id) return null;
+    const userId = session?.user?.id;
+    if (!userId) return null;
     const t = await getTranslations("AgencyTours");
 
     const [agency, plans] = await Promise.all([
         prisma.agencyProfile.findUnique({
-            where: { userId: session.user.id },
+            where: { userId: userId },
             include: { tours: true }
         }),
         getPlans('AD')

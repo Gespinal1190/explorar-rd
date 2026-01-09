@@ -6,11 +6,15 @@ import { getTranslations } from "next-intl/server";
 
 export default async function UserProfilePage() {
     const session = await auth();
-    if (!session?.user?.id) redirect("/login");
+    const userId = session?.user?.id;
+    if (!userId) {
+        redirect("/login");
+        return null;
+    }
     const t = await getTranslations("UserDashboard");
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id }
+        where: { id: userId }
     });
 
     if (!user) return <div>{t('userNotFound')}</div>;

@@ -6,14 +6,16 @@ import { getTranslations } from "next-intl/server";
 
 export default async function AgencyDashboard() {
     const session = await auth();
-    if (!session || session.user.role !== "AGENCY") {
+    const user = session?.user;
+    if (!user || user.role !== "AGENCY") {
         redirect("/dashboard");
+        return null;
     }
 
     const t = await getTranslations("AgencyDashboard");
 
     const agency = await prisma.agencyProfile.findUnique({
-        where: { userId: session.user.id },
+        where: { userId: user.id },
         include: {
             tours: {
                 include: {
