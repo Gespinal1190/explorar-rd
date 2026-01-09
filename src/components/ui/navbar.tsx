@@ -44,19 +44,19 @@ export default async function Navbar() {
                             {/* Role-Specific Links */}
                             {session.user.role === 'AGENCY' && (
                                 <Link href="/dashboard/agency" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
-                                    <span>📊</span> Panel de Agencia
+                                    <span>📊</span> {t('agencyDashboard')}
                                 </Link>
                             )}
 
                             {session.user.role === 'ADMIN' && (
                                 <Link href="/dashboard/admin" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
-                                    <span>🛡️</span> Administración
+                                    <span>🛡️</span> {t('adminPanel')}
                                 </Link>
                             )}
 
                             {session.user.role === 'USER' && (
                                 <Link href="/dashboard/user/bookings" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
-                                    <span>✈️</span> Mis Viajes
+                                    <span>✈️</span> {t('myTrips')}
                                 </Link>
                             )}
 
@@ -67,7 +67,9 @@ export default async function Navbar() {
                             <div className="flex items-center gap-3">
                                 <div className="hidden lg:block text-right leading-tight">
                                     <p className="text-sm font-bold text-gray-900">{session.user.name?.split(' ')[0]}</p>
-                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{session.user.role === 'AGENCY' ? 'Partner' : session.user.role === 'ADMIN' ? 'Staff' : 'Viajero'}</p>
+                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                                        {session.user.role === 'AGENCY' ? t('rolePartner') : session.user.role === 'ADMIN' ? t('roleStaff') : t('roleTraveler')}
+                                    </p>
                                 </div>
                                 <Link
                                     href={

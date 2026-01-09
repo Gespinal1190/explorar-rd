@@ -6,7 +6,13 @@
         "agencies": "Agences",
         "login": "Connexion",
         "dashboard": "Tableau de bord",
-        "iAmAgency": "Je suis une Agence"
+        "iAmAgency": "Je suis une Agence",
+        "agencyDashboard": "Tableau de bord de l'agence",
+        "adminPanel": "Administration",
+        "myTrips": "Mes Voyages",
+        "rolePartner": "Partenaire",
+        "roleStaff": "Personnel",
+        "roleTraveler": "Voyageur"
     },
     "Hero": {
         "verifiedPlatform": "Plateforme Vérifiée",

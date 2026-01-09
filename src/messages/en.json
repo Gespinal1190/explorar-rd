@@ -6,7 +6,13 @@
         "agencies": "Agencies",
         "login": "Login",
         "dashboard": "Dashboard",
-        "iAmAgency": "I'm an Agency"
+        "iAmAgency": "I'm an Agency",
+        "agencyDashboard": "Agency Dashboard",
+        "adminPanel": "Administration",
+        "myTrips": "My Trips",
+        "rolePartner": "Partner",
+        "roleStaff": "Staff",
+        "roleTraveler": "Traveler"
     },
     "Hero": {
         "verifiedPlatform": "Verified Platform",
