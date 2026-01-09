@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Forced rebuild for deployment check - Trigger Vercel Deploy 2026
   images: {
     remotePatterns: [
       {
@@ -11,10 +13,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Added for Google Auth profile pics
+      },
+      {
+        protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
       },
     ],
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

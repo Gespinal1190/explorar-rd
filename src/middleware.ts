@@ -1,40 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { decrypt } from '@/lib/session'
-import { cookies } from 'next/headers'
+import createMiddleware from 'next-intl/middleware';
 
-// 1. Specify protected and public routes
-const protectedRoutes = ['/dashboard']
-const publicRoutes = ['/login', '/register', '/']
+export default createMiddleware({
+    // A list of all locales that are supported
+    locales: ['es', 'en', 'fr'],
 
-export default async function middleware(req: NextRequest) {
-    // 2. Check if the current route is protected or public
-    const path = req.nextUrl.pathname
-    const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))
-    const isPublicRoute = publicRoutes.includes(path)
+    // Used when no locale matches
+    defaultLocale: 'es'
+});
 
-    // 3. Decrypt the session from the cookie
-    const cookie = (await cookies()).get('descubrerd_session')?.value
-    const session = await decrypt(cookie)
-
-    // 4. Redirect to /login if the user is not authenticated
-    if (isProtectedRoute && !session?.userId) {
-        return NextResponse.redirect(new URL('/login', req.nextUrl))
-    }
-
-    // 5. Redirect to /dashboard if the user is authenticated
-    if (
-        isPublicRoute &&
-        session?.userId &&
-        !req.nextUrl.pathname.startsWith('/dashboard') &&
-        req.nextUrl.pathname !== '/' // Allow home page for logged in users
-    ) {
-        return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
-    }
-
-    return NextResponse.next()
-}
-
-// Routes Middleware should not run on
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-}
+    // Match all pathnames except for
+    // - … if they start with `/api`, `/_next` or `/_vercel`
+    // - … the ones containing a dot (e.g. `favicon.ico`)
+    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+};

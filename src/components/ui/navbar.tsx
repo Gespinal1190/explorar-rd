@@ -1,11 +1,15 @@
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { auth } from "@/lib/auth";
 import { SignOut } from "@/components/ui/sign-out";
 import { NavMobile } from "./nav-mobile";
 import { Logo } from "./logo";
+import { getTranslations } from "next-intl/server";
+
+import LanguageSwitcher from "./language-switcher";
 
 export default async function Navbar() {
     const session = await auth();
+    const t = await getTranslations("Navbar");
 
     return (
         <nav className="w-full bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
@@ -18,21 +22,23 @@ export default async function Navbar() {
                 {/* Center Links (Desktop) */}
                 <div className="hidden lg:flex items-center space-x-10">
                     <Link href="/" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
-                        Inicio
+                        {t('home')}
                     </Link>
                     <Link href="/tours" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
-                        Tours
+                        {t('tours')}
                     </Link>
                     <Link href="/destinos" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
-                        Destinos
+                        {t('destinations')}
                     </Link>
                     <Link href="/agencies" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
-                        Agencias
+                        {t('agencies')}
                     </Link>
                 </div>
 
                 {/* Right Actions */}
                 <div className="flex items-center space-x-2 md:space-x-4">
+                    <LanguageSwitcher />
+
                     {session?.user ? (
                         <div className="flex items-center space-x-3 md:space-x-6">
                             {/* Role-Specific Links */}
@@ -82,11 +88,11 @@ export default async function Navbar() {
                     ) : (
                         <div className="hidden md:flex items-center space-x-3">
                             <Link href="/login" className="px-5 py-2.5 rounded-xl font-bold text-gray-600 hover:text-primary hover:bg-primary/5 transition-colors text-sm">
-                                Iniciar Sesión
+                                {t('login')}
                             </Link>
                             <Link href="/agencies/register" className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2">
                                 <span>💼</span>
-                                Soy Agencia
+                                {t('iAmAgency')}
                             </Link>
                         </div>
                     )}

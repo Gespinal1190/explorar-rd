@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { useState } from "react";
 import { toggleFavorite } from "@/lib/actions";
+import { useTranslations } from "next-intl";
 
 interface TourProps {
     id: string;
@@ -22,6 +23,7 @@ interface TourProps {
 export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false }: TourProps) {
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
     const [isLoading, setIsLoading] = useState(false);
+    const t = useTranslations("TourCard");
 
     const handleToggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating to tour details
@@ -60,7 +62,7 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full text-gray-400 bg-gray-100 text-sm font-medium">
-                        Sin imagen
+                        {t('noImage')}
                     </div>
                 )}
 
@@ -96,7 +98,7 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                             <div className="flex flex-col">
                                 <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
                                     {(isAgencyPro || isFeatured) && <svg className="w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
-                                    {isAgencyPro ? 'Partner Verificado' : 'Agencia Local'}
+                                    {isAgencyPro ? t('verifiedPartner') : t('localAgency')}
                                 </span>
                                 <span className="text-xs font-bold text-gray-900 truncate max-w-[140px]">
                                     {agencyName}
@@ -114,17 +116,17 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                 <div className="grid grid-cols-2 gap-2 mb-4">
                     <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
                         <span className="text-gray-400">⏱️</span>
-                        <span className="text-xs font-bold text-gray-700">4 - 6 Horas</span> {/* Placeholder duration until prop is passed */}
+                        <span className="text-xs font-bold text-gray-700">{t('durationPlaceholder')}</span> {/* Placeholder duration until prop is passed */}
                     </div>
                     <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
                         <span className="text-gray-400">👥</span>
-                        <span className="text-xs font-bold text-gray-700">Grupos Pequeños</span>
+                        <span className="text-xs font-bold text-gray-700">{t('smallGroups')}</span>
                     </div>
                 </div>
 
                 <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                     <div>
-                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Precio Total</p>
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">{t('totalPrice')}</p>
                         <div className="flex items-baseline gap-1">
                             <span className="text-xs font-bold text-gray-400">{currency === 'USD' ? 'US$' : 'RD$'}</span>
                             <span className="text-xl font-black text-gray-900">{price.toLocaleString()}</span>
@@ -134,7 +136,7 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                     <Link href={`/tours/${id}`} className="group/btn relative px-6 py-3 bg-gray-900 overflow-hidden rounded-xl text-white text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                         <span className="relative flex items-center gap-2">
-                            Reservar
+                            {t('bookBtn')}
                             <svg className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                         </span>
                     </Link>

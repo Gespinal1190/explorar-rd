@@ -1,0 +1,570 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { registerAction } from "@/lib/auth-actions";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, storage } from "@/lib/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { Logo } from "@/components/ui/logo";
+import { useTranslations } from "next-intl";
+
+export default function AgencyRegisterPage() {
+    const router = useRouter();
+    const t = useTranslations("AgencyRegister");
+
+    // Force re-render: 1
+    const [step, setStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    // Independent Upload State for each field
+    const [uploadStates, setUploadStates] = useState<{
+        [key: string]: { uploading: boolean; progress: number; error: string; }
+    }>({
+        licenseUrl: { uploading: false, progress: 0, error: "" },
+        premisesUrl: { uploading: false, progress: 0, error: "" }
+    });
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+        address: "",
+        description: "",
+        website: "",
+        rnc: "",
+        logo: "",
+        licenseUrl: "",
+        premisesUrl: "",
+        acceptTerms: false,
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value });
+    };
+
+    const updateUploadState = (field: string, changes: Partial<{ uploading: boolean; progress: number; error: string }>) => {
+        setUploadStates(prev => ({
+            ...prev,
+            [field]: { ...prev[field], ...changes }
+        }));
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        console.log(`[Upload] Starting upload for ${field}:`, file.name);
+
+        // Reset state for this field with 10% initial progress to show activity
+        updateUploadState(field, { uploading: true, progress: 10, error: "" });
+        console.log(`[Upload] State set to uploading...`);
+
+        // Create a unique filename
+        const filename = `agency-uploads/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const storageRef = ref(storage, filename);
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                console.log(`[Upload] Progress Event:`, snapshot.bytesTransferred, '/', snapshot.totalBytes);
+                if (snapshot.totalBytes > 0) {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`[Upload] Valid Progress: ${progress}%`);
+                    updateUploadState(field, { progress });
+                }
+            },
+            (error: any) => {
+                console.error("[Upload] Error:", error);
+
+                let errorMessage = `❌ Error: ${error.message}`;
+                if (error.code === 'storage/unauthorized') {
+                    errorMessage = "⚠️ Permiso denegado: No tienes permisos para subir archivos.";
+                } else if (error.code === 'storage/canceled') {
+                    errorMessage = "⚠️ Subida cancelada.";
+                }
+
+                updateUploadState(field, { uploading: false, progress: 0, error: errorMessage });
+            },
+            async () => {
+                console.log(`[Upload] Complete! Getting URL...`);
+                // Ensure 100% is displayed immediately
+                updateUploadState(field, { progress: 100 });
+
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    console.log(`[Upload] URL Retrieved:`, downloadURL);
+
+                    // Delay success state to let user see the 100% bar
+                    setTimeout(() => {
+                        console.log(`[Upload] Setting final success state.`);
+                        setFormData(prev => ({ ...prev, [field]: downloadURL }));
+                        updateUploadState(field, { uploading: false });
+                    }, 1000);
+                } catch (err) {
+                    console.error("[Upload] Error getting download URL", err);
+                    updateUploadState(field, { uploading: false, error: "Error al obtener el enlace del archivo." });
+                }
+            }
+        );
+    };
+
+    const handleNext = () => {
+        if (step < 3) setStep(step + 1);
+    };
+
+    const handleBack = () => {
+        if (step > 1) setStep(step - 1);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (formData.password !== formData.confirmPassword) {
+            setError(t('errorPasswords'));
+            return;
+        }
+
+        const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'];
+        const emailDomain = formData.email.split('@')[1]?.toLowerCase();
+
+        if (!emailDomain || !allowedDomains.includes(emailDomain)) {
+            setError(t('errorEmailDomain'));
+            return;
+        }
+
+        if (!formData.acceptTerms) {
+            setError(t('errorTerms'));
+            return;
+        }
+
+        setIsLoading(true);
+        setError("");
+
+        try {
+            // 1. Create User in Firebase
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = userCredential.user;
+
+            // 2. Register Agency in Database
+            const res = await registerAction(user.uid, formData.email, formData.name, "AGENCY", formData);
+
+            if (res?.error) {
+                setError(res.error);
+                return;
+            }
+
+            router.push("/dashboard/agency");
+        } catch (err: any) {
+            console.error(err);
+            if (err.code === 'auth/email-already-in-use') {
+                setError(t('errorEmailUsed'));
+            } else {
+                setError(t('errorGeneric') + err.message);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Calculate gradients to generate unique visual for each step (cosmetic)
+    const getStepGradient = (currentStep: number) => {
+        // ... unused, keeping logic simple
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 flex">
+            {/* Left Side - Hero Image & Info */}
+            <div className="hidden lg:flex w-1/2 relative bg-gray-900 text-white overflow-hidden">
+                <Image
+                    src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1932&auto=format&fit=crop"
+                    alt="Agency Background"
+                    fill
+                    className="object-cover opacity-40"
+                    priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-blue-900/90 mix-blend-multiply" />
+
+                <div className="relative z-10 p-16 flex flex-col justify-between h-full">
+                    <div>
+                        <Link href="/" className="inline-block text-white">
+                            <Logo className="h-16 w-auto" />
+                        </Link>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h1 className="text-5xl font-black leading-tight">
+                            {t('heroTitle')}
+                        </h1>
+                        <p className="text-xl text-gray-200">
+                            {t('heroSubtitle')}
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-4 pt-8">
+                            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
+                                <span className="text-3xl mb-2 block">🌍</span>
+                                <h3 className="font-bold">{t('globalReach')}</h3>
+                                <p className="text-sm text-gray-300">{t('globalReachDesc')}</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
+                                <span className="text-3xl mb-2 block">⚡</span>
+                                <h3 className="font-bold">{t('simpleManagement')}</h3>
+                                <p className="text-sm text-gray-300">{t('simpleManagementDesc')}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-sm text-gray-400">
+                        © {new Date().getFullYear()} DescubreRD. {t('footerRights')}
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Side - Multi-step Form */}
+            <div className="w-full lg:w-1/2 flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-20 bg-white overflow-y-auto">
+                <div className="max-w-md w-full mx-auto space-y-8">
+                    <div className="lg:hidden text-center">
+                        <Link href="/" className="inline-block text-gray-900">
+                            <Logo className="h-16 w-auto mx-auto" />
+                        </Link>
+                    </div>
+
+                    <div>
+                        <h2 className="text-3xl font-black text-gray-900">
+                            {t('title')}
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-600">
+                            {t('subtitle')}
+                        </p>
+                    </div>
+
+                    {/* Steps Indicator */}
+                    <div className="flex items-center space-x-4 mb-8">
+                        <div className={`h-2 flex-1 rounded-full transition-all ${step >= 1 ? 'bg-primary' : 'bg-gray-200'}`} />
+                        <div className={`h-2 flex-1 rounded-full transition-all ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`} />
+                        <div className={`h-2 flex-1 rounded-full transition-all ${step >= 3 ? 'bg-primary' : 'bg-gray-200'}`} />
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl text-sm font-medium flex items-center gap-2">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                {error}
+                            </div>
+                        )}
+
+                        {step === 1 && (
+                            <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <h3 className="text-lg font-bold text-gray-900">{t('step1')}</h3>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('tradeName')}</label>
+                                    <input
+                                        name="name"
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder={t('tradeNamePlaceholder')}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('rnc')}</label>
+                                    <input
+                                        name="rnc"
+                                        type="text"
+                                        required
+                                        value={formData.rnc}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder={t('rncPlaceholder')}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('shortDesc')}</label>
+                                    <textarea
+                                        name="description"
+                                        rows={3}
+                                        required
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder={t('shortDescPlaceholder')}
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {step === 2 && (
+                            <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <h3 className="text-lg font-bold text-gray-900">{t('step2')}</h3>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">{t('phone')}</label>
+                                        <input
+                                            name="phone"
+                                            type="tel"
+                                            required
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium text-sm"
+                                            placeholder="+1 (809) 000-0000"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">{t('website')}</label>
+                                        <input
+                                            name="website"
+                                            type="url"
+                                            value={formData.website}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium text-sm"
+                                            placeholder="https://tuagencia.com"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('address')}</label>
+                                    <input
+                                        name="address"
+                                        type="text"
+                                        required
+                                        value={formData.address}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder={t('addressPlaceholder')}
+                                    />
+                                </div>
+
+                                <div className="p-4 bg-teal-50 rounded-xl border border-teal-100 space-y-4">
+                                    <h4 className="text-sm font-bold text-teal-800 flex items-center gap-2">
+                                        🛡️ {t('securityVerification')}
+                                    </h4>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1">{t('operatorLicense')}</label>
+                                        <div className="space-y-2">
+                                            <input
+                                                type="file"
+                                                accept="image/*,application/pdf"
+                                                id="license-upload"
+                                                disabled={uploadStates.licenseUrl?.uploading}
+                                                onChange={(e) => handleFileUpload(e, 'licenseUrl')}
+                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
+                                            />
+
+                                            {/* Progress Bar (License) */}
+                                            {uploadStates.licenseUrl?.uploading && (
+                                                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadStates.licenseUrl.progress}%` }}></div>
+                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadStates.licenseUrl.progress)}% {t('uploading')}</p>
+                                                </div>
+                                            )}
+
+                                            {/* Error Message (License) */}
+                                            {uploadStates.licenseUrl?.error && (
+                                                <p className="text-xs text-red-500 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
+                                                    {uploadStates.licenseUrl.error}
+                                                </p>
+                                            )}
+
+                                            {/* Success/Preview License */}
+                                            {!uploadStates.licenseUrl?.uploading && !uploadStates.licenseUrl?.error && formData.licenseUrl && (
+                                                <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg">📄</span>
+                                                        <span className="text-xs text-green-700 font-bold truncate max-w-[200px]">{t('fileUploaded')}</span>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const input = document.getElementById('license-upload') as HTMLInputElement;
+                                                            if (input) input.value = '';
+
+                                                            // Valid Reset: Clear Form Data AND Reset Upload State
+                                                            setFormData(prev => ({ ...prev, licenseUrl: "" }));
+                                                            updateUploadState('licenseUrl', { uploading: false, progress: 0, error: "" });
+                                                        }}
+                                                        className="text-[10px] text-gray-500 hover:text-gray-900 underline"
+                                                    >
+                                                        {t('change')}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1">{t('premisesPhoto')}</label>
+                                        <div className="space-y-2">
+                                            <input
+                                                type="file"
+                                                accept="image/*,application/pdf"
+                                                id="premises-upload"
+                                                disabled={uploadStates.premisesUrl?.uploading}
+                                                onChange={(e) => handleFileUpload(e, 'premisesUrl')}
+                                                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 disabled:opacity-50"
+                                            />
+
+                                            {/* Progress Bar (Premises) */}
+                                            {uploadStates.premisesUrl?.uploading && (
+                                                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                                    <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${uploadStates.premisesUrl.progress}%` }}></div>
+                                                    <p className="text-[10px] text-gray-500 mt-1 text-right">{Math.round(uploadStates.premisesUrl.progress)}% {t('uploading')}</p>
+                                                </div>
+                                            )}
+
+                                            {/* Error Message */}
+                                            {uploadStates.premisesUrl?.error && (
+                                                <p className="text-xs text-red-500 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
+                                                    {uploadStates.premisesUrl.error}
+                                                </p>
+                                            )}
+
+                                            {/* Success/Preview Premises */}
+                                            {!uploadStates.premisesUrl?.uploading && !uploadStates.premisesUrl?.error && formData.premisesUrl && (
+                                                <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg border border-green-100">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-lg">🖼️</span>
+                                                        <span className="text-xs text-green-700 font-bold truncate max-w-[200px]">{t('imageUploaded')}</span>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const input = document.getElementById('premises-upload') as HTMLInputElement;
+                                                            if (input) input.value = '';
+                                                            setFormData(prev => ({ ...prev, premisesUrl: "" }));
+                                                            updateUploadState('premisesUrl', { uploading: false, progress: 0, error: "" });
+                                                        }}
+                                                        className="text-[10px] text-gray-500 hover:text-gray-900 underline"
+                                                    >
+                                                        {t('change')}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {step === 3 && (
+                            <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <h3 className="text-lg font-bold text-gray-900">{t('step3')}</h3>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('corporateEmail')}</label>
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder="contacto@tuagencia.com"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('password')}</label>
+                                    <input
+                                        name="password"
+                                        type="password"
+                                        required
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('confirmPassword')}</label>
+                                    <input
+                                        name="confirmPassword"
+                                        type="password"
+                                        required
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary border-2 transition-all font-medium"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+
+                                <div className="flex items-start">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="acceptTerms"
+                                            name="acceptTerms"
+                                            type="checkbox"
+                                            required
+                                            checked={formData.acceptTerms}
+                                            onChange={handleChange}
+                                            className="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="acceptTerms" className="font-medium text-gray-700">
+                                            {t('acceptTerms')} <Link href="/terms" className="text-primary hover:underline">{t('terms')}</Link> {t('and')} <Link href="/privacy" className="text-primary hover:underline">{t('privacy')}</Link>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex gap-4 pt-4">
+                            {step > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={handleBack}
+                                    className="flex-1 py-4 px-6 border-2 border-gray-200 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+                                >
+                                    {t('back')}
+                                </button>
+                            )}
+
+                            {step < 3 ? (
+                                <button
+                                    type="button"
+                                    onClick={handleNext}
+                                    className="flex-1 py-4 px-6 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors shadow-lg"
+                                >
+                                    {t('next')}
+                                </button>
+                            ) : (
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="flex-1 py-4 px-6 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg hover:opacity-90 transition-all shadow-emerald-500/30 disabled:opacity-50"
+                                >
+                                    {isLoading ? t('creatingAccount') : t('finishRegister')}
+                                </button>
+                            )}
+                        </div>
+                    </form>
+
+                    <div className="text-center">
+                        <p className="text-sm text-gray-500">
+                            {t('alreadyAccount')} <Link href="/login" className="text-primary font-bold hover:underline">{t('login')}</Link>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+

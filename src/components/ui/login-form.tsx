@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/navigation';
 
 export default function LoginForm() {
     const { signInWithGoogle, loginWithEmail } = useAuth();
+    const t = useTranslations('Login');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isPending, setIsPending] = useState(false);
 
@@ -14,7 +17,7 @@ export default function LoginForm() {
         try {
             await signInWithGoogle();
         } catch (error: any) {
-            setErrorMessage("Error al iniciar sesión con Google.");
+            setErrorMessage(t('googleError'));
         } finally {
             setIsPending(false);
         }
@@ -34,7 +37,7 @@ export default function LoginForm() {
         if (!emailDomain || !allowedDomains.includes(emailDomain)) {
             // Exceptions for existing test accounts
             if (email !== 'agencia@test.com' && email !== 'admin@test.com') {
-                setErrorMessage("Por seguridad, solo se permiten correos de proveedores principales (Gmail, Outlook, etc).");
+                setErrorMessage(t('securityRestriction'));
                 setIsPending(false);
                 return;
             }
@@ -44,9 +47,9 @@ export default function LoginForm() {
             await loginWithEmail(email, password);
         } catch (error: any) {
             if (error.code === 'auth/invalid-credential') {
-                setErrorMessage("Credenciales inválidas.");
+                setErrorMessage(t('invalidCredentials'));
             } else {
-                setErrorMessage("Error al iniciar sesión.");
+                setErrorMessage(t('loginError'));
             }
         } finally {
             setIsPending(false);
@@ -80,7 +83,7 @@ export default function LoginForm() {
                         fill="#EA4335"
                     />
                 </svg>
-                {isPending ? 'Conectando...' : 'Continuar con Google'}
+                {isPending ? t('connecting') : t('continueGoogle')}
             </button>
 
             <div className="relative">
@@ -88,21 +91,21 @@ export default function LoginForm() {
                     <span className="w-full border-t border-gray-100" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-gray-500 font-bold">O con correo</span>
+                    <span className="bg-white px-2 text-gray-500 font-bold">{t('orEmail')}</span>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-bold text-gray-700 mb-1" htmlFor="email">
-                        Correo Electrónico
+                        {t('email')}
                     </label>
                     <input
                         className="w-full px-4 py-3 bg-gray-50 border-transparent focus:bg-white border-2 rounded-xl focus:ring-0 focus:border-primary outline-none transition-all font-medium"
                         id="email"
                         type="email"
                         name="email"
-                        placeholder="ejemplo@gmail.com"
+                        placeholder={t('emailPlaceholder')}
                         required
                     />
                 </div>
@@ -110,11 +113,11 @@ export default function LoginForm() {
                 <div>
                     <div className="flex items-center justify-between mb-1">
                         <label className="block text-sm font-bold text-gray-700" htmlFor="password">
-                            Contraseña
+                            {t('password')}
                         </label>
-                        <a href="/forgot-password" className="text-xs font-bold text-primary hover:text-primary-dark transition-colors">
-                            ¿Olvidaste tu contraseña?
-                        </a>
+                        <Link href="/forgot-password" className="text-xs font-bold text-primary hover:text-primary-dark transition-colors">
+                            {t('forgotPassword')}
+                        </Link>
                     </div>
                     <input
                         className="w-full px-4 py-3 bg-gray-50 border-transparent focus:bg-white border-2 rounded-xl focus:ring-0 focus:border-primary outline-none transition-all font-medium"
@@ -147,10 +150,10 @@ export default function LoginForm() {
                     {isPending ? (
                         <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            Entrando...
+                            {t('loggingIn')}
                         </>
                     ) : (
-                        'Iniciar Sesión'
+                        t('login')
                     )}
                 </button>
             </form>

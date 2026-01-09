@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { SignOut } from "./sign-out";
 import { Logo } from "./logo";
+import { useTranslations } from "next-intl";
 
 interface NavMobileProps {
     session: any;
@@ -11,6 +12,13 @@ interface NavMobileProps {
 
 export function NavMobile({ session }: NavMobileProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const t = useTranslations("Navbar");
+
+    const navItems = [
+        { name: t('tours'), href: '/tours' },
+        { name: t('destinations'), href: '/destinos' },
+        { name: t('agencies'), href: '/agencies' }
+    ];
 
     return (
         <div className="md:hidden">
@@ -67,13 +75,9 @@ export function NavMobile({ session }: NavMobileProps) {
                             onClick={() => setIsOpen(false)}
                             className="text-2xl font-bold text-[#14B8A6] bg-[#14B8A6]/10 px-6 py-4 rounded-2xl"
                         >
-                            Inicio
+                            {t('home')}
                         </Link>
-                        {[
-                            { name: 'Tours', href: '/tours' },
-                            { name: 'Destinos', href: '/destinos' },
-                            { name: 'Agencias', href: '/agencies' }
-                        ].map((item) => (
+                        {navItems.map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
@@ -108,7 +112,7 @@ export function NavMobile({ session }: NavMobileProps) {
                                         onClick={() => setIsOpen(false)}
                                         className="w-full py-4 bg-gray-900 text-white rounded-2xl text-center font-bold shadow-lg"
                                     >
-                                        Panel de Control
+                                        {t('dashboard')}
                                     </Link>
                                     <SignOut />
                                 </div>
@@ -123,14 +127,14 @@ export function NavMobile({ session }: NavMobileProps) {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                     </svg>
-                                    Iniciar Sesión
+                                    {t('login')}
                                 </Link>
                                 <Link
                                     href="/agencies/register"
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full py-5 bg-[#14B8A6] text-white rounded-2xl text-center font-bold shadow-xl shadow-[#14B8A6]/30 active:scale-[0.98] transition-all"
                                 >
-                                    Soy Agencia
+                                    {t('iAmAgency')}
                                 </Link>
                             </>
                         )}

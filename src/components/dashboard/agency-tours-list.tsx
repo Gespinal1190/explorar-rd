@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from "next/link";
 import PromoteModal from "@/components/dashboard/promote-modal";
 import { toggleTourStatus, deleteTour } from "@/lib/actions";
+import { useTranslations } from "next-intl";
 
 interface Tour {
     id: string;
@@ -16,6 +17,7 @@ interface Tour {
 }
 
 export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans: any[] }) {
+    const t = useTranslations("AgencyTours");
     const [promoteId, setPromoteId] = useState<string | null>(null);
     const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
 
@@ -36,11 +38,11 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                 <table className="w-full text-left">
                     <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Título</th>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Ubicación</th>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Precio</th>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Estado</th>
-                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Acciones</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.title')}</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.location')}</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.price')}</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">{t('table.status')}</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">{t('table.actions')}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -56,7 +58,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                             <span className={`font-medium ${isPaused ? 'text-gray-400' : 'text-gray-900'}`}>{tour.title}</span>
                                             {isFeatured && (
                                                 <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 mt-1">
-                                                    🌟 Destacado
+                                                    {t('status.featured')}
                                                 </span>
                                             )}
                                         </div>
@@ -67,7 +69,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${isPaused ? 'bg-gray-100 text-gray-800 border-gray-200' : 'bg-green-100 text-green-800 border-green-200'}`}>
-                                            {isPaused ? '⏸️ Pausado' : '✅ Activo'}
+                                            {isPaused ? t('status.paused') : t('status.active')}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
@@ -77,7 +79,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                                 disabled={isLoading}
                                                 className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${isPaused ? 'text-green-600 border-green-200 bg-green-50 hover:bg-green-100' : 'text-gray-500 border-gray-200 hover:bg-gray-100'}`}
                                             >
-                                                {isLoading ? '...' : isPaused ? 'Activar' : 'Pausar'}
+                                                {isLoading ? '...' : isPaused ? t('actions.activate') : t('actions.pause')}
                                             </button>
 
                                             <div className="h-4 w-px bg-gray-200"></div>
@@ -85,26 +87,26 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                             <button
                                                 onClick={() => setPromoteId(tour.id)}
                                                 className="text-amber-600 hover:text-amber-700 text-xs font-bold"
-                                                title="Promocionar Tour"
+                                                title={t('actions.promote')}
                                             >
-                                                Promover
+                                                {t('actions.promote')}
                                             </button>
                                             <Link href={`/dashboard/agency/tours/${tour.id}/edit`} className="text-blue-600 hover:text-blue-800 text-xs font-bold">
-                                                Editar
+                                                {t('actions.edit')}
                                             </Link>
 
                                             <div className="h-4 w-px bg-gray-200"></div>
 
                                             <button
                                                 onClick={async () => {
-                                                    if (confirm('¿Estás seguro de que quieres eliminar este tour permanentemente?')) {
+                                                    if (confirm(t('actions.deleteConfirm'))) {
                                                         await deleteTour(tour.id);
                                                     }
                                                 }}
                                                 className="text-red-500 hover:text-red-700 text-xs font-bold"
-                                                title="Eliminar Anuncio"
+                                                title={t('actions.delete')}
                                             >
-                                                Eliminar
+                                                {t('actions.delete')}
                                             </button>
                                         </div>
                                     </td>
@@ -130,7 +132,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                     <p className="text-sm text-gray-500">{tour.location}</p>
                                 </div>
                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wide ${isPaused ? 'bg-gray-100 text-gray-600 border-gray-200' : 'bg-green-100 text-green-700 border-green-200'}`}>
-                                    {isPaused ? 'Paused' : 'Active'}
+                                    {isPaused ? t('status.pausedLabel') : t('status.activeLabel')}
                                 </span>
                             </div>
 
@@ -140,7 +142,7 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                 </span>
                                 {isFeatured && (
                                     <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">
-                                        🌟 Destacado
+                                        {t('status.featured')}
                                     </span>
                                 )}
                             </div>
@@ -151,28 +153,28 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                                     disabled={isLoading}
                                     className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-colors ${isPaused ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-600 border-gray-200'}`}
                                 >
-                                    {isLoading ? '...' : isPaused ? 'Activar' : 'Pausar'}
+                                    {isLoading ? '...' : isPaused ? t('actions.activate') : t('actions.pause')}
                                 </button>
                                 <button
                                     onClick={() => setPromoteId(tour.id)}
                                     className="flex-1 py-2 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
                                 >
-                                    🚀 Promover
+                                    🚀 {t('actions.promote')}
                                 </button>
                                 <Link
                                     href={`/dashboard/agency/tours/${tour.id}/edit`}
                                     className="flex-1 py-2 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 text-center hover:bg-blue-100 transition-colors"
                                 >
-                                    ✏️ Editar
+                                    ✏️ {t('actions.edit')}
                                 </Link>
                                 <button
                                     onClick={async () => {
-                                        if (confirm('¿Eliminar permanentemente?')) {
+                                        if (confirm(t('actions.deleteConfirm'))) {
                                             await deleteTour(tour.id);
                                         }
                                     }}
                                     className="py-2 px-3 rounded-lg text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors"
-                                    title="Eliminar"
+                                    title={t('actions.delete')}
                                 >
                                     🗑️
                                 </button>
@@ -188,14 +190,14 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
                     <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                         🧭
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">No tienes tours publicados</h3>
-                    <p className="text-gray-500 mb-6 max-w-sm mx-auto">Comienza a publicar tus experiencias para que miles de viajeros puedan encontrarte.</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{t('empty.title')}</h3>
+                    <p className="text-gray-500 mb-6 max-w-sm mx-auto">{t('empty.desc')}</p>
                     <Link
                         href="/dashboard/agency/tours/new"
                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     >
                         <span>✨</span>
-                        Crear mi primer Tour
+                        {t('empty.create')}
                     </Link>
                 </div>
             )}
@@ -211,3 +213,4 @@ export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans
         </div>
     );
 }
+

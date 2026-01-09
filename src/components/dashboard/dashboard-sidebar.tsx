@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/navigation";
 import { SignOut } from "@/components/ui/sign-out";
 import { Logo } from "@/components/ui/logo";
+import { useTranslations } from "next-intl";
 import {
     HomeIcon,
     CalendarIcon,
@@ -25,6 +25,7 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: DashboardSidebarProps) {
     const pathname = usePathname();
+    const t = useTranslations("DashboardSidebar");
     const isAgency = userRole === 'AGENCY';
     const isAdmin = userRole === 'ADMIN';
 
@@ -45,7 +46,7 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
             <div className="p-6 h-20 flex items-center justify-between border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-2" onClick={handleClick}>
                     <Logo className="h-12 w-auto" />
-                    <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">PANEL</span>
+                    <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">{t('panel')}</span>
                 </Link>
 
                 {/* Mobile Close Button */}
@@ -65,32 +66,32 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
             <nav className="flex-1 overflow-y-auto p-4 space-y-8">
                 {/* General Section */}
                 <div className="space-y-2">
-                    <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">General</p>
+                    <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('general')}</p>
                     <Link href="/dashboard" className={linkClass('/dashboard')} onClick={handleClick}>
                         <HomeIcon className="w-5 h-5" />
-                        Resumen
+                        {t('overview')}
                     </Link>
                 </div>
 
                 {/* Agency Links */}
                 {isAgency && (
                     <div className="space-y-2">
-                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Agencia</p>
+                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('agency')}</p>
                         <Link href="/dashboard/agency/tours" className={linkClass('/dashboard/agency/tours')} onClick={handleClick}>
                             <MapIcon className="w-5 h-5" />
-                            Mis Tours
+                            {t('myTours')}
                         </Link>
                         <Link href="/dashboard/agency/bookings" className={linkClass('/dashboard/agency/bookings')} onClick={handleClick}>
                             <CalendarIcon className="w-5 h-5" />
-                            Reservas
+                            {t('bookings')}
                         </Link>
                         <Link href="/dashboard/agency/profile" className={linkClass('/dashboard/agency/profile')} onClick={handleClick}>
                             <BuildingStorefrontIcon className="w-5 h-5" />
-                            Perfil Agencia
+                            {t('agencyProfile')}
                         </Link>
                         <Link href="/dashboard/agency/membership" className={`${linkClass('/dashboard/agency/membership')} text-primary`} onClick={handleClick}>
                             <ShieldCheckIcon className="w-5 h-5" />
-                            Membresía PRO
+                            {t('membership')}
                         </Link>
                     </div>
                 )}
@@ -98,22 +99,22 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
                 {/* Admin Links */}
                 {isAdmin && (
                     <div className="space-y-2">
-                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Administración</p>
+                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin')}</p>
                         <Link href="/dashboard/admin/agencies" className={linkClass('/dashboard/admin/agencies')} onClick={handleClick}>
                             <BuildingStorefrontIcon className="w-5 h-5" />
-                            Agencias
+                            {t('agencies')}
                         </Link>
                         <Link href="/dashboard/admin/tours" className={linkClass('/dashboard/admin/tours')} onClick={handleClick}>
                             <MapIcon className="w-5 h-5" />
-                            Control de Anuncios
+                            {t('adsControl')}
                         </Link>
                         <Link href="/dashboard/admin/bookings" className={linkClass('/dashboard/admin/bookings')} onClick={handleClick}>
                             <CalendarIcon className="w-5 h-5" />
-                            Gestión Reservas
+                            {t('manageBookings')}
                         </Link>
                         <Link href="/dashboard/admin/settings" className={linkClass('/dashboard/admin/settings')} onClick={handleClick}>
                             <CurrencyDollarIcon className="w-5 h-5" />
-                            Configuración
+                            {t('settings')}
                         </Link>
                     </div>
                 )}
@@ -121,14 +122,14 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
                 {/* User Links */}
                 {!isAgency && !isAdmin && (
                     <div className="space-y-2">
-                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Viajero</p>
+                        <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('traveler')}</p>
                         <Link href="/dashboard/user/bookings" className={linkClass('/dashboard/user/bookings')} onClick={handleClick}>
                             <CalendarIcon className="w-5 h-5" />
-                            Mis Reservas
+                            {t('myBookings')}
                         </Link>
                         <Link href="/dashboard/user/favorites" className={linkClass('/dashboard/user/favorites')} onClick={handleClick}>
                             <HeartIcon className="w-5 h-5" />
-                            Favoritos
+                            {t('favorites')}
                         </Link>
                     </div>
                 )}
@@ -152,3 +153,4 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
         </div>
     );
 }
+

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 interface CheckoutClientProps {
     tour: any;
@@ -12,6 +13,7 @@ interface CheckoutClientProps {
 }
 
 export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClientProps) {
+    const t = useTranslations('Checkout');
     const [paymentMethod, setPaymentMethod] = useState("transfer");
     const [isProcessing, setIsProcessing] = useState(false);
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -75,7 +77,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
             {/* User Info */}
             <section className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    👤 Tus Datos
+                    👤 {t('yourData')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="p-3 bg-gray-50 rounded-xl">
@@ -107,7 +109,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
             {/* Payment Methods */}
             <section className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    💳 Método de Pago
+                    💳 {t('paymentMethod')}
                 </h3>
 
                 <div className="space-y-4">
@@ -120,7 +122,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                             {paymentMethod === 'stripe' && <div className="w-3 h-3 bg-primary rounded-full" />}
                         </div>
                         <div className="flex-1">
-                            <h4 className="font-bold text-gray-900">Tarjeta de Crédito / Débito</h4>
+                            <h4 className="font-bold text-gray-900">{t('creditCard')}</h4>
                             <p className="text-xs text-gray-500">Pago seguro vía Stripe</p>
                         </div>
                         <span className="text-xl">💳</span>
@@ -135,7 +137,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                             {paymentMethod === 'transfer' && <div className="w-3 h-3 bg-primary rounded-full" />}
                         </div>
                         <div className="flex-1">
-                            <h4 className="font-bold text-gray-900">Transferencia Bancaria</h4>
+                            <h4 className="font-bold text-gray-900">{t('transfer')}</h4>
                             <p className="text-xs text-gray-500">Banco Popular / BHD / Reservas</p>
                         </div>
                         <span className="text-xl">🏦</span>
@@ -150,7 +152,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                             {paymentMethod === 'cash' && <div className="w-3 h-3 bg-primary rounded-full" />}
                         </div>
                         <div className="flex-1">
-                            <h4 className="font-bold text-gray-900">Efectivo / Pago al llegar</h4>
+                            <h4 className="font-bold text-gray-900">{t('cash')}</h4>
                             <p className="text-xs text-gray-500">Sujeto a confirmación por la agencia</p>
                         </div>
                         <span className="text-xl">💵</span>
@@ -207,7 +209,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                     />
                 </div>
                 <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer select-none">
-                    He leído y acepto los <span className="font-bold text-gray-900 underline">Términos y Condiciones</span> y las <span className="font-bold text-gray-900 underline">Políticas de Cancelación</span>.
+                    {t('terms')}
                 </label>
             </div>
 
@@ -217,7 +219,7 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                 disabled={isProcessing}
                 className="w-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white font-black py-5 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all text-xl disabled:opacity-70 disabled:cursor-not-allowed"
             >
-                {isProcessing ? 'Procesando...' : `Confirmar y Pagar ${tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'}${(tour.price * guests).toLocaleString()}`}
+                {isProcessing ? t('processing') : `${t('confirmAndPay')} ${tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'}${(tour.price * guests).toLocaleString()}`}
             </button>
         </div>
     );
