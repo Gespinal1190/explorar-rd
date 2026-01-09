@@ -103,6 +103,10 @@ export function DashboardSidebar({ userRole, userName, userPhone, closeMenu }: D
                             <BuildingStorefrontIcon className="w-5 h-5" />
                             Agencias
                         </Link>
+                        <Link href="/dashboard/admin/tours" className={linkClass('/dashboard/admin/tours')} onClick={handleClick}>
+                            <MapIcon className="w-5 h-5" />
+                            Control de Anuncios
+                        </Link>
                         <Link href="/dashboard/admin/bookings" className={linkClass('/dashboard/admin/bookings')} onClick={handleClick}>
                             <CalendarIcon className="w-5 h-5" />
                             Gestión Reservas
