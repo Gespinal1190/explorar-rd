@@ -27,9 +27,12 @@ export default async function CheckoutSuccessPage(props: {
         }
     });
 
-    if (!booking) redirect({ href: "/dashboard/user/bookings", locale });
+    if (!booking) {
+        redirect({ href: "/dashboard/user/bookings", locale });
+        return null;
+    }
 
-    // booking is guaranteed to be non-null here
+    // Now TypeScript knows booking is not null because the branch above is terminal
     const isTransfer = booking.paymentMethod === 'transfer';
     const isCash = booking.paymentMethod === 'cash';
     const isStripe = booking.paymentMethod === 'stripe';
