@@ -400,5 +400,33 @@
             "instructionsTitle": "Instructions de Paiement",
             "instructionsDesc": "Veuillez effectuer le virement vers l'un des comptes suivants et télécharger le reçu."
         }
+    },
+    "CheckoutSuccess": {
+        "bookingReceived": "Réservation Reçue !",
+        "bookingNumber": "Réservation #{id}",
+        "adventureStart": "Vous avez fait le premier pas pour votre prochaine aventure à",
+        "nextStepsTitle": "Ce qui suit maintenant :",
+        "transfer": {
+            "step1Title": "Effectuez le paiement",
+            "step1Desc": "Vous avez 24 heures pour effectuer le virement sur les comptes de {name}. Vous verrez les coordonnées bancaires dans le détail de votre réservation.",
+            "step2Title": "Téléchargez le reçu",
+            "step2Desc": "Téléchargez une photo du virement dans la section 'Mes Voyages' pour confirmer votre place.",
+            "step3Title": "Confirmation",
+            "step3Desc": "L'agence validera votre paiement et vous recevrez votre billet final."
+        },
+        "cash": {
+            "step1Title": "Confirmation en attente",
+            "step1Desc": "Vous avez demandé de payer en espèces. L'agence {name} examinera votre demande.",
+            "step2Title": "Contact Direct",
+            "step2Desc": "L'agence vous contactera probablement via WhatsApp ({whatsapp}) pour coordonner la rencontre."
+        },
+        "stripe": {
+            "step1Title": "Tout est prêt !",
+            "step1Desc": "Votre paiement a été traité et votre place est réservée.",
+            "step2Title": "Préparez-vous",
+            "step2Desc": "Consultez votre e-mail pour savoir quoi apporter et le point de rendez-vous exact."
+        },
+        "goToBookings": "Aller à Mes Voyages",
+        "exploreMore": "Explorer plus"
     }
 }

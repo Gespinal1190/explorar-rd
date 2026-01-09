@@ -400,5 +400,33 @@
             "instructionsTitle": "Payment Instructions",
             "instructionsDesc": "Please transfer to one of the following accounts and upload the receipt."
         }
+    },
+    "CheckoutSuccess": {
+        "bookingReceived": "Booking Received!",
+        "bookingNumber": "Booking #{id}",
+        "adventureStart": "You've taken the first step for your next adventure in",
+        "nextStepsTitle": "What follows now:",
+        "transfer": {
+            "step1Title": "Make the payment",
+            "step1Desc": "You have 24 hours to transfer to {name}'s accounts. You will see the bank details in the details of your booking.",
+            "step2Title": "Upload the receipt",
+            "step2Desc": "Upload a photo of the transfer in the 'My Trips' section to confirm your spot.",
+            "step3Title": "Confirmation",
+            "step3Desc": "The agency will validate your payment and you will receive your final ticket."
+        },
+        "cash": {
+            "step1Title": "Pending Confirmation",
+            "step1Desc": "You have requested to pay in cash. The agency {name} will review your request.",
+            "step2Title": "Direct Contact",
+            "step2Desc": "The agency will likely contact you via WhatsApp ({whatsapp}) to coordinate the meeting."
+        },
+        "stripe": {
+            "step1Title": "All set!",
+            "step1Desc": "Your payment has been processed and your spot is secured.",
+            "step2Title": "Get ready",
+            "step2Desc": "Check your email for details on what to bring and the exact meeting point."
+        },
+        "goToBookings": "Go to My Trips",
+        "exploreMore": "Explore more"
     }
 }

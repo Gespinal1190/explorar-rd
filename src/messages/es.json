@@ -400,5 +400,33 @@
             "instructionsTitle": "Instrucciones de Pago",
             "instructionsDesc": "Por favor realiza la transferencia a una de las siguientes cuentas y sube el comprobante."
         }
+    },
+    "CheckoutSuccess": {
+        "bookingReceived": "¡Reserva Recibida!",
+        "bookingNumber": "Reserva #{id}",
+        "adventureStart": "Ya diste el primer paso para tu próxima aventura en",
+        "nextStepsTitle": "Lo que sigue ahora:",
+        "transfer": {
+            "step1Title": "Realiza el pago",
+            "step1Desc": "Tienes 24 horas para transferir a las cuentas de {name}. Verás los datos bancarios en el detalle de tu reserva.",
+            "step2Title": "Sube el comprobante",
+            "step2Desc": "Sube una foto de la transferencia en la sección 'Mis Viajes' para confirmar tu cupo.",
+            "step3Title": "Confirmación",
+            "step3Desc": "La agencia validará tu pago y recibirás tu ticket final."
+        },
+        "cash": {
+            "step1Title": "Confirmación Pendiente",
+            "step1Desc": "Has solicitado pagar en efectivo. La agencia {name} revisará tu solicitud.",
+            "step2Title": "Contacto Directo",
+            "step2Desc": "Es probable que la agencia te contacte por WhatsApp ({whatsapp}) para coordinar el encuentro."
+        },
+        "stripe": {
+            "step1Title": "¡Todo listo!",
+            "step1Desc": "Tu pago ha sido procesado y tu lugar está asegurado.",
+            "step2Title": "Prepárate",
+            "step2Desc": "Revisa tu correo para ver detalles de qué llevar y el punto exacto de encuentro."
+        },
+        "goToBookings": "Ir a Mis Viajes",
+        "exploreMore": "Explorar más"
     }
 }

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { Link, redirect } from "@/navigation";
 import prisma from "@/lib/prisma";
 import Navbar from "@/components/ui/navbar";
+import { getTranslations } from "next-intl/server";
 
 export default async function CheckoutSuccessPage(props: {
     params: Promise<{ locale: string }>;
@@ -9,6 +10,8 @@ export default async function CheckoutSuccessPage(props: {
 }) {
     const { locale } = await props.params;
     const session = await auth();
+    const t = await getTranslations("CheckoutSuccess");
+
     if (!session) redirect({ href: "/login", locale });
 
     const { bookingId } = await props.searchParams;
@@ -26,6 +29,7 @@ export default async function CheckoutSuccessPage(props: {
 
     if (!booking) redirect({ href: "/dashboard/user/bookings", locale });
 
+    // booking is guaranteed to be non-null here
     const isTransfer = booking.paymentMethod === 'transfer';
     const isCash = booking.paymentMethod === 'cash';
     const isStripe = booking.paymentMethod === 'stripe';
@@ -42,13 +46,13 @@ export default async function CheckoutSuccessPage(props: {
 
                 <div className="space-y-4 mb-12">
                     <span className="px-4 py-1.5 bg-gray-900 text-white text-xs font-bold uppercase tracking-widest rounded-full">
-                        Reserva #{booking.id.slice(-6).toUpperCase()}
+                        {t('bookingNumber', { id: booking.id.slice(-6).toUpperCase() })}
                     </span>
                     <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
-                        ¡Reserva Recibida!
+                        {t('bookingReceived')}
                     </h1>
                     <p className="text-xl text-gray-500 font-medium">
-                        Ya diste el primer paso para tu próxima aventura en <span className="text-primary font-bold">{booking.tour.location}</span>.
+                        {t('adventureStart')} <span className="text-primary font-bold">{booking.tour.location}</span>.
                     </p>
                 </div>
 
@@ -58,7 +62,7 @@ export default async function CheckoutSuccessPage(props: {
 
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm">🚀</span>
-                        Lo que sigue ahora:
+                        {t('nextStepsTitle')}
                     </h3>
 
                     <div className="space-y-6">
@@ -67,28 +71,27 @@ export default async function CheckoutSuccessPage(props: {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold shrink-0">1</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Realiza el pago</h4>
+                                        <h4 className="font-bold text-gray-900">{t('transfer.step1Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Tienes 24 horas para transferir a las cuentas de <strong>{booking.tour.agency.name}</strong>.
-                                            Verás los datos bancarios en el detalle de tu reserva.
+                                            {t('transfer.step1Desc', { name: booking.tour.agency.name })}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">2</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Sube el comprobante</h4>
+                                        <h4 className="font-bold text-gray-900">{t('transfer.step2Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Sube una foto de la transferencia en la sección "Mis Viajes" para confirmar tu cupo.
+                                            {t('transfer.step2Desc')}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0">3</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Confirmación</h4>
+                                        <h4 className="font-bold text-gray-900">{t('transfer.step3Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            La agencia validará tu pago y recibirás tu ticket final.
+                                            {t('transfer.step3Desc')}
                                         </p>
                                     </div>
                                 </div>
@@ -100,18 +103,18 @@ export default async function CheckoutSuccessPage(props: {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">1</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Confirmación Pendiente</h4>
+                                        <h4 className="font-bold text-gray-900">{t('cash.step1Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Has solicitado pagar en efectivo. La agencia <strong>{booking.tour.agency.name}</strong> revisará tu solicitud.
+                                            {t('cash.step1Desc', { name: booking.tour.agency.name })}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0">2</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Contacto Directo</h4>
+                                        <h4 className="font-bold text-gray-900">{t('cash.step2Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Es probable que la agencia te contacte por WhatsApp ({booking.tour.agency.whatsapp || 'el número registrado'}) para coordinar el encuentro.
+                                            {t('cash.step2Desc', { whatsapp: booking.tour.agency.whatsapp || 'el número registrado' })}
                                         </p>
                                     </div>
                                 </div>
@@ -123,18 +126,18 @@ export default async function CheckoutSuccessPage(props: {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0">1</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">¡Todo listo!</h4>
+                                        <h4 className="font-bold text-gray-900">{t('stripe.step1Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Tu pago ha sido procesado y tu lugar está asegurado.
+                                            {t('stripe.step1Desc')}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">2</div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900">Prepárate</h4>
+                                        <h4 className="font-bold text-gray-900">{t('stripe.step2Title')}</h4>
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Revisa tu correo para ver detalles de qué llevar y el punto exacto de encuentro.
+                                            {t('stripe.step2Desc')}
                                         </p>
                                     </div>
                                 </div>
@@ -148,13 +151,13 @@ export default async function CheckoutSuccessPage(props: {
                         href="/dashboard/user/bookings"
                         className="flex-1 bg-gray-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-black transition-all text-center"
                     >
-                        Ir a Mis Viajes
+                        {t('goToBookings')}
                     </Link>
                     <Link
                         href="/tours"
                         className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-50 transition-all text-center"
                     >
-                        Explorar más
+                        {t('exploreMore')}
                     </Link>
                 </div>
 
