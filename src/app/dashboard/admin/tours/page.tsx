@@ -105,7 +105,7 @@ export default async function AdminToursPage(props: {
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-16 h-12 rounded-lg bg-gray-200 overflow-hidden shrink-0">
-                                                    {tour.images?.[0] ? (
+                                                    {tour.images && tour.images.length > 0 ? (
                                                         <img src={tour.images[0].url} alt="" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin foto</div>
@@ -118,16 +118,20 @@ export default async function AdminToursPage(props: {
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <Link href={`/dashboard/admin/agencies/${tour.agencyId}`} className="flex items-center gap-2 hover:underline">
-                                                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold shrink-0">
-                                                    {tour.agency.name.charAt(0)}
-                                                </div>
-                                                <span className="text-sm font-bold text-gray-700 truncate max-w-[150px]">{tour.agency.name}</span>
-                                            </Link>
+                                            {tour.agency ? (
+                                                <Link href={`/dashboard/admin/agencies/${tour.agencyId}`} className="flex items-center gap-2 hover:underline">
+                                                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold shrink-0">
+                                                        {(tour.agency.name || 'A').charAt(0)}
+                                                    </div>
+                                                    <span className="text-sm font-bold text-gray-700 truncate max-w-[150px]">{tour.agency.name || 'Agencia Desconocida'}</span>
+                                                </Link>
+                                            ) : (
+                                                <span className="text-gray-400 text-sm">Agencia no encontrada</span>
+                                            )}
                                         </td>
                                         <td className="px-8 py-6">
                                             <span className="text-sm font-black text-gray-900">
-                                                {tour.currency === 'USD' ? 'US$' : 'RD$'} {tour.price.toLocaleString()}
+                                                {tour.currency === 'USD' ? 'US$' : 'RD$'} {(tour.price || 0).toLocaleString()}
                                             </span>
                                         </td>
                                         <td className="px-8 py-6">
@@ -158,11 +162,7 @@ export default async function AdminToursPage(props: {
                                                     <button
                                                         type="submit"
                                                         className="p-2 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                                                        title="ELIMINAR Definitivamente (Moderación)"
-                                                        onClick={(e) => {
-                                                            // In a real app we'd want a client side confirmation here via a separate client component
-                                                            // but for now this is a server action trigger.
-                                                        }}
+                                                        title="ELIMINAR Definitivamente"
                                                     >
                                                         🗑️
                                                     </button>
