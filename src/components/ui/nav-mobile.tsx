@@ -99,7 +99,9 @@ export function NavMobile({ session }: NavMobileProps) {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="font-bold text-gray-900 truncate">{session.user.name}</p>
-                                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black leading-none mt-1">{session.user.role}</p>
+                                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black leading-none mt-1">
+                                            {session.user.role === 'AGENCY' ? t('rolePartner') : session.user.role === 'ADMIN' ? t('roleStaff') : t('roleTraveler')}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 gap-3">
