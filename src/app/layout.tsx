@@ -10,16 +10,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Explorar RD',
-    default: 'Explorar RD | Turismo Interno República Dominicana',
+    template: '%s | DescubreRD',
+    default: 'DescubreRD | Turismo Interno República Dominicana',
   },
   description: "Descubre las mejores excursiones y destinos en República Dominicana. Reserva online con agencias locales verificadas.",
   keywords: ["Turismo Interno", "República Dominicana", "Excursiones", "Punta Cana", "Samaná", "Tours"],
   openGraph: {
-    title: 'Explorar RD | Turismo Interno',
+    title: 'DescubreRD | Turismo Interno',
     description: 'Conecta con agencias locales y descubre el verdadero paraíso dominicano.',
-    url: 'https://explorard.com',
-    siteName: 'Explorar RD',
+    url: 'https://descubrerd.com',
+    siteName: 'DescubreRD',
     images: [
       {
         url: '/images/hero-bg.jpg',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Explorar RD',
+    title: 'DescubreRD',
     description: 'Turismo interno de calidad en República Dominicana.',
     images: ['/images/hero-bg.jpg'],
   },

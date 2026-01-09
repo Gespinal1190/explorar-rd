@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link";
 import PromoteModal from "@/components/dashboard/promote-modal";
-import { deleteTour } from "@/lib/actions";
+import { toggleTourStatus } from "@/lib/actions";
 
 interface Tour {
     id: string;
@@ -12,76 +12,168 @@ interface Tour {
     price: number;
     currency?: string;
     featuredExpiresAt?: Date | string | null;
+    status: string; // Added status
 }
 
 export default function AgencyToursList({ tours, plans }: { tours: Tour[], plans: any[] }) {
     const [promoteId, setPromoteId] = useState<string | null>(null);
+    const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
+
+    const handleToggleStatus = async (tourId: string, currentStatus: string) => {
+        setLoadingIds(prev => new Set(prev).add(tourId));
+        await toggleTourStatus(tourId, currentStatus);
+        setLoadingIds(prev => {
+            const next = new Set(prev);
+            next.delete(tourId);
+            return next;
+        });
+    };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b">
-                    <tr>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Título</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Ubicación</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Precio</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Estado</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y">
-                    {tours.map((tour) => {
-                        const isFeatured = tour.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
-
-                        return (
-                            <tr key={tour.id}>
-                                <td className="px-6 py-4 font-medium">{tour.title}</td>
-                                <td className="px-6 py-4 text-gray-500">{tour.location}</td>
-                                <td className="px-6 py-4 text-gray-900 font-bold">
-                                    {tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'} {tour.price.toLocaleString()}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {isFeatured ? (
-                                        <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full border border-yellow-200">
-                                            🌟 Destacado
-                                        </span>
-                                    ) : (
-                                        <span className="text-gray-400 text-sm">Estándar</span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 flex gap-4 items-center">
-                                    <button
-                                        onClick={() => setPromoteId(tour.id)}
-                                        className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full hover:shadow-md transition-all"
-                                    >
-                                        Destacar
-                                    </button>
-                                    <Link href={`/dashboard/agency/tours/${tour.id}/edit`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                        Editar
-                                    </Link>
-                                    <button
-                                        className="text-red-500 hover:text-red-700 text-sm font-medium"
-                                        onClick={async () => {
-                                            if (confirm('¿Estás seguro de eliminar este tour?')) {
-                                                await deleteTour(tour.id);
-                                            }
-                                        }}
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                    {tours.length === 0 && (
+        <div className="space-y-6">
+            {/* Desktop View (Table) */}
+            <div className="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden">
+                <table className="w-full text-left">
+                    <thead className="bg-gray-50 border-b">
                         <tr>
-                            <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                                No tienes tours creados aún.
-                            </td>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Título</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Ubicación</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Precio</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Estado</th>
+                            <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Acciones</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="divide-y">
+                        {tours.map((tour) => {
+                            const isFeatured = tour.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
+                            const isPaused = tour.status === 'PAUSED';
+                            const isLoading = loadingIds.has(tour.id);
+
+                            return (
+                                <tr key={tour.id} className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-col">
+                                            <span className={`font-medium ${isPaused ? 'text-gray-400' : 'text-gray-900'}`}>{tour.title}</span>
+                                            {isFeatured && (
+                                                <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 mt-1">
+                                                    🌟 Destacado
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-500 text-sm">{tour.location}</td>
+                                    <td className="px-6 py-4 text-gray-900 font-bold text-sm">
+                                        {tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'} {tour.price.toLocaleString()}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${isPaused ? 'bg-gray-100 text-gray-800 border-gray-200' : 'bg-green-100 text-green-800 border-green-200'}`}>
+                                            {isPaused ? '⏸️ Pausado' : '✅ Activo'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center justify-end gap-3">
+                                            <button
+                                                onClick={() => handleToggleStatus(tour.id, tour.status)}
+                                                disabled={isLoading}
+                                                className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${isPaused ? 'text-green-600 border-green-200 bg-green-50 hover:bg-green-100' : 'text-gray-500 border-gray-200 hover:bg-gray-100'}`}
+                                            >
+                                                {isLoading ? '...' : isPaused ? 'Activar' : 'Pausar'}
+                                            </button>
+
+                                            <div className="h-4 w-px bg-gray-200"></div>
+
+                                            <button
+                                                onClick={() => setPromoteId(tour.id)}
+                                                className="text-amber-600 hover:text-amber-700 text-xs font-bold"
+                                                title="Promocionar Tour"
+                                            >
+                                                Promover
+                                            </button>
+                                            <Link href={`/dashboard/agency/tours/${tour.id}/edit`} className="text-blue-600 hover:text-blue-800 text-xs font-bold">
+                                                Editar
+                                            </Link>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile View (Cards) */}
+            <div className="md:hidden space-y-4">
+                {tours.map((tour) => {
+                    const isFeatured = tour.featuredExpiresAt && new Date(tour.featuredExpiresAt) > new Date();
+                    const isPaused = tour.status === 'PAUSED';
+                    const isLoading = loadingIds.has(tour.id);
+
+                    return (
+                        <div key={tour.id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className={`font-bold text-gray-900 ${isPaused ? 'text-gray-400' : ''}`}>{tour.title}</h3>
+                                    <p className="text-sm text-gray-500">{tour.location}</p>
+                                </div>
+                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wide ${isPaused ? 'bg-gray-100 text-gray-600 border-gray-200' : 'bg-green-100 text-green-700 border-green-200'}`}>
+                                    {isPaused ? 'Paused' : 'Active'}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-4 text-sm">
+                                <span className="font-bold text-gray-900 bg-gray-50 px-3 py-1 rounded-lg">
+                                    {tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'} {tour.price.toLocaleString()}
+                                </span>
+                                {isFeatured && (
+                                    <span className="text-[10px] text-amber-600 font-bold flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">
+                                        🌟 Destacado
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="border-t border-gray-50 pt-4 flex items-center justify-between gap-3">
+                                <button
+                                    onClick={() => handleToggleStatus(tour.id, tour.status)}
+                                    disabled={isLoading}
+                                    className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-colors ${isPaused ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-600 border-gray-200'}`}
+                                >
+                                    {isLoading ? '...' : isPaused ? 'Activar' : 'Pausar'}
+                                </button>
+                                <button
+                                    onClick={() => setPromoteId(tour.id)}
+                                    className="flex-1 py-2 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
+                                >
+                                    🚀 Promover
+                                </button>
+                                <Link
+                                    href={`/dashboard/agency/tours/${tour.id}/edit`}
+                                    className="flex-1 py-2 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 text-center hover:bg-blue-100 transition-colors"
+                                >
+                                    ✏️ Editar
+                                </Link>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Optimized Empty State */}
+            {tours.length === 0 && (
+                <div className="bg-white rounded-2xl p-12 text-center border-2 border-dashed border-gray-200">
+                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                        🧭
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">No tienes tours publicados</h3>
+                    <p className="text-gray-500 mb-6 max-w-sm mx-auto">Comienza a publicar tus experiencias para que miles de viajeros puedan encontrarte.</p>
+                    <Link
+                        href="/dashboard/agency/tours/new"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                    >
+                        <span>✨</span>
+                        Crear mi primer Tour
+                    </Link>
+                </div>
+            )}
 
             {promoteId && (
                 <PromoteModal

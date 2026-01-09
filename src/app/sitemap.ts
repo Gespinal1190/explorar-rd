@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const tours = await prisma.tour.findMany({ select: { id: true, updatedAt: true } });
 
     const tourUrls = tours.map((tour) => ({
-        url: `https://explorard.com/tours/${tour.id}`,
+        url: `https://descubrerd.com/tours/${tour.id}`,
         lastModified: tour.updatedAt,
         changeFrequency: 'weekly' as const,
         priority: 0.8,
@@ -13,13 +13,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
         {
-            url: 'https://explorard.com',
+            url: 'https://descubrerd.com',
             lastModified: new Date(),
             changeFrequency: 'daily',
             priority: 1,
         },
         {
-            url: 'https://explorard.com/tours',
+            url: 'https://descubrerd.com/tours',
             lastModified: new Date(),
             changeFrequency: 'daily',
             priority: 0.9,

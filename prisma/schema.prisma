@@ -77,6 +77,7 @@ model AgencyProfile {
   instagram   String?
   website     String?
   isVerified  Boolean  @default(false)
+  status      AgencyStatus @default(ACTIVE)
 
   tier            String    @default("FREE")
   tierExpiresAt   DateTime?
@@ -127,6 +128,8 @@ model Tour {
   currency    String   @default("DOP")
   duration    String?
   startTime   String?  // e.g. "08:00 AM"
+  
+  status      TourStatus @default(PUBLISHED)
 
   images      TourImage[]
   dates       TourDate[]  // New relation for specific available dates
@@ -217,4 +220,19 @@ model Plan {
   features     String?
   
   updatedAt    DateTime @updatedAt
+}
+
+enum TourStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  PAUSED
+  ARCHIVED
+}
+
+enum AgencyStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  SUSPENDED
 }

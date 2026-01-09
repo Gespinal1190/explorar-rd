@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET)
 
-const cookieName = 'explorard_session'
+const cookieName = 'descubrerd_session'
 
 export async function encrypt(payload: any) {
     return new SignJWT(payload)

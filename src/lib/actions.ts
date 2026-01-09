@@ -271,6 +271,39 @@ export async function updateTour(
     redirect('/dashboard/agency/tours');
 }
 
+export async function toggleTourStatus(tourId: string, currentStatus: string) {
+    const session = await getSession();
+    if (!session || session.role !== 'AGENCY') {
+        return { success: false, message: "No autorizado" };
+    }
+
+    try {
+        const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
+        if (!agency) return { success: false, message: "Agencia no encontrada" };
+
+        const newStatus = currentStatus === 'PUBLISHED' ? 'PAUSED' : 'PUBLISHED';
+
+        await prisma.tour.update({
+            where: {
+                id: tourId,
+                agencyId: agency.id
+            },
+            data: {
+                status: newStatus as any // Casting as any to avoid enum import issues if not fully propagated yet
+            }
+        });
+
+        revalidatePath('/dashboard/agency/tours');
+        revalidatePath('/tours'); // Clean public cache
+        revalidatePath(`/tours/${tourId}`);
+
+        return { success: true, newStatus };
+    } catch (error) {
+        console.error("Error toggling status:", error);
+        return { success: false, message: "Error al actualizar estado" };
+    }
+}
+
 export async function deleteTour(id: string) {
     const session = await getSession();
     if (!session || session.role !== 'AGENCY') return;

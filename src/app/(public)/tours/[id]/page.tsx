@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         return { title: `${tour.title} | DescubreRD` };
     } catch (e) {
         console.error("Metadata error:", e);
-        return { title: 'Explorar RD' };
+        return { title: 'DescubreRD' };
     }
 }
 

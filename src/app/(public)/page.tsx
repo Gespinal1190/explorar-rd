@@ -31,6 +31,9 @@ export default async function Home() {
   let allTours = [];
   try {
     allTours = (await prisma.tour.findMany({
+      where: {
+        status: 'PUBLISHED',
+      },
       include: { agency: true, images: true },
       orderBy: [
         { createdAt: 'desc' }
@@ -57,45 +60,92 @@ export default async function Home() {
     <main className="min-h-screen bg-[#FBFBF8]">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative min-h-[90svh] md:h-screen flex items-center justify-center text-center px-4 overflow-hidden">
-        {/* Background Overlay */}
-        <div className="absolute inset-0 z-0 select-none">
-          <div className="absolute inset-0 bg-black/40 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 z-10" />
+      {/* Hero Section - Product Focused */}
+      {/* Hero Section - Product Focused */}
+      <section className="relative min-h-[90svh] md:h-[85vh] flex flex-col items-center justify-center overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 z-10" />
           <img
             src="/images/hero-bg.jpg"
-            alt="Explorar RD Hero"
-            className="w-full h-full object-cover animate-in fade-in duration-1000 scale-105"
+            alt="DescubreRD Hero"
+            className="w-full h-full object-cover scale-105 animate-in fade-in duration-1000"
           />
         </div>
 
-        <div className="relative z-20 w-full max-w-5xl mx-auto space-y-6 md:space-y-10 flex flex-col items-center">
-          <div className="space-y-4 md:space-y-6 animate-in slide-in-from-bottom-5 duration-700 delay-100">
-            <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-xs md:text-sm font-bold uppercase tracking-[0.2em] border border-white/20">
-              República Dominicana
-            </span>
-            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tight drop-shadow-sm leading-tight text-center">
-              Descubre el <br />
-              <span className="text-primary drop-shadow-lg">Paraíso</span> Dominicano
-            </h1>
-            <p className="text-lg md:text-2xl text-white/90 font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed px-4">
-              La plataforma más completa de turismo interno. Conecta con agencias locales y vive experiencias únicas.
-            </p>
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-10 md:mt-0 flex-1 lg:flex-none justify-center">
+          {/* Left Column: Traveller Focus (Primary) */}
+          <div className="text-center lg:text-left space-y-8 animate-in slide-in-from-bottom-5 duration-700 delay-100">
+            <div className="space-y-4">
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-white/90 text-xs font-bold uppercase tracking-wider border border-white/20">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Plataforma Verificada
+              </span>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-lg">
+                Descubre el <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">Paraíso Dominicano</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-200 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Reserva directamente con agencias locales confiables. <br className="hidden md:block" />
+                Transparencia, seguridad y experiencias únicas, sin sorpresas.
+              </p>
+            </div>
+
+            {/* Traveller CTA & Search */}
+            <div className="space-y-6">
+              <div className="bg-white/5 backdrop-blur-lg p-2 rounded-3xl border border-white/10 shadow-2xl max-w-lg mx-auto lg:mx-0">
+                <SearchOverlay />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-gray-300 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Pagos Seguros
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Atención 24/7
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Mejor Precio Garantizado
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Search Component container */}
-          <div className="w-full max-w-2xl px-2 animate-in slide-in-from-bottom-5 duration-700 delay-300">
-            <SearchOverlay />
+          {/* Right Column: Agency CTA (Secondary Path) */}
+          <div className="hidden lg:flex flex-col items-end justify-center animate-in fade-in slide-in-from-right-10 duration-1000 delay-300">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl max-w-sm hover:bg-white/10 transition-colors shadow-2xl group cursor-pointer">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">💼</span>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">¿Eres una Agencia?</h3>
+                  <p className="text-gray-400 text-xs">Gestiona tu negocio digital</p>
+                </div>
+              </div>
+              <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+                Publica tus tours ante miles de viajeros, gestiona reservas y automatiza tu operación.
+              </p>
+              <Link href="/agencies/register" className="flex items-center justify-between w-full px-5 py-3 bg-white text-gray-900 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
+                Comenzar ahora
+                <span className="text-lg">→</span>
+              </Link>
+            </div>
           </div>
+        </div>
 
-          {/* Quick Categories */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3 animate-in slide-in-from-bottom-5 duration-700 delay-400">
-            {['Playas 🏖️', 'Montaña ⛰️', 'Ríos 💧', 'Buggy 🏎️', 'Cultural 🎭'].map((cat) => (
-              <a href={`/tours?category=${cat}`} key={cat} className="px-4 py-2 md:px-6 md:py-2.5 bg-white/5 backdrop-blur-md border border-white/10 text-white text-xs md:text-sm font-bold rounded-full hover:bg-white hover:text-black hover:border-white transition-all duration-300 hover:-translate-y-1 transform cursor-pointer shadow-lg shadow-black/5">
-                {cat}
-              </a>
-            ))}
+        <div className="relative w-full z-30 mt-12 mb-8 lg:absolute lg:bottom-10 lg:my-0 lg:mb-0">
+          <div className="w-full max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-hide">
+            <div className="flex justify-center lg:justify-start gap-3 min-w-max pb-2">
+              {['Playas 🏖️', 'Montaña ⛰️', 'Ríos 💧', 'Buggy 🏎️', 'Cultural 🎭', 'Parejas 💑', 'Familia 👨‍👩‍👧‍👦'].map((cat) => (
+                <a href={`/tours?category=${cat}`} key={cat} className="px-5 py-2.5 bg-black/40 backdrop-blur-md border border-white/10 text-white text-sm font-bold rounded-full hover:bg-primary hover:border-primary transition-all duration-300 whitespace-nowrap">
+                  {cat}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -242,7 +292,7 @@ export default async function Home() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16 space-y-4 px-4">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-              ¿Por qué elegir <span className="text-primary md:inline-block">Explorar RD</span>?
+              ¿Por qué elegir <span className="text-primary md:inline-block">DescubreRD</span>?
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-base md:text-lg leading-relaxed font-medium">
               Simplificamos el turismo conectándote con los mejores operadores del país de forma segura y directa.
@@ -370,7 +420,7 @@ export default async function Home() {
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} Explorar RD. Todos los derechos reservados.
+            © {new Date().getFullYear()} DescubreRD. Todos los derechos reservados.
           </div>
         </div>
       </footer>

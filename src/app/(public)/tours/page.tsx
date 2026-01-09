@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 
 export const metadata = {
-    title: 'Explorar Tours | Explorar RD',
+    title: 'Explorar Tours | DescubreRD',
 };
 
 import { getSession } from "@/lib/session";
@@ -41,6 +41,28 @@ export default async function ToursPage(props: {
         ]
     } : {};
 
+    const priceParam = typeof searchParams?.price === 'string' ? searchParams.price : undefined;
+    let priceFilter = {};
+    if (priceParam) {
+        const [min, max] = priceParam.split('-').map(Number);
+        if (!isNaN(min) && !isNaN(max)) {
+            priceFilter = {
+                price: {
+                    gte: min,
+                    lte: max
+                }
+            };
+        }
+    }
+
+    // Combine filters
+    const whereClause = {
+        featuredExpiresAt: { gt: now },
+        status: 'PUBLISHED',
+        ...searchFilter,
+        ...priceFilter
+    };
+
     const planPriority: Record<string, number> = {
         'ad_premium_1m': 3,
         'ad_medium_2w': 2,
@@ -52,10 +74,7 @@ export default async function ToursPage(props: {
 
     try {
         featuredTours = (await prisma.tour.findMany({
-            where: {
-                featuredExpiresAt: { gt: now },
-                ...searchFilter
-            } as any,
+            where: whereClause as any,
             include: { images: true, agency: true },
             orderBy: [
                 { createdAt: 'desc' }
@@ -77,7 +96,9 @@ export default async function ToursPage(props: {
                     { featuredExpiresAt: null },
                     { featuredExpiresAt: { lte: now } }
                 ],
-                ...searchFilter
+                status: 'PUBLISHED', // Only show published tours
+                ...searchFilter,
+                ...priceFilter
             } as any,
             include: { images: true, agency: true },
             orderBy: [
@@ -114,7 +135,7 @@ export default async function ToursPage(props: {
                             <Link href="/tours" className={`px-5 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap shadow-sm border ${!query ? 'bg-primary text-white border-primary shadow-primary/20' : 'bg-white text-gray-500 border-gray-100'}`}>
                                 TOP TODO 🌴
                             </Link>
-                            {['Punta Cana', 'Samaná', 'Jarabacoa', 'Bayahíbe', 'Bahía de las Águilas'].map(cat => (
+                            {['Punta Cana', 'Samaná', 'Jarabacoa', 'Bayahíbe', 'Bahía de las Águilas', 'Aventura', 'Relax', 'Parejas', 'Familia', 'Cultura'].map(cat => (
                                 <Link
                                     key={cat}
                                     href={`/tours?search=${cat}`}
@@ -128,85 +149,126 @@ export default async function ToursPage(props: {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-8 md:py-12 space-y-12 md:space-y-16 mt-4">
-
-                {/* Featured Section */}
-                {featuredTours.length > 0 && (
-                    <section className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 md:p-12 rounded-3xl md:rounded-[2.5rem] border border-amber-100 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 md:p-12 opacity-10 pointer-events-none hidden sm:block">
-                            <span className="text-7xl md:text-9xl">💎</span>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-10 relative z-10">
-                            <div>
-                                <div className="flex items-center gap-2 md:gap-3 mb-2">
-                                    <div className="w-8 h-8 md:w-10 md:h-10 bg-amber-400 rounded-lg md:rounded-xl flex items-center justify-center text-sm md:text-xl shadow-lg shadow-amber-200">
-                                        🔥
-                                    </div>
-                                    <h2 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Selección Premium</h2>
-                                </div>
-                                <p className="text-amber-800/70 text-sm md:text-base font-bold max-w-md">Las mejores opciones seleccionadas por su confiabilidad.</p>
+            <div className="container mx-auto px-4 py-8 md:py-12 mt-4">
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Filters Sidebar */}
+                    <aside className="w-full lg:w-64 shrink-0 space-y-8 animate-in slide-in-from-left-4 duration-500">
+                        <div>
+                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-4">Filtrar por Precio</h3>
+                            <div className="space-y-2">
+                                {[
+                                    { label: 'Todos', value: '' },
+                                    { label: 'Menos de $50 USD', value: '0-50' },
+                                    { label: '$50 USD - $150 USD', value: '50-150' },
+                                    { label: 'Más de $150 USD', value: '150-10000' },
+                                ].map((option, idx) => (
+                                    <Link
+                                        key={idx}
+                                        href={option.value ? `/tours?search=${search || ''}&price=${option.value}` : `/tours?search=${search || ''}`}
+                                        className={`block text-sm font-medium transition-colors ${(searchParams?.['price'] === option.value) || (!searchParams?.['price'] && option.value === '') ? 'text-primary font-bold' : 'text-gray-600 hover:text-gray-900'}`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${(searchParams?.['price'] === option.value) || (!searchParams?.['price'] && option.value === '') ? 'border-primary' : 'border-gray-300'}`}>
+                                                {((searchParams?.['price'] === option.value) || (!searchParams?.['price'] && option.value === '')) && <div className="w-2 h-2 rounded-full bg-primary" />}
+                                            </div>
+                                            {option.label}
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 relative z-10">
-                            {featuredTours.map((tour: any) => (
-                                <TourCard
-                                    key={tour.id}
-                                    id={tour.id}
-                                    title={tour.title}
-                                    price={tour.price || 0}
-                                    location={tour.location || 'RD'}
-                                    image={tour.images?.[0]?.url}
-                                    agencyName={tour.agency?.name || 'Agencia Local'}
-                                    isAgencyPro={tour.agency?.tier === 'PRO'}
-                                    currency={tour.currency || 'DOP'}
-                                    isFeatured={true}
-                                    featuredPlan={tour.featuredPlan}
-                                    isFavorite={userFavorites.includes(tour.id)}
-                                />
-                            ))}
+                        <div>
+                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-4">Duración</h3>
+                            <div className="space-y-3">
+                                {['1-4 Horas', 'Medio día', 'Día completo', '2+ Días'].map((d, i) => (
+                                    <label key={i} className="flex items-center gap-2 text-sm text-gray-600 cursor-not-allowed opacity-60">
+                                        <input type="checkbox" disabled className="rounded border-gray-300" />
+                                        {d}
+                                    </label>
+                                ))}
+                                <p className="text-[10px] text-gray-400 italic">Próximamente</p>
+                            </div>
                         </div>
-                    </section>
-                )}
 
-                {/* Regular Section */}
-                <section>
-                    <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-                            {query ? "Más resultados" : "Todas las actividades"}
-                        </h2>
-                        {!query && <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{regularTours.length} Tours</span>}
+                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <h4 className="font-bold text-blue-900 text-sm mb-1">¿Necesitas ayuda?</h4>
+                            <p className="text-xs text-blue-700 mb-3">Nuestros expertos locales pueden ayudarte a planificar.</p>
+                            <button className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                                Contactar Soporte
+                            </button>
+                        </div>
+                    </aside>
+
+                    {/* Main Content */}
+                    <div className="flex-1 space-y-12">
+                        {/* Featured Section */}
+                        {featuredTours.length > 0 && (
+                            <section>
+                                <div className="flex items-center gap-2 mb-6">
+                                    <span className="text-xl">💎</span>
+                                    <h2 className="text-xl font-black text-gray-900">Recomendados</h2>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {featuredTours.map((tour: any) => (
+                                        <TourCard
+                                            key={tour.id}
+                                            id={tour.id}
+                                            title={tour.title}
+                                            price={tour.price || 0}
+                                            location={tour.location || 'RD'}
+                                            image={tour.images?.[0]?.url}
+                                            agencyName={tour.agency?.name || 'Agencia Local'}
+                                            isAgencyPro={tour.agency?.tier === 'PRO'}
+                                            currency={tour.currency || 'DOP'}
+                                            isFeatured={true}
+                                            featuredPlan={tour.featuredPlan}
+                                            isFavorite={userFavorites.includes(tour.id)}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Regular Section */}
+                        <section>
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-xl font-black text-gray-900">
+                                    {featuredTours.length > 0 ? "Más Resultados" : "Todas las actividades"}
+                                </h2>
+                                <span className="text-xs font-bold text-gray-400">{regularTours.length} resultados</span>
+                            </div>
+
+                            {regularTours.length === 0 && featuredTours.length === 0 ? (
+                                <div className="text-center py-24 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
+                                    <span className="text-6xl mb-6 block">🔍</span>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No encontramos nada para "{query}"</h3>
+                                    <p className="text-gray-500 mb-8 max-w-sm mx-auto">Intenta ajustar los filtros o buscar términos más generales.</p>
+                                    <Link href="/tours" className="inline-block bg-primary text-white font-bold px-8 py-3 rounded-full shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                                        Ver todos
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {regularTours.map((tour) => (
+                                        <TourCard
+                                            key={tour.id}
+                                            id={tour.id}
+                                            title={tour.title}
+                                            price={tour.price || 0}
+                                            location={tour.location || 'RD'}
+                                            image={tour.images?.[0]?.url}
+                                            agencyName={tour.agency?.name || 'Agencia Local'}
+                                            isAgencyPro={tour.agency?.tier === 'PRO'}
+                                            currency={tour.currency || 'DOP'}
+                                            isFavorite={userFavorites.includes(tour.id)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </section>
                     </div>
-
-                    {regularTours.length === 0 && featuredTours.length === 0 ? (
-                        <div className="text-center py-24 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
-                            <span className="text-6xl mb-6 block">🔍</span>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">No encontramos nada para "{query}"</h3>
-                            <p className="text-gray-500 mb-8 max-w-sm mx-auto">Prueba con términos más generales como "Punta Cana" o "Playa".</p>
-                            <Link href="/tours" className="inline-block bg-primary text-white font-bold px-8 py-3 rounded-full shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
-                                Ver todos los tours
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {regularTours.map((tour) => (
-                                <TourCard
-                                    key={tour.id}
-                                    id={tour.id}
-                                    title={tour.title}
-                                    price={tour.price || 0}
-                                    location={tour.location || 'RD'}
-                                    image={tour.images?.[0]?.url}
-                                    agencyName={tour.agency?.name || 'Agencia Local'}
-                                    isAgencyPro={tour.agency?.tier === 'PRO'}
-                                    currency={tour.currency || 'DOP'}
-                                    isFavorite={userFavorites.includes(tour.id)}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </section>
+                </div>
             </div>
         </div>
     );

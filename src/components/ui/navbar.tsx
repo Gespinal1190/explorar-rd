@@ -34,43 +34,58 @@ export default async function Navbar() {
                 {/* Right Actions */}
                 <div className="flex items-center space-x-2 md:space-x-4">
                     {session?.user ? (
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3 md:space-x-6">
+                            {/* Role-Specific Links */}
                             {session.user.role === 'AGENCY' && (
-                                <Link href="/dashboard/agency/profile" className="text-xs font-bold text-gray-700 hover:text-primary hidden lg:block">
-                                    📢 Mi Agencia
-                                </Link>
-                            )}
-                            {session.user.role === 'USER' && (
-                                <Link href="/dashboard/user/bookings" className="text-xs font-bold text-gray-700 hover:text-primary hidden lg:block">
-                                    ✈️ Mis Viajes
+                                <Link href="/dashboard/agency" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
+                                    <span>📊</span> Panel de Agencia
                                 </Link>
                             )}
 
-                            <div className="hidden lg:block text-right">
-                                <p className="text-xs font-semibold text-gray-900">{session.user.name}</p>
-                                <p className="text-[10px] text-gray-500 uppercase">{session.user.role}</p>
+                            {session.user.role === 'ADMIN' && (
+                                <Link href="/dashboard/admin" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
+                                    <span>🛡️</span> Administración
+                                </Link>
+                            )}
+
+                            {session.user.role === 'USER' && (
+                                <Link href="/dashboard/user/bookings" className="text-sm font-bold text-gray-700 hover:text-primary hidden lg:flex items-center gap-2">
+                                    <span>✈️</span> Mis Viajes
+                                </Link>
+                            )}
+
+                            {/* Use Separator */}
+                            <div className="hidden lg:block w-px h-6 bg-gray-200"></div>
+
+                            {/* User Profile */}
+                            <div className="flex items-center gap-3">
+                                <div className="hidden lg:block text-right leading-tight">
+                                    <p className="text-sm font-bold text-gray-900">{session.user.name?.split(' ')[0]}</p>
+                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{session.user.role === 'AGENCY' ? 'Partner' : session.user.role === 'ADMIN' ? 'Staff' : 'Viajero'}</p>
+                                </div>
+                                <Link
+                                    href={
+                                        session.user.role === 'ADMIN' ? '/dashboard/admin' :
+                                            session.user.role === 'AGENCY' ? '/dashboard/agency' :
+                                                '/dashboard/user'
+                                    }
+                                    className="hidden sm:flex w-10 h-10 bg-gray-100 rounded-full items-center justify-center text-gray-600 font-bold hover:bg-primary hover:text-white transition-all overflow-hidden border border-gray-200"
+                                >
+                                    {session.user.image ? (
+                                        <img src={session.user.image} alt={session.user.name || ""} className="w-full h-full object-cover" />
+                                    ) : (
+                                        session.user.name?.charAt(0)
+                                    )}
+                                </Link>
                             </div>
-                            <Link
-                                href={
-                                    session.user.role === 'ADMIN' ? '/dashboard/admin' :
-                                        session.user.role === 'AGENCY' ? '/dashboard/agency' :
-                                            '/dashboard/user'
-                                }
-                                className="hidden sm:flex w-9 h-9 bg-primary/10 rounded-full items-center justify-center text-primary font-bold hover:bg-primary hover:text-white transition-all overflow-hidden"
-                            >
-                                {session.user.image ? (
-                                    <img src={session.user.image} alt={session.user.name || ""} className="w-full h-full object-cover" />
-                                ) : (
-                                    session.user.name?.charAt(0)
-                                )}
-                            </Link>
                         </div>
                     ) : (
                         <div className="hidden md:flex items-center space-x-3">
-                            <Link href="/login" className="px-5 py-2 rounded-full border border-primary text-primary text-sm font-semibold hover:bg-primary/5 transition-colors">
+                            <Link href="/login" className="px-5 py-2.5 rounded-xl font-bold text-gray-600 hover:text-primary hover:bg-primary/5 transition-colors text-sm">
                                 Iniciar Sesión
                             </Link>
-                            <Link href="/agencies/register" className="px-5 py-2 rounded-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-md shadow-teal-500/20">
+                            <Link href="/agencies/register" className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2">
+                                <span>💼</span>
                                 Soy Agencia
                             </Link>
                         </div>

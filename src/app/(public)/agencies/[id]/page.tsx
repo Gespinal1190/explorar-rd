@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         select: { name: true }
     });
     if (!agency) return { title: 'Agencia no encontrada' };
-    return { title: `${agency.name} | ExploraRD` };
+    return { title: `${agency.name} | DescubreRD` };
 }
 
 export default async function AgencyProfilePage({ params }: { params: Promise<{ id: string }> }) {

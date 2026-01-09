@@ -15,7 +15,7 @@ const RatingStars = ({ rating = 5 }) => (
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
-    return { title: 'Mejores Agencias de Turismo | ExploraRD' };
+    return { title: 'Mejores Agencias de Turismo | DescubreRD' };
 }
 
 export default async function AgenciesPage() {
@@ -76,8 +76,8 @@ export default async function AgenciesPage() {
                                 key={agency.id}
                                 href={`/agencies/${agency.id}`}
                                 className={`group relative bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1 ${isPremium
-                                        ? 'shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-2 ring-transparent ring-offset-2 hover:ring-indigo-500'
-                                        : 'shadow-sm border border-gray-100 hover:shadow-md'
+                                    ? 'shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-2 ring-transparent ring-offset-2 hover:ring-indigo-500'
+                                    : 'shadow-sm border border-gray-100 hover:shadow-md'
                                     }`}
                             >
                                 {/* Premium Badge & Glow */}

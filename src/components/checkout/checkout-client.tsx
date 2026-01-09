@@ -59,8 +59,8 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
 
             const data = await res.json();
 
-            alert(`¡Reserva Creada con Éxito! ID: ${data.booking.id}`);
-            router.push("/dashboard/user/bookings");
+            // alert(`¡Reserva Creada con Éxito! ID: ${data.booking.id}`); 
+            router.push(`/checkout/success?bookingId=${data.booking.id}`);
         } catch (error) {
             if (!isProcessing) return; // Avoid alert if we already redirected
             alert("Hubo un error al procesar tu reserva. Detalle: " + (error instanceof Error ? error.message : "Error desconocido"));

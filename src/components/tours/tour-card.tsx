@@ -86,18 +86,19 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                 </button>
             </div>
 
-            <div className="p-4 md:p-6 flex-1 flex flex-col">
+            <div className="p-5 flex-1 flex flex-col">
                 {agencyName && (
-                    <div className="flex items-center justify-between mb-3 md:mb-4">
-                        <div className="flex items-center gap-2">
-                            <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold shadow-inner ${isAgencyPro ? 'bg-gradient-to-tr from-teal-400 to-blue-600 text-white' : 'bg-gray-100 text-gray-500 border border-gray-200'}`}>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-sm ${isAgencyPro || isFeatured ? 'bg-gradient-to-br from-teal-400 to-emerald-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
                                 {agencyName.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex flex-col">
-                                <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.1em] ${isAgencyPro ? 'text-teal-600' : 'text-gray-400'}`}>
-                                    {isAgencyPro ? 'VIP Partner 🏆' : 'Local Host'}
+                                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
+                                    {(isAgencyPro || isFeatured) && <svg className="w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
+                                    {isAgencyPro ? 'Partner Verificado' : 'Agencia Local'}
                                 </span>
-                                <span className="text-[11px] md:text-sm font-bold text-gray-900 leading-none mt-0.5 truncate max-w-[100px] sm:max-w-none">
+                                <span className="text-xs font-bold text-gray-900 truncate max-w-[140px]">
                                     {agencyName}
                                 </span>
                             </div>
@@ -105,29 +106,37 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                     </div>
                 )}
 
-                <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 leading-snug group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem] md:min-h-0">
+                <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {title}
                 </h3>
 
-                {/* Rating Placeholder */}
-                <div className="flex items-center gap-1 mb-4">
-                    <div className="flex text-amber-400 text-xs md:text-sm">
-                        {"★★★★★".split("").map((s, i) => <span key={i}>{s}</span>)}
+                {/* Specs Grid */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
+                        <span className="text-gray-400">⏱️</span>
+                        <span className="text-xs font-bold text-gray-700">4 - 6 Horas</span> {/* Placeholder duration until prop is passed */}
                     </div>
-                    <span className="text-[10px] md:text-xs text-gray-400 font-bold ml-1">4.8</span>
+                    <div className="bg-gray-50 rounded-lg p-2 flex items-center gap-2">
+                        <span className="text-gray-400">👥</span>
+                        <span className="text-xs font-bold text-gray-700">Grupos Pequeños</span>
+                    </div>
                 </div>
 
-                <div className="mt-auto flex items-end justify-between pt-4 border-t border-gray-50">
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                     <div>
-                        <p className="text-[9px] md:text-xs text-gray-400 font-bold uppercase tracking-tight">Desde</p>
-                        <div className="flex items-baseline gap-0.5 md:gap-1">
-                            <span className="text-[10px] md:text-sm text-gray-400 font-bold">{currency === 'USD' ? '$' : currency === 'EUR' ? '€' : 'RD$'}</span>
-                            <span className="font-black text-lg md:text-xl text-gray-900 leading-none">{price.toLocaleString()}</span>
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Precio Total</p>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-xs font-bold text-gray-400">{currency === 'USD' ? 'US$' : 'RD$'}</span>
+                            <span className="text-xl font-black text-gray-900">{price.toLocaleString()}</span>
                         </div>
                     </div>
 
-                    <Link href={`/tours/${id}`} className="px-5 py-2.5 bg-gray-900 lg:bg-gradient-to-r lg:from-[#2DD4BF] lg:to-[#0F766E] text-white text-xs font-bold rounded-xl md:rounded-lg hover:shadow-lg hover:shadow-teal-500/20 transition-all shadow-md active:scale-95">
-                        Explorar
+                    <Link href={`/tours/${id}`} className="group/btn relative px-6 py-3 bg-gray-900 overflow-hidden rounded-xl text-white text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                        <span className="relative flex items-center gap-2">
+                            Reservar
+                            <svg className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </span>
                     </Link>
                 </div>
             </div>

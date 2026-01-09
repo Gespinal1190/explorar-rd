@@ -3,7 +3,7 @@ import { InteractiveMap } from "@/components/destinations/interactive-map";
 import Link from "next/link";
 
 export const metadata = {
-    title: 'Explora República Dominicana | Destinos Explorar RD',
+    title: 'Explora República Dominicana | Destinos DescubreRD',
     description: 'Descubre los rincones más bellos de Quisqueya. Desde las playas de Punta Cana hasta las montañas de Jarabacoa.',
 };
 
@@ -26,7 +26,7 @@ export default function DestinosPage() {
             {/* Hero Header */}
             <header className="py-24 bg-white border-b border-gray-100 overflow-hidden relative">
                 <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none select-none overflow-hidden">
-                    <span className="text-[20rem] font-black absolute -top-20 -left-20 rotate-12">EXPLORA</span>
+                    <span className="text-[20rem] font-black absolute -top-20 -left-20 rotate-12">DESCUBRE</span>
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10 text-center">
@@ -34,7 +34,7 @@ export default function DestinosPage() {
                         Guía de Destinos
                     </span>
                     <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tight mb-6">
-                        Explora <span className="text-primary">República Dominicana</span>
+                        Descubre <span className="text-primary">República Dominicana</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed">
                         Desde las playas de Punta Cana hasta las montañas de Jarabacoa, descubre todos los rincones de nuestro paraíso caribeño.
@@ -106,7 +106,7 @@ export default function DestinosPage() {
                         </div>
                         <h2 className="text-4xl font-black text-gray-900 tracking-tight">¿Listo para vivir tu próxima aventura?</h2>
                         <p className="text-gray-500 text-lg font-medium leading-relaxed">
-                            No importa dónde elijas ir, Explorar RD te conecta con los mejores guías locales en cada rincón del país.
+                            No importa dónde elijas ir, DescubreRD te conecta con los mejores guías locales en cada rincón del país.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="/tours" className="px-10 py-4 bg-primary text-white font-black rounded-full shadow-xl shadow-primary/20 hover:scale-105 transition-all text-lg">
