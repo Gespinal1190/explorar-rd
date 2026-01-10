@@ -4,10 +4,18 @@ import { Link } from "@/navigation";
 import { Metadata } from 'next';
 
 // Generate static params for all blog posts
+// Generate static params for all blog posts
 export async function generateStaticParams() {
-    return blogPosts.map((post) => ({
-        slug: post.slug,
-    }));
+    const locales = ['es', 'en', 'fr'];
+    const params = [];
+
+    for (const locale of locales) {
+        for (const post of blogPosts) {
+            params.push({ slug: post.slug, locale });
+        }
+    }
+
+    return params;
 }
 
 // Generate metadata dynamically
