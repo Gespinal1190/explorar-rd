@@ -61,13 +61,24 @@ export default function PromoteModal({ tourId, isOpen, onClose, plans, agencyId 
 
     return (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-white/20">
-                <div className="p-8 border-b">
-                    <h2 className="text-2xl font-black text-gray-900 tracking-tighter">🚀 Destacar mi Anuncio</h2>
+            <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full relative border border-white/20 flex flex-col max-h-[90vh]">
+
+                {/* Close Button via X */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div className="p-6 border-b shrink-0">
+                    <h2 className="text-2xl font-black text-gray-900 tracking-tighter pr-8">🚀 Destacar mi Anuncio</h2>
                     <p className="text-sm text-gray-500 font-medium">Llega a miles de viajeros más posicionando tu tour en lo más alto.</p>
                 </div>
 
-                <div className="p-8 space-y-4 max-h-[60vh] overflow-y-auto">
+                <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar">
                     {displayPlans.length === 0 && <p className="text-center text-gray-500 py-4 font-medium">No hay planes de promoción activos.</p>}
 
                     {displayPlans.map(plan => (
@@ -97,7 +108,7 @@ export default function PromoteModal({ tourId, isOpen, onClose, plans, agencyId 
                     ))}
                 </div>
 
-                <div className="p-8 bg-gray-50 border-t flex flex-col gap-6">
+                <div className="p-6 bg-gray-50 border-t flex flex-col gap-6 shrink-0">
                     {selectedPlan ? (
                         <div className="space-y-4 animate-in slide-in-from-bottom duration-300">
                             <div className="flex justify-between items-center text-sm font-bold text-gray-600">
@@ -147,6 +158,6 @@ export default function PromoteModal({ tourId, isOpen, onClose, plans, agencyId 
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
