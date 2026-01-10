@@ -13,11 +13,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://descubrerd.app'),
     title: {
         template: '%s | DescubreRD',
-        default: 'DescubreRD | Turismo Interno República Dominicana',
+        default: 'Tours y excursiones en República Dominicana | DescubreRD',
     },
-    description: "Descubre las mejores excursiones y destinos en República Dominicana. Reserva online con agencias locales verificadas.",
+    description: "Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.",
+    alternates: {
+        canonical: '/',
+        languages: {
+            'es': '/es',
+            'en': '/en',
+            'fr': '/fr',
+        },
+    },
 };
 
 export default async function LocaleLayout({

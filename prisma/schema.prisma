@@ -139,6 +139,8 @@ model Tour {
   notIncludes String?
   requirements String?
   
+  slug        String   @unique
+
   // Social Integration
   instagramUrl String? // Specific post for this tour
   

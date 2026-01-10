@@ -45,12 +45,6 @@ async function main() {
                                 accountType: 'CORRIENTE',
                                 beneficiaryName: 'Explora Vida SRL'
                             },
-                            {
-                                bankName: 'Banreservas',
-                                accountNumber: '1112223334',
-                                accountType: 'AHORROS',
-                                beneficiaryName: 'Juan Pérez'
-                            }
                         ]
                     }
                 },
@@ -61,71 +55,76 @@ async function main() {
 
     const agencyUser = agencyUserRequest as any;
 
-    // 3. Create Tours for Agency
     if (agencyUser.agencyProfile) {
         const agencyId = agencyUser.agencyProfile.id
 
         const tours = [
             {
                 title: 'Isla Saona VIP - Catamarán y Lanchas',
+                slug: 'isla-saona-vip-catamaran-y-lanchas',
                 description: 'La excursión más popular de RD. Navega en catamarán con fiesta, visita la piscina natural con estrellas de mar y almuerza en la isla Saona.',
                 location: 'Punta Cana',
                 price: 4500,
                 duration: '10 horas',
                 includes: JSON.stringify(['Transporte Ida/Vuelta', 'Almuerzo Buffet', 'Barra Libre Nacional', 'Guía']),
-                images: ['https://images.unsplash.com/photo-1590523741831-ab7f291db9f7?q=80&w=800'],
+                images: ['/images/tours/saona.png'],
                 dates: ['2026-02-14', '2026-02-18', '2026-02-25', '2026-03-01']
             },
             {
                 title: 'Salto del Limón a Caballo',
+                slug: 'salto-del-limon-a-caballo',
                 description: 'Adéntrate en la selva de Samaná a caballo hasta llegar a la impresionante cascada del Limón. Un baño refrescante te espera.',
                 location: 'Samaná',
                 price: 3200,
                 duration: '6 horas',
                 includes: JSON.stringify(['Caballos', 'Guía Local', 'Almuerzo Típico', 'Entrada al Parque']),
-                images: ['https://images.unsplash.com/photo-1623164348562-q3245235235?q=80&w=800'],
+                images: ['/images/tours/limon.png'],
                 dates: ['2026-02-15', '2026-02-20', '2026-03-05']
             },
             {
                 title: 'Buggy Macao Extreme',
+                slug: 'buggy-macao-extreme',
                 description: 'Conduce tu propio buggy por caminos de tierra, visita una casa típica, prueba café y cacao, y termina en la playa Macao.',
                 location: 'Punta Cana',
                 price: 2800,
                 duration: '4 horas',
                 includes: JSON.stringify(['Buggy Polaris', 'Casco', 'Degustación', 'Agua']),
-                images: ['https://images.unsplash.com/photo-1534954471963-3d4432174c0c?q=80&w=800'],
+                images: ['/images/tours/buggy.png'],
                 dates: ['2026-01-20', '2026-01-25', '2026-01-28']
             },
             {
                 title: 'Zona Colonial Histórica',
+                slug: 'zona-colonial-historica',
                 description: 'Recorrido a pie por la primada de América. Visita el Alcázar de Colón, la Catedral y las calles empedradas llenas de historia.',
                 location: 'Santo Domingo',
                 price: 1500,
                 duration: '3 horas',
                 includes: JSON.stringify(['Guía Certificado', 'Entradas a Museos', 'Agua']),
-                images: ['https://images.unsplash.com/photo-1548690321-fb8bcc61b99c?q=80&w=800'],
+                images: ['/images/tours/zona.png'],
                 dates: ['2026-01-15', '2026-01-22', '2026-01-29']
             },
             {
                 title: '27 Charcos de Damajagua',
+                slug: '27-charcos-de-damajagua',
                 description: 'Aventura pura saltando y deslizándote por los charcos naturales de Damajagua. Adrenalina y naturaleza.',
                 location: 'Puerto Plata',
                 price: 3800,
                 duration: '7 horas',
                 includes: JSON.stringify(['Equipo de Seguridad', 'Guías', 'Almuerzo', 'Transporte']),
-                images: ['https://images.unsplash.com/photo-1589802829985-817e51171b92?q=80&w=800'],
+                images: ['/images/tours/limon.png'], // Reusing waterfall image for Damajagua as it is similar
                 dates: ['2026-03-10', '2026-03-15']
             }
         ]
 
         for (const tour of tours) {
-            // Check if exists to avoid dupes on multiple runs
-            const exists = await prisma.tour.findFirst({ where: { title: tour.title, agencyId } })
+            // Upsert based on slug
+            const exists = await prisma.tour.findUnique({ where: { slug: tour.slug } })
             if (!exists) {
                 await prisma.tour.create({
                     data: {
                         agencyId,
                         title: tour.title,
+                        slug: tour.slug,
                         description: tour.description,
                         location: tour.location,
                         price: tour.price,
@@ -134,28 +133,23 @@ async function main() {
                         images: {
                             create: tour.images.map(url => ({ url }))
                         },
-                        // @ts-ignore - dates relation is valid
+                        // @ts-ignore
                         dates: tour.dates ? {
                             create: tour.dates.map(d => ({ date: new Date(d) }))
                         } : undefined
                     }
                 })
             } else {
-                // Optimization: Update dates if tour exists to ensure we have future dates
-                if (tour.dates) {
-                    // Clean up old dates and re-add new ones to ensure freshness
-                    // @ts-ignore - tourDate model exists
-                    await prisma.tourDate.deleteMany({ where: { tourId: exists.id } })
-                    await prisma.tour.update({
-                        where: { id: exists.id },
-                        data: {
-                            // @ts-ignore - dates relation update is valid
-                            dates: {
-                                create: tour.dates.map(d => ({ date: new Date(d) }))
-                            }
+                // Update images if verifying fix
+                await prisma.tourImage.deleteMany({ where: { tourId: exists.id } });
+                await prisma.tour.update({
+                    where: { id: exists.id },
+                    data: {
+                        images: {
+                            create: tour.images.map(url => ({ url }))
                         }
-                    })
-                }
+                    }
+                })
             }
         }
     }
@@ -172,7 +166,67 @@ async function main() {
         },
     })
 
-    console.log('Seeding finished. Accounts: admin@test.com, agencia@test.com, usuario@test.com (pass: password123)')
+    // 5. RESTORED: Create Flota La Extra User & Agency
+    const flotaUserRequest = await prisma.user.upsert({
+        where: { email: 'flotalaex@gmail.com' },
+        update: {},
+        create: {
+            email: 'flotalaex@gmail.com',
+            name: 'Flota La Extra',
+            password: hashedPassword,
+            role: 'AGENCY',
+            agencyProfile: {
+                create: {
+                    name: 'Flota La Extra VIP',
+                    description: 'Transporte marítimo y excursiones privadas a Cayo Arena y Montecristi.',
+                    phone: '(829) 555-0999',
+                    whatsapp: '18295550999',
+                    isVerified: true,
+                    tier: 'PRO'
+                }
+            }
+        },
+        include: { agencyProfile: true }
+    })
+
+    const flotaUser = flotaUserRequest as any;
+    if (flotaUser.agencyProfile) {
+        const agencyId = flotaUser.agencyProfile.id
+
+        // Restore Cayo Arena Tour
+        const tourData = {
+            title: 'Cayo Arena Paradise VIP',
+            slug: 'cayo-arena-paradise-vip',
+            description: 'Visita el único cayo de coral en medio del océano. Aguas cristalinas, snorkel con peces de colores y manglares.',
+            location: 'Puerto Plata', // Nearby
+            price: 3500,
+            duration: '8 horas',
+            includes: JSON.stringify(['Lancha Rápida', 'Equipo Snorkel', 'Frutas', 'Almuerzo']),
+            images: ['/images/tours/saona.png'], // Reusing nice beach image
+            dates: ['2026-02-10', '2026-02-20']
+        }
+
+        const exists = await prisma.tour.findUnique({ where: { slug: tourData.slug } })
+        if (!exists) {
+            await prisma.tour.create({
+                data: {
+                    agencyId,
+                    title: tourData.title,
+                    slug: tourData.slug,
+                    description: tourData.description,
+                    location: tourData.location,
+                    price: tourData.price,
+                    duration: tourData.duration,
+                    includes: tourData.includes,
+                    images: { create: tourData.images.map(url => ({ url })) },
+                    // @ts-ignore
+                    dates: { create: tourData.dates.map(d => ({ date: new Date(d) })) }
+                }
+            })
+        }
+    }
+
+    console.log('Seeding finished. Accounts: admin, agencia, usuario, flotalaex.')
 }
 
 main()

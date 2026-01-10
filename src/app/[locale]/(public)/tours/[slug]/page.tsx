@@ -9,28 +9,31 @@ import { MobileStickyAction } from "@/components/tours/mobile-sticky-action";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     try {
-        const { id } = await params;
+        const { slug } = await params;
         const tour = await prisma.tour.findUnique({
-            where: { id },
-            select: { title: true }
+            where: { slug },
+            select: { title: true, description: true }
         });
         if (!tour) return { title: 'Tour no encontrado' };
-        return { title: `${tour.title} | DescubreRD` };
+        return {
+            title: `${tour.title} | DescubreRD`,
+            description: tour.description
+        };
     } catch (e) {
         console.error("Metadata error:", e);
         return { title: 'DescubreRD' };
     }
 }
 
-export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+export default async function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     const locale = await getLocale();
     let tourRaw; // Changed from `let tour;`
     try {
         tourRaw = await prisma.tour.findUnique({
-            where: { id },
+            where: { slug },
             include: {
                 images: true,
                 agency: true,
