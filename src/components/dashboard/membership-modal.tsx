@@ -167,6 +167,21 @@ export default function MembershipModal({ isOpen, onClose, plans, agencyId }: { 
                                     }
                                 }}
                             />
+
+                            <div className="pt-4 border-t border-gray-100 mt-4">
+                                <p className="text-xs text-center text-gray-500 mb-2">¿Tienes problemas con el botón?</p>
+                                <a
+                                    href="https://paypal.me/GermanEspinal777"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block w-full py-3 text-center text-primary font-bold text-sm bg-primary/5 hover:bg-primary/10 rounded-xl transition-colors"
+                                >
+                                    Pagar manualmente vía PayPal.me
+                                </a>
+                                <p className="text-[10px] text-center text-gray-400 mt-2">
+                                    Nota: Si pagas manualmente, envíanos el comprobante por WhatsApp para activar tu membresía.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 )}

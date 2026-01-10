@@ -141,10 +141,15 @@ export default async function Home() {
               <p className="text-gray-300 text-sm mb-6 leading-relaxed">
                 {t('agencyCta.description')}
               </p>
-              <Link href="/agencies/register" className="flex items-center justify-between w-full px-5 py-3 bg-white text-gray-900 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
-                {t('agencyCta.button')}
-                <span className="text-lg">→</span>
-              </Link>
+              <div className="space-y-3">
+                <Link href="/agencies/register" className="flex items-center justify-between w-full px-5 py-3 bg-white text-gray-900 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
+                  {t('agencyCta.button')}
+                  <span className="text-lg">→</span>
+                </Link>
+                <Link href="/login" className="block text-center text-xs text-white/50 hover:text-white transition-colors underline font-medium">
+                  Ya tengo cuenta, iniciar sesión
+                </Link>
+              </div>
             </div>
           </div>
         </div>

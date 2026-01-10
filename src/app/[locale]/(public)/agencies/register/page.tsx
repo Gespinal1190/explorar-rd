@@ -132,14 +132,6 @@ export default function AgencyRegisterPage() {
             return;
         }
 
-        const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'];
-        const emailDomain = formData.email.split('@')[1]?.toLowerCase();
-
-        if (!emailDomain || !allowedDomains.includes(emailDomain)) {
-            setError(t('errorEmailDomain'));
-            return;
-        }
-
         if (!formData.acceptTerms) {
             setError(t('errorTerms'));
             return;

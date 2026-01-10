@@ -31,17 +31,8 @@ export default function LoginForm() {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
-        const allowedDomains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'];
-        const emailDomain = email.split('@')[1]?.toLowerCase();
-
-        if (!emailDomain || !allowedDomains.includes(emailDomain)) {
-            // Exceptions for existing test accounts
-            if (email !== 'agencia@test.com' && email !== 'admin@test.com') {
-                setErrorMessage(t('securityRestriction'));
-                setIsPending(false);
-                return;
-            }
-        }
+        setIsPending(true);
+        setErrorMessage(null);
 
         try {
             await loginWithEmail(email, password);

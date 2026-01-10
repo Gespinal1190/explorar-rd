@@ -117,6 +117,21 @@ export default function PromoteModal({ tourId, isOpen, onClose, plans, agencyId 
                             />
 
                             <p className="text-[10px] text-center text-gray-400 font-medium">Pago seguro procesado por PayPal. Tu promoción se activará al instante.</p>
+
+                            <div className="pt-4 border-t border-gray-100">
+                                <p className="text-xs text-center text-gray-500 mb-2">¿Tienes problemas con el botón?</p>
+                                <a
+                                    href="https://paypal.me/GermanEspinal777"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block w-full py-3 text-center text-primary font-bold text-sm bg-primary/5 hover:bg-primary/10 rounded-xl transition-colors"
+                                >
+                                    Pagar manualmente vía PayPal.me
+                                </a>
+                                <p className="text-[10px] text-center text-gray-400 mt-2">
+                                    Nota: Si pagas manualmente, envíanos el comprobante por WhatsApp para activar tu plan.
+                                </p>
+                            </div>
                         </div>
                     ) : (
                         <p className="text-center font-bold text-gray-400 py-2">Selecciona un plan para continuar con el pago</p>

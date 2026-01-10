@@ -35,7 +35,7 @@ export const PayPalPaymentButton = ({
                 "clientId": clientId,
                 currency: currency,
                 intent: "capture",
-                commit: true // Directs user to 'Pay Now' flow
+                commit: true
             }}>
                 <div className="relative z-0">
                     <PayPalButtons
@@ -56,10 +56,7 @@ export const PayPalPaymentButton = ({
                                             currency_code: currency
                                         },
                                         description: description,
-                                        custom_id: JSON.stringify(metadata),
-                                        payee: {
-                                            email_address: "germanrddesign@gmail.com"
-                                        }
+                                        custom_id: JSON.stringify(metadata)
                                     },
                                 ],
                                 payment_source: {
@@ -67,7 +64,8 @@ export const PayPalPaymentButton = ({
                                         experience_context: {
                                             brand_name: "ExplorarRD",
                                             user_action: "PAY_NOW",
-                                            shipping_preference: "NO_SHIPPING"
+                                            shipping_preference: "NO_SHIPPING",
+                                            landing_page: "LOGIN"
                                         }
                                     }
                                 }
