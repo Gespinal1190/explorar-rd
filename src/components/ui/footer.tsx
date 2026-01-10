@@ -41,16 +41,16 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold mb-6">{t('legal')}</h4>
                         <ul className="space-y-3 text-sm text-gray-400">
-                            <li><Link href="/terms" className="hover:text-white">{t('terms')}</Link></li>
-                            <li><Link href="/privacy" className="hover:text-white">{t('privacy')}</Link></li>
-                            <li><Link href="/cookies" className="hover:text-white">{t('cookies')}</Link></li>
+                            <li><Link href="/legal/terms" className="hover:text-white">{t('terms')}</Link></li>
+                            <li><Link href="/legal/privacy" className="hover:text-white">{t('privacy')}</Link></li>
+                            <li><Link href="/legal/cookies" className="hover:text-white">{t('cookies')}</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-bold mb-6">{t('contact')}</h4>
                         <ul className="space-y-3 text-sm text-gray-400">
-                            <li>info@explorard.com</li>
+                            <li>info@descubrerd.com</li>
                             <li>{t('address')}</li>
                         </ul>
                     </div>

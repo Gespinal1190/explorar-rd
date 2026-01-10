@@ -62,7 +62,7 @@ export const PayPalPaymentButton = ({
                                 payment_source: {
                                     paypal: {
                                         experience_context: {
-                                            brand_name: "ExplorarRD",
+                                            brand_name: "DescubreRD",
                                             user_action: "PAY_NOW",
                                             shipping_preference: "NO_SHIPPING",
                                             landing_page: "LOGIN"
