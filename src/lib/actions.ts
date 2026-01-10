@@ -143,11 +143,20 @@ export async function createTour(prevState: string | undefined, formData: FormDa
             return "Tu agencia ha sido pausada temporalmente por la administración. No puedes crear nuevos anuncios en este momento.";
         }
 
+        // Simple slugify function
+        const slug = title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '') + '-' + Date.now().toString().slice(-4); // Append timestamp suffix for uniqueness
+
         // MAPPING 'address' input to 'requirements' DB column because migration failed (EPERM)
         await prisma.tour.create({
             data: {
                 agencyId: agency.id,
                 title,
+                slug,
                 description,
                 location,
                 requirements: address,

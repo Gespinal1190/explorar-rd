@@ -54,6 +54,7 @@ async function main() {
             data: {
                 agencyId: agency.id,
                 title: tourTitle,
+                slug: 'excursion-vip-bahia-de-las-aguilas',
                 description: 'Descubre el paraíso virgen de Bahía de las Águilas con nuestro servicio VIP. Incluye transporte en autobús de lujo, lancha privada, tiempo libre en la playa más cristalina del país y un almuerzo buffet de mariscos frescos en Cabo Rojo. Ideal para desconectar y conectar con la naturaleza.',
                 location: 'Pedernales',
                 latitude: 17.8667,
