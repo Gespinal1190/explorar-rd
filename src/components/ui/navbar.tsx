@@ -30,6 +30,9 @@ export default async function Navbar() {
                     <Link href="/destinos" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
                         {t('destinations')}
                     </Link>
+                    <Link href="/blog" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
+                        {t('blog')}
+                    </Link>
                     <Link href="/agencies" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
                         {t('agencies')}
                     </Link>
