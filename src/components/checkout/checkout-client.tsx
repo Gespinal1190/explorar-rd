@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/navigation";
+import { useRouter, Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 
 interface CheckoutClientProps {
@@ -209,7 +209,9 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                     />
                 </div>
                 <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer select-none">
-                    {t('terms')}
+                    {t.rich('terms', {
+                        link: (chunks) => <Link href="/legal/terms" target="_blank" className="font-bold underline text-primary hover:text-primary/80">{chunks}</Link>
+                    })}
                 </label>
             </div>
 

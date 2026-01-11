@@ -91,7 +91,7 @@
         "transfer": "Transferencia Bancaria",
         "creditCard": "Tarjeta de Crédito / Débito",
         "cash": "Efectivo",
-        "terms": "He leído y acepto los Términos y Condiciones"
+        "terms": "He leído y acepto los <link>Términos y Condiciones</link>"
     },
     "Login": {
         "welcomeBack": "Bienvenido de vuelta",

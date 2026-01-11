@@ -258,7 +258,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
 
             {/* Mobile Sticky CTA Bar */}
             {/* Mobile Sticky CTA Bar */}
-            <MobileStickyAction price={tour.price} currency={tour.currency || 'DOP'} />
+            <div className="lg:hidden">
+                <MobileStickyAction price={tour.price} currency={tour.currency || 'DOP'} />
+            </div>
 
             {/* Mobile Booking Form Location (Anchor) */}
             <div id="mobile-booking-form" className="lg:hidden container mx-auto px-4 pb-24">
