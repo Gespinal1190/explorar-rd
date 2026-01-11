@@ -176,7 +176,7 @@ async function main() {
                 update: {
                     phone: '(809) 756-3786',
                     whatsapp: '18097563786',
-                    instagram: null,
+                    instagram: 'https://www.instagram.com/laextours/',
                     website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
                     licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg' // Placeholder
@@ -196,7 +196,7 @@ async function main() {
                     description: 'Agencia de tours especializados en Monte Cristi y Cayo Arena.',
                     phone: '(809) 756-3786',
                     whatsapp: '18097563786',
-                    instagram: null,
+                    instagram: 'https://www.instagram.com/laextours/',
                     website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
                     licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg', // Placeholder
