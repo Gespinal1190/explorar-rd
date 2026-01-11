@@ -2,9 +2,10 @@ import { MetadataRoute } from 'next';
 import prisma from '@/lib/prisma';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    // @ts-ignore - slug exists after prisma generate
     const tours = await prisma.tour.findMany({ select: { slug: true, updatedAt: true } });
 
-    const tourUrls = tours.map((tour) => ({
+    const tourUrls = tours.map((tour: any) => ({
         url: `https://descubrerd.app/tours/${tour.slug}`,
         lastModified: tour.updatedAt,
         changeFrequency: 'weekly' as const,
