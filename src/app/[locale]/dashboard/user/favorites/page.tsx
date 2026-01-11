@@ -40,6 +40,7 @@ export default async function UserFavoritesPage() {
                         <TourCard
                             key={tour.id}
                             id={tour.id}
+                            slug={tour.slug}
                             title={tour.title}
                             price={tour.price}
                             location={tour.location}

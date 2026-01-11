@@ -87,7 +87,7 @@ export default function BookingCard({ booking }: { booking: any }) {
 
                     <div className="mt-4 pt-4 border-t border-gray-50 flex flex-wrap gap-4 items-center justify-between">
                         <div className="flex gap-4">
-                            <Link href={`/tours/${booking.tourId}`} className="text-xs font-bold text-gray-600 hover:text-primary">{t('viewTour')}</Link>
+                            <Link href={`/tours/${booking.tour.slug || booking.tourId}`} className="text-xs font-bold text-gray-600 hover:text-primary">{t('viewTour')}</Link>
                             {booking.status === 'CONFIRMED' && (
                                 <button className="text-xs font-bold text-primary hover:text-primary-dark">{t('downloadTicket')}</button>
                             )}

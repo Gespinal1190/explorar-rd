@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 
 interface TourProps {
     id: string;
+    slug?: string;
     title: string;
     price: number;
     location: string;
@@ -21,7 +22,7 @@ interface TourProps {
     duration?: string;
 }
 
-export function TourCard({ id, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false, duration, rating }: TourProps) {
+export function TourCard({ id, slug, title, price, location, image, agencyName, isAgencyPro, currency = "DOP", isFeatured, featuredPlan, isFavorite: initialIsFavorite = false, duration, rating }: TourProps) {
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
     const [isLoading, setIsLoading] = useState(false);
     const t = useTranslations("TourCard");
@@ -142,7 +143,7 @@ export function TourCard({ id, title, price, location, image, agencyName, isAgen
                         </div>
                     </div>
 
-                    <Link href={`/tours/${id}`} className="group/btn relative px-6 py-3 bg-gray-900 overflow-hidden rounded-xl text-white text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
+                    <Link href={`/tours/${slug || id}`} className="group/btn relative px-6 py-3 bg-gray-900 overflow-hidden rounded-xl text-white text-xs font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                         <span className="relative flex items-center gap-2">
                             {t('viewTour')}

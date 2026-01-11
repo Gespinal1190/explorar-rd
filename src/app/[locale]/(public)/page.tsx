@@ -75,7 +75,7 @@ export default async function Home() {
       <Navbar />
 
       {/* Hero Section - Product Focused */}
-      <section className="relative min-h-[90svh] md:h-[85vh] flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative min-h-[90svh] md:min-h-[85vh] flex flex-col items-center justify-center overflow-hidden gap-8 pt-24 pb-12">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 z-10" />
@@ -86,7 +86,7 @@ export default async function Home() {
           />
         </div>
 
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-10 md:mt-0 flex-1 lg:flex-none justify-center">
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center justify-center">
           {/* Left Column: Traveller Focus (Primary) */}
           <div className="text-center lg:text-left space-y-8 animate-in slide-in-from-bottom-5 duration-700 delay-100">
             <div className="space-y-4">
@@ -154,7 +154,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="relative w-full z-30 mt-12 mb-8 lg:absolute lg:bottom-10 lg:my-0 lg:mb-0">
+        <div className="relative w-full z-30">
           <div className="w-full max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-hide">
             <div className="flex justify-center lg:justify-start gap-3 min-w-max pb-2">
               {categories.map((cat) => {
@@ -241,7 +241,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Reusing featured tours for demo but usually this would be a filtered subset */}
             {featuredTours.slice(0, 3).map((tour: any) => (
-              <Link href={`/tours/${tour?.id}`} key={tour?.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group">
+              <Link href={`/tours/${tour?.slug || tour?.id}`} key={tour?.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group">
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gray-200 overflow-hidden shrink-0">
                   <img src={tour?.images?.[0]?.url || '/placeholder.jpg'} alt={tour?.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
@@ -284,6 +284,7 @@ export default async function Home() {
                 <TourCard
                   key={tour?.id}
                   id={tour?.id}
+                  slug={tour?.slug}
                   title={tour?.title}
                   price={tour?.price || 0}
                   currency={tour?.currency || 'DOP'}
@@ -296,6 +297,7 @@ export default async function Home() {
                   isFavorite={isFavorite}
                 />
               );
+
             })}
           </div>
 

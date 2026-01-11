@@ -254,6 +254,7 @@ export default async function ToursPage(props: {
                                         <TourCard
                                             key={tour.id}
                                             id={tour.id}
+                                            slug={tour.slug}
                                             title={tour.title}
                                             price={tour.price || 0}
                                             location={tour.location || 'RD'}
@@ -295,6 +296,7 @@ export default async function ToursPage(props: {
                                         <TourCard
                                             key={tour.id}
                                             id={tour.id}
+                                            slug={tour.slug}
                                             title={tour.title}
                                             price={tour.price || 0}
                                             location={tour.location || 'RD'}
