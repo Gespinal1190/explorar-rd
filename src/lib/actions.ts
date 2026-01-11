@@ -174,7 +174,12 @@ export async function createTour(prevState: string | undefined, formData: FormDa
                 },
                 dates: {
                     create: datesToCreate
-                }
+                },
+                // FORCE STATUS TO PENDING_REVIEW FOR ALL NEW TOURS
+                // Even if agency is active, the TOUR itself needs approval or verification if that's the requirement.
+                // Or if the requirement is just Agency Approval, ensure the check above (lines 142-145) is working correctly.
+                // Assuming the user wants strict control:
+                status: 'PENDING_REVIEW',
             }
         });
     } catch (error) {
