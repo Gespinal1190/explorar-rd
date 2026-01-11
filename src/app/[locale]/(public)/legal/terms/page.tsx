@@ -106,7 +106,7 @@ export default function TermsPage() {
             <section>
                 <h2>9. Contacto</h2>
                 <p>
-                    Si tiene preguntas sobre estos Términos, contáctenos en: <a href="mailto:legal@descubrerd.com">legal@descubrerd.com</a>
+                    Si tiene preguntas sobre estos Términos, contáctenos en: <a href="mailto:legal@descubrerd.app">legal@descubrerd.app</a>
                 </p>
             </section>
         </>

@@ -50,7 +50,7 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold mb-6">{t('contact')}</h4>
                         <ul className="space-y-3 text-sm text-gray-400">
-                            <li>info@descubrerd.com</li>
+                            <li>info@descubrerd.app</li>
                             <li>{t('address')}</li>
                         </ul>
                     </div>
