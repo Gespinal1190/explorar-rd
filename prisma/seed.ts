@@ -34,9 +34,10 @@ async function main() {
                     phone: '(809) 555-0101',
                     whatsapp: '18095550101',
                     instagram: 'exploravidard',
-                    isVerified: true,
+                    isVerified: false,
+                    status: 'PENDING', // Test agency starts as PENDING to test approval workflow
                     // @ts-ignore - tier is valid in schema
-                    tier: 'PRO',
+                    tier: 'FREE',
                     bankAccounts: {
                         create: [
                             {
