@@ -5,12 +5,14 @@ import { redirect } from "@/navigation";
 
 export default async function NewTourPage() {
     const session = await auth();
-    if (!session?.userId) {
+    const userId = session?.user?.id;
+
+    if (!userId) {
         redirect('/login');
     }
 
     const agency = await prisma.agencyProfile.findUnique({
-        where: { userId: String(session.userId) }
+        where: { userId: userId }
     });
 
     if (!agency || agency.status !== 'ACTIVE') {
