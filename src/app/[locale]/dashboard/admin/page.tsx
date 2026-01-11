@@ -6,9 +6,15 @@ import { revalidatePath } from "next/cache";
 
 async function toggleVerification(agencyId: string, currentStatus: boolean | null) {
     "use server";
+    const newVerifiedStatus = !currentStatus;
     await prisma.agencyProfile.update({
         where: { id: agencyId },
-        data: { isVerified: !currentStatus }
+        data: {
+            isVerified: newVerifiedStatus,
+            // When activating (verifying), set status to ACTIVE
+            // When deactivating (pausing), set status to PAUSED
+            status: newVerifiedStatus ? 'ACTIVE' : 'PAUSED'
+        }
     });
     revalidatePath("/dashboard/admin");
 }
