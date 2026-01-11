@@ -174,8 +174,8 @@ async function main() {
         update: {
             agencyProfile: {
                 update: {
-                    phone: '(829) 555-0999',
-                    whatsapp: '18295550999',
+                    phone: '(809) 756-3786',
+                    whatsapp: '18097563786',
                     instagram: null,
                     website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
@@ -194,8 +194,8 @@ async function main() {
                 create: {
                     name: 'Flota La Extra',
                     description: 'Agencia de tours especializados en Monte Cristi y Cayo Arena.',
-                    phone: '(829) 555-0999',
-                    whatsapp: '18295550999',
+                    phone: '(809) 756-3786',
+                    whatsapp: '18097563786',
                     instagram: null,
                     website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
