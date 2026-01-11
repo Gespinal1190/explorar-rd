@@ -176,9 +176,8 @@ async function main() {
                 update: {
                     phone: '(829) 555-0999',
                     whatsapp: '18295550999',
-                    // Setting these to null as confirmed by user ("N/A")
                     instagram: null,
-                    website: null,
+                    website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
                     licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg' // Placeholder
                 }
@@ -198,7 +197,7 @@ async function main() {
                     phone: '(829) 555-0999',
                     whatsapp: '18295550999',
                     instagram: null,
-                    website: null,
+                    website: 'https://laextours.com/',
                     rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
                     licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg', // Placeholder
                     isVerified: true,
