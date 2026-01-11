@@ -66,6 +66,7 @@ export async function register(prevState: string | undefined, formData: FormData
                     userId: user.id,
                     name: name,
                     isVerified: false,
+                    status: 'PENDING', // Force PENDING status for admin approval
                     phone,
                     description,
                     instagram,
@@ -83,7 +84,7 @@ export async function register(prevState: string | undefined, formData: FormData
         return "Error al registrar usuario.";
     }
 
-    return "Cuenta creada exitosamente. Por favor inicia sesión.";
+    return "Cuenta creada exitosamente. Tu agencia está pendiente de aprobación por el administrador.";
 }
 
 // Tour Actions
@@ -138,9 +139,9 @@ export async function createTour(prevState: string | undefined, formData: FormDa
         const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
         if (!agency) return "Perfil de agencia no encontrado";
 
-        // CHECK IF PAUSED
-        if (agency.status === 'PAUSED') {
-            return "Tu agencia ha sido pausada temporalmente por la administración. No puedes crear nuevos anuncios en este momento.";
+        // CRITICAL CHECK: AGENCY MUST BE ACTIVE (APPROVED)
+        if (agency.status !== 'ACTIVE') {
+            return "Tu agencia aún no ha sido aprobada por el administrador. No puedes publicar anuncios todavía.";
         }
 
         // Simple slugify function
