@@ -167,20 +167,23 @@ async function main() {
     })
 
     // 5. RESTORED: Create Flota La Extra User & Agency
+    // 5. RESTORED: Create Flota La Extra User & Agency (with original ID)
     const flotaUserRequest = await prisma.user.upsert({
         where: { email: 'flotalaex@gmail.com' },
         update: {},
         create: {
+            // Using the ID provided by the user from Firebase
+            id: 'RAMulXwAvqMOGJPpnrSWCw3PeyZ2',
             email: 'flotalaex@gmail.com',
             name: 'Flota La Extra',
             password: hashedPassword,
             role: 'AGENCY',
             agencyProfile: {
                 create: {
-                    name: 'Flota La Extra VIP',
-                    description: 'Transporte marítimo y excursiones privadas a Cayo Arena y Montecristi.',
-                    phone: '(829) 555-0999',
-                    whatsapp: '18295550999',
+                    name: 'Flota La Extra',
+                    description: 'Agencia de tours especializados en Monte Cristi y Cayo Arena.',
+                    phone: '(809) 555-0000', // Placeholder
+                    whatsapp: '18095550000', // Placeholder
                     isVerified: true,
                     tier: 'PRO'
                 }
@@ -193,17 +196,18 @@ async function main() {
     if (flotaUser.agencyProfile) {
         const agencyId = flotaUser.agencyProfile.id
 
-        // Restore Cayo Arena Tour
+        // Restore "Los 3 Ojos" Tour (Placeholder based on user recollection)
+        // User mentioned "Tour 3 Ojos" existed before SEO work.
         const tourData = {
-            title: 'Cayo Arena Paradise VIP',
-            slug: 'cayo-arena-paradise-vip',
-            description: 'Visita el único cayo de coral en medio del océano. Aguas cristalinas, snorkel con peces de colores y manglares.',
-            location: 'Puerto Plata', // Nearby
-            price: 3500,
-            duration: '8 horas',
-            includes: JSON.stringify(['Lancha Rápida', 'Equipo Snorkel', 'Frutas', 'Almuerzo']),
-            images: ['/images/tours/saona.png'], // Reusing nice beach image
-            dates: ['2026-02-10', '2026-02-20']
+            title: 'Excursión Los Tres Ojos',
+            slug: 'excursion-los-tres-ojos',
+            description: 'Descubre las maravillas naturales del Parque Nacional Los Tres Ojos. Un recorrido por lagunas subterráneas y cuevas impresionantes en el corazón de Santo Domingo.',
+            location: 'Santo Domingo',
+            price: 2500, // Estimated placeholder
+            duration: '4 horas',
+            includes: JSON.stringify(['Transporte', 'Entrada al Parque', 'Guía']),
+            images: ['/images/destinations/santo-domingo.jpg'], // Placeholder image
+            dates: ['2026-03-15', '2026-03-20']
         }
 
         const exists = await prisma.tour.findUnique({ where: { slug: tourData.slug } })
