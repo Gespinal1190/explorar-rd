@@ -170,7 +170,19 @@ async function main() {
     // 5. RESTORED: Create Flota La Extra User & Agency (with original ID)
     const flotaUserRequest = await prisma.user.upsert({
         where: { email: 'flotalaex@gmail.com' },
-        update: {},
+        update: {
+            agencyProfile: {
+                update: {
+                    phone: '(829) 555-0999',
+                    whatsapp: '18295550999',
+                    // Setting these to null as confirmed by user ("N/A")
+                    instagram: null,
+                    website: null,
+                    rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
+                    licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg' // Placeholder
+                }
+            }
+        },
         create: {
             // Using the ID provided by the user from Firebase
             id: 'RAMulXwAvqMOGJPpnrSWCw3PeyZ2',
@@ -184,6 +196,10 @@ async function main() {
                     description: 'Agencia de tours especializados en Monte Cristi y Cayo Arena.',
                     phone: '(829) 555-0999',
                     whatsapp: '18295550999',
+                    instagram: null,
+                    website: null,
+                    rnc: 'gs://explorard-19b5b.firebasestorage.app/docs/rnc.jpg', // Placeholder
+                    licenseUrl: 'gs://explorard-19b5b.firebasestorage.app/docs/registro.jpg', // Placeholder
                     isVerified: true,
                     tier: 'PRO'
                 }
