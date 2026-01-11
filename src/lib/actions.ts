@@ -139,9 +139,19 @@ export async function createTour(prevState: string | undefined, formData: FormDa
         const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
         if (!agency) return "Perfil de agencia no encontrado";
 
-        // CRITICAL CHECK: AGENCY MUST BE ACTIVE (APPROVED)
+        // 1. Check if explicitly PAUSED
+        if (agency.status === 'PAUSED') {
+            return "Tu agencia ha sido pausada por la administración. No puedes crear nuevos anuncios.";
+        }
+
+        // 2. Check if PENDING (Not yet approved)
+        if (agency.status === 'PENDING') {
+            return "Tu agencia está pendiente de aprobación. Aún no puedes publicar anuncios.";
+        }
+
+        // 3. General catch-all: MUST BE ACTIVE
         if (agency.status !== 'ACTIVE') {
-            return "Tu agencia aún no ha sido aprobada por el administrador. No puedes publicar anuncios todavía.";
+            return "Tu agencia no está activa. Contacta al soporte.";
         }
 
         // Simple slugify function
