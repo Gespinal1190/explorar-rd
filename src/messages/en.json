@@ -429,5 +429,10 @@
         },
         "goToBookings": "Go to My Trips",
         "exploreMore": "Explore more"
+    },
+    "Favorites": {
+        "title": "Your Favorites",
+        "emptyMessage": "You haven't saved any tours yet.",
+        "userNotFound": "User not found"
     }
 }

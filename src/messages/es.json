@@ -433,5 +433,10 @@
         },
         "goToBookings": "Ir a Mis Viajes",
         "exploreMore": "Explorar más"
+    },
+    "Favorites": {
+        "title": "Tus Favoritos",
+        "emptyMessage": "Aún no has guardado ningún tour.",
+        "userNotFound": "Usuario no encontrado"
     }
 }

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { TourCard } from "@/components/tours/tour-card";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export default async function UserFavoritesPage() {
     const session = await auth();
@@ -10,6 +11,8 @@ export default async function UserFavoritesPage() {
         redirect("/login");
         return null;
     }
+
+    const t = await getTranslations("Favorites");
 
     const user = await prisma.user.findUnique({
         where: { id: userId },
@@ -24,15 +27,15 @@ export default async function UserFavoritesPage() {
         }
     });
 
-    if (!user) return <div>Usuario no encontrado</div>;
+    if (!user) return <div>{t('userNotFound')}</div>;
     const favorites = user.favorites.map((f: any) => f.tour);
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900">Tus Favoritos</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
             {favorites.length === 0 ? (
                 <div className="bg-white p-12 rounded-3xl text-center border border-gray-100">
-                    <p className="text-gray-500">Aún no has guardado ningún tour.</p>
+                    <p className="text-gray-500">{t('emptyMessage')}</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
