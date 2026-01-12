@@ -3,6 +3,8 @@ import { Link, redirect } from "@/navigation";
 import prisma from "@/lib/prisma";
 import Navbar from "@/components/ui/navbar";
 import { getTranslations } from "next-intl/server";
+import Script from "next/script";
+
 
 export default async function CheckoutSuccessPage(props: {
     params: Promise<{ locale: string }>;
@@ -39,6 +41,15 @@ export default async function CheckoutSuccessPage(props: {
 
     return (
         <div className="min-h-screen bg-[#FBFBF8]">
+            {/* Event snippet for Compra conversion page */}
+            <Script id="google-ads-conversion" strategy="afterInteractive">
+                {`
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-17869765517/1EhnCJKK4OEbEI33-8hC',
+                        'transaction_id': '${bookingId}'
+                    });
+                `}
+            </Script>
             <Navbar />
             <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center max-w-2xl">
 
