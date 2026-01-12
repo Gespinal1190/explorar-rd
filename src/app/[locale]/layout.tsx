@@ -5,6 +5,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
+
 
 const inter = Inter({
     subsets: ["latin"],
@@ -46,6 +48,22 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale}>
+            <head>
+                {/* Google tag (gtag.js) */}
+                <Script
+                    async
+                    src="https://www.googletagmanager.com/gtag/js?id=AW-17869765517"
+                    strategy="afterInteractive"
+                />
+                <Script id="google-ads-tag" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'AW-17869765517');
+                    `}
+                </Script>
+            </head>
             <body className={`${inter.variable} font-sans antialiased text-gray-900 bg-[#FBFBF8]`}>
                 <NextIntlClientProvider messages={messages}>
                     <AuthProvider>
