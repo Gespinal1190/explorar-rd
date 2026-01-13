@@ -90,11 +90,35 @@ model AgencyProfile {
   licenseUrl  String?
   premisesUrl String?
 
+  // Payment Configuration
+  paypalEmail    String? // For Direct API Payments
+  paypalMeLink   String? // Fallback Link
+  commissionRate Float   @default(0.0)
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  bankAccounts BankAccount[]
-  payments     Payment[]
+  bankAccounts      BankAccount[]
+  payments          Payment[]
+  agencyTransactions AgencyTransaction[]
+}
+
+model AgencyTransaction {
+  id              String    @id @default(cuid())
+  agencyProfileId String
+  agencyProfile   AgencyProfile @relation(fields: [agencyProfileId], references: [id], onDelete: Cascade)
+  
+  bookingId       String?   // Optional link to booking
+  amount          Float
+  currency        String    @default("USD")
+  
+  status          String    // PENDING, COMPLETED, FAILED, PENDING_VERIFICATION (for PayPal.Me)
+  method          String    // PAYPAL_BUTTON, PAYPAL_ME
+  
+  paypalOrderId   String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model BankAccount {

@@ -339,6 +339,7 @@
         "pageTitle": "My Tours",
         "newTour": "+ New Tour",
         "noProfile": "No active agency profile.",
+        "noTours": "You haven't created any tours yet.",
         "table": {
             "title": "Title",
             "location": "Location",
@@ -348,8 +349,12 @@
         },
         "status": {
             "featured": "🌟 Featured",
-            "paused": "⏸️ Paused",
             "active": "✅ Active",
+            "published": "Published",
+            "draft": "Draft",
+            "pending": "Pending",
+            "pending_review": "Pending Review",
+            "paused": "⏸️ Paused",
             "pausedLabel": "Paused",
             "activeLabel": "Active"
         },
@@ -434,34 +439,5 @@
         "title": "Your Favorites",
         "emptyMessage": "You haven't saved any tours yet.",
         "userNotFound": "User not found"
-    },
-    "AgencyTours": {
-        "pageTitle": "My Tours",
-        "noProfile": "Agency profile not found",
-        "newTour": "New Tour",
-        "noTours": "You haven't created any tours yet.",
-        "status": {
-            "toolTip": "Only active tours are visible to travelers",
-            "active": "Active",
-            "published": "Published",
-            "draft": "Draft",
-            "pending": "Pending",
-            "pending_review": "Pending Review",
-            "paused": "Paused"
-        },
-        "table": {
-            "image": "Image",
-            "name": "Name",
-            "price": "Price",
-            "status": "Status",
-            "actions": "Actions"
-        },
-        "actions": {
-            "pause": "Pause",
-            "activate": "Activate",
-            "promote": "Promote",
-            "edit": "Edit",
-            "delete": "Delete"
-        }
     }
 }

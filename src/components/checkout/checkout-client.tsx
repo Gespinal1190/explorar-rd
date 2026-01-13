@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, Link } from "@/navigation";
 import { useTranslations } from "next-intl";
+import { PayPalPaymentButton } from "../payments/paypal-button";
 
 interface CheckoutClientProps {
     tour: any;
@@ -113,6 +114,21 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                 </h3>
 
                 <div className="space-y-4">
+                    {/* PayPal Option */}
+                    <div
+                        onClick={() => setPaymentMethod("paypal")}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4 ${paymentMethod === 'paypal' ? 'border-[#003087] bg-blue-50' : 'border-gray-100 hover:border-gray-200'}`}
+                    >
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'paypal' ? 'border-[#003087]' : 'border-gray-300'}`}>
+                            {paymentMethod === 'paypal' && <div className="w-3 h-3 bg-[#003087] rounded-full" />}
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="font-bold text-gray-900">PayPal</h4>
+                            <p className="text-xs text-gray-500">Pago seguro con protección al comprador</p>
+                        </div>
+                        <span className="text-xl">🅿️</span>
+                    </div>
+
                     {/* Stripe Option */}
                     <div
                         onClick={() => setPaymentMethod("stripe")}
@@ -215,14 +231,55 @@ export function CheckoutClient({ tour, date, time, guests, user }: CheckoutClien
                 </label>
             </div>
 
-            <button
-                type="button"
-                onClick={handleConfirm}
-                disabled={isProcessing}
-                className="w-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white font-black py-5 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all text-xl disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-                {isProcessing ? t('processing') : `${t('confirmAndPay')} ${tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'}${(tour.price * guests).toLocaleString()}`}
-            </button>
-        </div>
+            {
+                paymentMethod === 'paypal' ? (
+                    <div className={!termsAccepted || !phone ? 'opacity-50 pointer-events-none' : ''}>
+                        <PayPalPaymentButton
+                            amount={tour.price * guests}
+                            currency={tour.currency}
+                            description={`Reserva: ${tour.title} (${guests} pers.)`}
+                            payeeEmail={tour.agency?.paypalEmail}
+                            paypalMeLink={tour.agency?.paypalMeLink}
+                            onSuccess={async (details) => {
+                                // Manual handleConfirm call logic with details
+                                setIsProcessing(true);
+                                try {
+                                    const res = await fetch("/api/bookings", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({
+                                            tourId: tour.id,
+                                            date,
+                                            time,
+                                            people: guests,
+                                            totalPrice: tour.price * guests,
+                                            paymentMethod: 'paypal',
+                                            phone,
+                                            paymentDetails: details // Pass PayPal Details
+                                        })
+                                    });
+
+                                    if (!res.ok) throw new Error("Error al registrar reserva");
+                                    const data = await res.json();
+                                    router.push(`/checkout/success?bookingId=${data.booking.id}`);
+                                } catch (e) {
+                                    alert("Error al registrar la reserva en nuestra base de datos, pero el pago fue procesado. Contacta a soporte.");
+                                }
+                            }}
+                            onError={(err) => console.error(err)}
+                        />
+                    </div>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={handleConfirm}
+                        disabled={isProcessing}
+                        className="w-full bg-gradient-to-r from-[#2DD4BF] to-[#0F766E] text-white font-black py-5 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all text-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        {isProcessing ? t('processing') : `${t('confirmAndPay')} ${tour.currency === 'USD' ? 'USD$' : tour.currency === 'EUR' ? '€' : 'RD$'}${(tour.price * guests).toLocaleString()}`}
+                    </button>
+                )
+            }
+        </div >
     );
 }

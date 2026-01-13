@@ -63,6 +63,41 @@ export async function POST(req: Request) {
             }
         });
 
+        // Handle PayPal Payment Recording
+        const { paymentDetails } = body;
+        if (paymentMethod === 'paypal' && paymentDetails?.id) {
+            // Create Transaction Record
+            try {
+                await prisma.agencyTransaction.create({
+                    data: {
+                        agencyProfileId: tour.agencyId,
+                        bookingId: booking.id,
+                        amount: Number(totalPrice),
+                        currency: tour.currency,
+                        status: 'COMPLETED',
+                        method: 'PAYPAL_BUTTON',
+                        paypalOrderId: paymentDetails.id
+                    }
+                });
+
+                // Update Booking Status
+                await prisma.booking.update({
+                    where: { id: booking.id },
+                    data: {
+                        paymentStatus: 'PAID',
+                        status: 'CONFIRMED'
+                    }
+                });
+
+                // Update local object for response
+                booking.paymentStatus = 'PAID';
+                booking.status = 'CONFIRMED';
+            } catch (txError) {
+                console.error("Error creating transaction record:", txError);
+                // Don't fail the request, but log it. Booking is created.
+            }
+        }
+
         return NextResponse.json({ success: true, booking });
     } catch (error) {
         console.error("Booking creation error:", error);

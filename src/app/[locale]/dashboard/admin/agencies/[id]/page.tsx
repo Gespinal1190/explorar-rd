@@ -11,9 +11,10 @@ async function toggleVerification(agencyId: string, currentStatus: boolean | nul
         where: { id: agencyId },
         data: { isVerified: !currentStatus }
     });
-    revalidatePath(`/dashboard/admin/agencies/${agencyId}`);
     revalidatePath("/dashboard/admin");
 }
+
+import { updateAgencyPaymentSettings } from "@/lib/admin-actions";
 
 export default async function AgencyDetailsPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -145,6 +146,47 @@ export default async function AgencyDetailsPage(props: { params: Promise<{ id: s
                                 <p className="text-gray-500 italic text-sm">No se han subido documentos adicionales.</p>
                             )}
                         </div>
+                    </div>
+
+                    {/* Payment Configuration */}
+                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6">Configuración de Pagos</h2>
+                        <form action={updateAgencyPaymentSettings.bind(null, agency.id)} className="space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Email de PayPal (Pagos Directos)</label>
+                                <input
+                                    name="paypalEmail"
+                                    defaultValue={agency.paypalEmail || ''}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    placeholder="ejemplo@agencia.com"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Este email recibirá los pagos directamente de los clientes.</p>
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Enlace PayPal.Me (Respaldo)</label>
+                                <input
+                                    name="paypalMeLink"
+                                    defaultValue={agency.paypalMeLink || ''}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    placeholder="https://paypal.me/usuario"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Se muestra automáticamente si falla el botón de pago.</p>
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Comisión de Plataforma (%)</label>
+                                <input
+                                    name="commissionRate"
+                                    type="number"
+                                    step="0.1"
+                                    defaultValue={agency.commissionRate || 0}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Porcentaje para reportes (no se descuenta automáticamente).</p>
+                            </div>
+                            <button type="submit" className="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-colors">
+                                Guardar Configuración de Pagos
+                            </button>
+                        </form>
                     </div>
                 </div>
 

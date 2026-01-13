@@ -343,6 +343,7 @@
         "pageTitle": "Mis Excursiones",
         "newTour": "+ Nuevo Tour",
         "noProfile": "No tienes perfil de agencia activo.",
+        "noTours": "No has creado ningún tour todavía.",
         "table": {
             "title": "Título",
             "location": "Ubicación",
@@ -352,8 +353,12 @@
         },
         "status": {
             "featured": "🌟 Destacado",
-            "paused": "⏸️ Pausado",
             "active": "✅ Activo",
+            "published": "Publicado",
+            "draft": "Borrador",
+            "pending": "Pendiente",
+            "pending_review": "En Revisión",
+            "paused": "⏸️ Pausado",
             "pausedLabel": "Pausado",
             "activeLabel": "Activo"
         },
@@ -438,34 +443,5 @@
         "title": "Tus Favoritos",
         "emptyMessage": "Aún no has guardado ningún tour.",
         "userNotFound": "Usuario no encontrado"
-    },
-    "AgencyTours": {
-        "pageTitle": "Mis Tours",
-        "noProfile": "Perfil de agencia no encontrado",
-        "newTour": "Nuevo Tour",
-        "noTours": "No has creado ningún tour todavía.",
-        "status": {
-            "toolTip": "Solo los tours activos son visibles para los viajeros",
-            "active": "Activo",
-            "published": "Publicado",
-            "draft": "Borrador",
-            "pending": "Pendiente",
-            "pending_review": "En Revisión",
-            "paused": "Pausado"
-        },
-        "table": {
-            "image": "Imagen",
-            "name": "Nombre",
-            "price": "Precio",
-            "status": "Estado",
-            "actions": "Acciones"
-        },
-        "actions": {
-            "pause": "Pausar",
-            "activate": "Activar",
-            "promote": "Promocionar",
-            "edit": "Editar",
-            "delete": "Eliminar"
-        }
     }
 }
