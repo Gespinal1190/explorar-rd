@@ -117,20 +117,24 @@ export default async function AdminDashboard() {
                                     <h4 className="font-bold text-gray-900">{agency.name}</h4>
                                     <p className="text-xs text-gray-500">{agency.user.email}</p>
                                 </div>
-                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${agency.isVerified ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                    {agency.isVerified ? 'Verificado' : 'Pendiente'}
+                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${agency.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
+                                    agency.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                                        'bg-red-100 text-red-700'
+                                    }`}>
+                                    {agency.status}
                                 </span>
                             </div>
                             <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200/50">
-                                <form action={toggleVerification.bind(null, agency.id, agency.isVerified)} className="flex-1">
-                                    <button className={`w-full py-2 rounded-lg text-xs font-bold transition-colors ${agency.isVerified ? 'bg-amber-100 text-amber-700' : 'bg-primary text-white shadow-md shadow-primary/20'}`}>
-                                        {agency.isVerified ? 'Pausar' : 'Activar'}
+                                <form action={toggleVerification.bind(null, agency.id, agency.status === 'ACTIVE')} className="flex-1">
+                                    <button className={`w-full py-2 rounded-lg text-xs font-bold transition-colors ${agency.status === 'ACTIVE' ? 'bg-amber-100 text-amber-700' : 'bg-primary text-white shadow-md shadow-primary/20'
+                                        }`}>
+                                        {agency.status === 'ACTIVE' ? 'Pausar' : 'Activar'}
                                     </button>
                                 </form>
                                 <Link href={`/dashboard/admin/agencies/${agency.id}`} className="flex-1 py-2 rounded-lg text-xs font-bold bg-white text-gray-700 border border-gray-200 text-center">
                                     Detalles
                                 </Link>
-                                {!agency.isVerified && (
+                                {agency.status === 'PENDING' && (
                                     <form action={removeUser.bind(null, agency.userId)} className="w-full">
                                         <button className="w-full py-2 rounded-lg text-xs font-bold bg-red-50 text-red-600 border border-red-100">
                                             Rechazar
@@ -160,18 +164,22 @@ export default async function AdminDashboard() {
                                         <div className="text-xs text-gray-500">{agency.user.email}</div>
                                     </td>
                                     <td className="p-6">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${agency.isVerified ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                            {agency.isVerified ? 'Verificado' : 'Pendiente'}
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${agency.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
+                                                agency.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                                                    'bg-red-100 text-red-700'
+                                            }`}>
+                                            {agency.status}
                                         </span>
                                     </td>
                                     <td className="p-6 text-right">
                                         <div className="flex justify-end gap-2">
-                                            <form action={toggleVerification.bind(null, agency.id, agency.isVerified)}>
-                                                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${agency.isVerified ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-primary text-white hover:bg-primary-dark shadow-md shadow-primary/20'}`}>
-                                                    {agency.isVerified ? 'Pausar' : 'Activar'}
+                                            <form action={toggleVerification.bind(null, agency.id, agency.status === 'ACTIVE')}>
+                                                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${agency.status === 'ACTIVE' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-primary text-white hover:bg-primary-dark shadow-md shadow-primary/20'
+                                                    }`}>
+                                                    {agency.status === 'ACTIVE' ? 'Pausar' : 'Activar'}
                                                 </button>
                                             </form>
-                                            {!agency.isVerified && (
+                                            {agency.status === 'PENDING' && (
                                                 <form action={removeUser.bind(null, agency.userId)}>
                                                     <button className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 w-full">
                                                         Rechazar
