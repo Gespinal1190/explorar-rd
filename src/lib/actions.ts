@@ -309,9 +309,14 @@ export async function toggleTourStatus(tourId: string, currentStatus: string) {
 
     try {
         const agency = await prisma.agencyProfile.findUnique({ where: { userId: String(session.userId) } });
-        if (!agency) return { success: false, message: "Agencia no encontrada" };
 
-        const newStatus = currentStatus === 'PUBLISHED' ? 'PAUSED' : 'PUBLISHED';
+        // SECURITY: Agency MUST be ACTIVE to change tour status
+        if (!agency || agency.status !== 'ACTIVE') {
+            return { success: false, message: "Tu agencia no está activa. No puedes modificar tours." };
+        }
+
+        // Logic: If PAUSED -> PUBLISHED. Else -> PAUSED.
+        const newStatus = currentStatus === 'PAUSED' ? 'PUBLISHED' : 'PAUSED';
 
         await prisma.tour.update({
             where: {
@@ -319,7 +324,7 @@ export async function toggleTourStatus(tourId: string, currentStatus: string) {
                 agencyId: agency.id
             },
             data: {
-                status: newStatus as any // Casting as any to avoid enum import issues if not fully propagated yet
+                status: newStatus as any
             }
         });
 
