@@ -446,9 +446,11 @@
         "noTours": "No has creado ningún tour todavía.",
         "status": {
             "toolTip": "Solo los tours activos son visibles para los viajeros",
+            "active": "Activo",
             "published": "Publicado",
             "draft": "Borrador",
             "pending": "Pendiente",
+            "pending_review": "En Revisión",
             "paused": "Pausado"
         },
         "table": {
@@ -457,6 +459,13 @@
             "price": "Precio",
             "status": "Estado",
             "actions": "Acciones"
+        },
+        "actions": {
+            "pause": "Pausar",
+            "activate": "Activar",
+            "promote": "Promocionar",
+            "edit": "Editar",
+            "delete": "Eliminar"
         }
     }
 }
