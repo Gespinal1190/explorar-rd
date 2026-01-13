@@ -434,5 +434,24 @@
         "title": "Your Favorites",
         "emptyMessage": "You haven't saved any tours yet.",
         "userNotFound": "User not found"
+    },
+    "AgencyTours": {
+        "title": "My Tours",
+        "newTour": "New Tour",
+        "noTours": "You haven't created any tours yet.",
+        "status": {
+            "toolTip": "Only active tours are visible to travelers",
+            "published": "Published",
+            "draft": "Draft",
+            "pending": "Pending",
+            "paused": "Paused"
+        },
+        "table": {
+            "image": "Image",
+            "name": "Name",
+            "price": "Price",
+            "status": "Status",
+            "actions": "Actions"
+        }
     }
 }

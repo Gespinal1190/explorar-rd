@@ -438,5 +438,24 @@
         "title": "Tus Favoritos",
         "emptyMessage": "Aún no has guardado ningún tour.",
         "userNotFound": "Usuario no encontrado"
+    },
+    "AgencyTours": {
+        "title": "Mis Tours",
+        "newTour": "Nuevo Tour",
+        "noTours": "No has creado ningún tour todavía.",
+        "status": {
+            "toolTip": "Solo los tours activos son visibles para los viajeros",
+            "published": "Publicado",
+            "draft": "Borrador",
+            "pending": "Pendiente",
+            "paused": "Pausado"
+        },
+        "table": {
+            "image": "Imagen",
+            "name": "Nombre",
+            "price": "Precio",
+            "status": "Estado",
+            "actions": "Acciones"
+        }
     }
 }
