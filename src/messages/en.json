@@ -436,7 +436,8 @@
         "userNotFound": "User not found"
     },
     "AgencyTours": {
-        "title": "My Tours",
+        "pageTitle": "My Tours",
+        "noProfile": "Agency profile not found",
         "newTour": "New Tour",
         "noTours": "You haven't created any tours yet.",
         "status": {

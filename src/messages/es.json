@@ -440,7 +440,8 @@
         "userNotFound": "Usuario no encontrado"
     },
     "AgencyTours": {
-        "title": "Mis Tours",
+        "pageTitle": "Mis Tours",
+        "noProfile": "Perfil de agencia no encontrado",
         "newTour": "Nuevo Tour",
         "noTours": "No has creado ningún tour todavía.",
         "status": {
