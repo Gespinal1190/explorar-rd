@@ -23,13 +23,25 @@ interface TourFormProps {
         dates?: { date: Date | string, startTime?: string | null }[] | null; // Updated type
     };
     isEditing?: boolean;
+    agencyStatus?: string; // New prop for security
 }
 
-export default function TourForm({ initialData, isEditing = false }: TourFormProps) {
-    // Choose action based on mode. Bind ID if editing.
-    // Note: useActionState expects a function (state, payload) => state.
-    // updateTour handles formData differently, but useActionState usually wraps it.
-    // We'll stick to simple logic: pass the action reference.
+export default function TourForm({ initialData, isEditing = false, agencyStatus = 'ACTIVE' }: TourFormProps) {
+    // SECURITY CHECK
+    if (agencyStatus !== 'ACTIVE') {
+        return (
+            <div className="p-8 bg-red-50 border border-red-200 rounded-xl text-center">
+                <h2 className="text-xl font-bold text-red-800 mb-2">Acceso Restringido</h2>
+                <p className="text-red-600">
+                    Tu agencia no está activa (Estado: {agencyStatus}).
+                    No puedes crear ni editar tours hasta que un administrador aprueba tu cuenta.
+                </p>
+                <a href="/dashboard/agency/tours" className="mt-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg font-bold">
+                    Volver al Dashboard
+                </a>
+            </div>
+        );
+    }
 
     const action = isEditing ? updateTour : createTour;
 

@@ -21,6 +21,12 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
         redirect('/dashboard/agency/profile');
     }
 
+    if (agency.status !== 'ACTIVE') {
+        // Option 1: Redirect
+        // redirect('/dashboard/agency/tours');
+        // Option 2: SHow Blocked Form (better UX so they know WHY)
+    }
+
     // Use findFirst because we are filtering by a non-unique combination (ID + AgencyID)
     // to ensure the agency owns the tour.
     const tour = await prisma.tour.findFirst({
@@ -29,7 +35,8 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
             agencyId: agency.id
         },
         include: {
-            images: true
+            images: true,
+            dates: true // Include dates for editing
         }
     });
 
@@ -37,5 +44,5 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
         notFound();
     }
 
-    return <TourForm initialData={tour} isEditing={true} />;
+    return <TourForm initialData={tour} isEditing={true} agencyStatus={agency.status} />;
 }

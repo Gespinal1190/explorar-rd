@@ -22,7 +22,7 @@ export default async function NewTourPage() {
     return (
         <div className="container mx-auto">
             <h1 className="text-2xl font-bold mb-6">Nuevo Tour</h1>
-            <TourForm />
+            <TourForm agencyStatus={agency?.status || 'PENDING'} />
         </div>
     );
 }

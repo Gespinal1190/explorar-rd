@@ -77,7 +77,7 @@ model AgencyProfile {
   instagram   String?
   website     String?
   isVerified  Boolean  @default(false)
-  status      AgencyStatus @default(ACTIVE)
+  status      AgencyStatus @default(PENDING)
 
   tier            String    @default("FREE")
   tierExpiresAt   DateTime?
