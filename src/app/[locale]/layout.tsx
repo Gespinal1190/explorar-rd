@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     // SEO translated content
     const content = {
         es: {
-            title: 'Tours y excursiones en República Dominicana | DescubreRD',
-            description: 'Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.'
+            title: 'DescubreRD | Tours y excursiones en República Dominicana',
+            description: 'DescubreRD: tours y excursiones auténticas en República Dominicana con agencias locales verificadas. Reserva experiencias únicas.'
         },
         en: {
             title: 'Tours and Excursions in Dominican Republic | DescubreRD',
