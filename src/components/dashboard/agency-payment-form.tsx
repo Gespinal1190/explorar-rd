@@ -16,7 +16,10 @@ interface AgencyPaymentFormProps {
 export function AgencyPaymentForm({ agency }: AgencyPaymentFormProps) {
     const [isPending, setIsPending] = useState(false);
 
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+
         setIsPending(true);
         try {
             const result = await updateAgencyPaymentSettings(agency.id, formData);
@@ -27,14 +30,14 @@ export function AgencyPaymentForm({ agency }: AgencyPaymentFormProps) {
             }
         } catch (err) {
             console.error(err);
-            toast.error("Ocurrió un error inesperado");
+            toast.error("Ocurrió un error inesperado al guardar");
         } finally {
             setIsPending(false);
         }
     };
 
     return (
-        <form action={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Email de PayPal (Pagos Directos)</label>
                 <input
