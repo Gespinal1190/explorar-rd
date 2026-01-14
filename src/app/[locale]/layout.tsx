@@ -29,6 +29,14 @@ export const metadata: Metadata = {
             'fr': '/fr',
         },
     },
+    icons: {
+        icon: [
+            { url: '/favicon.png', type: 'image/png' },
+            { url: '/icon.png', type: 'image/png' },
+        ],
+        shortcut: '/favicon.png',
+        apple: '/apple-touch-icon.png',
+    },
 };
 
 export default async function LocaleLayout({
