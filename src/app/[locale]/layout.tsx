@@ -62,6 +62,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             shortcut: '/favicon.png',
             apple: '/apple-touch-icon.png',
         },
+        viewport: {
+            width: 'device-width',
+            initialScale: 1,
+            maximumScale: 5,
+        },
+        themeColor: '#000000',
     };
 }
 
@@ -80,9 +86,58 @@ export default async function LocaleLayout({
 
     const messages = await getMessages();
 
+    // JSON-LD Schema
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'Organization',
+                '@id': 'https://descubrerd.app/#organization',
+                name: 'DescubreRD',
+                url: 'https://descubrerd.app',
+                logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://descubrerd.app/logo.png',
+                    width: '512',
+                    height: '512'
+                },
+                sameAs: [
+                    'https://www.instagram.com/descubrerd.app', // Placeholder - actual values requested from user
+                    'https://www.facebook.com/descubrerd.app'
+                ],
+                contactPoint: {
+                    '@type': 'ContactPoint',
+                    contactType: 'customer support',
+                    email: 'info@descubrerd.app'
+                }
+            },
+            {
+                '@type': 'WebSite',
+                '@id': 'https://descubrerd.app/#website',
+                url: 'https://descubrerd.app',
+                name: 'DescubreRD',
+                description: 'Tours y excursiones en República Dominicana',
+                publisher: { '@id': 'https://descubrerd.app/#organization' },
+                potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                        '@type': 'EntryPoint',
+                        urlTemplate: 'https://descubrerd.app/es/tours?search={search_term_string}'
+                    },
+                    'query-input': 'required name=search_term_string'
+                },
+                inLanguage: locale
+            }
+        ]
+    };
+
     return (
         <html lang={locale}>
             <head>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
                 {/* Google tag (gtag.js) */}
                 <Script
                     async

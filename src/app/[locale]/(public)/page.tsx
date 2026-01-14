@@ -389,6 +389,39 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Cornerstone SEO Article Section */}
+      <section className="py-20 md:py-28 bg-[#FBFBF8]">
+        <div className="container mx-auto px-4">
+          <div className="bg-gray-900 rounded-[3rem] overflow-hidden relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent z-10" />
+            <img
+              src="/images/blog/punta-cana.jpg"
+              alt="Tours y Excursiones en República Dominicana"
+              className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000"
+            />
+
+            <div className="relative z-20 p-8 md:p-16 lg:p-24 max-w-2xl">
+              <span className="inline-block px-4 py-1.5 bg-primary text-white text-xs font-black uppercase tracking-widest rounded-full mb-6">
+                Guía Exclusiva 2026
+              </span>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-[0.95] tracking-tighter">
+                Todo lo que necesitas saber sobre <span className="text-primary">tours y excursiones</span> en RD
+              </h2>
+              <p className="text-gray-300 text-lg md:text-xl mb-10 leading-relaxed font-medium">
+                Hemos preparado la guía más completa del país. Descubre tesoros ocultos, consejos de locales y las mejores rutas para tu próximo viaje.
+              </p>
+              <Link
+                href="/blog/guia-tours-excursiones-republica-dominicana"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-1"
+              >
+                Leer Guía Completa
+                <span className="text-xl">→</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </main>
   );

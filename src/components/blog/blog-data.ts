@@ -177,5 +177,68 @@ export const blogPosts: BlogPost[] = [
                 </a>
             </div>
         `
+    },
+    {
+        slug: "guia-tours-excursiones-republica-dominicana",
+        title: "Guía Definitiva: Los mejores tours y excursiones en República Dominicana (2026)",
+        excerpt: "Descubre la selección más completa de aventuras y experiencias en RD. Desde playas vírgenes hasta rutas de montaña, te mostramos lo mejor de nuestra tierra.",
+        coverImage: "/images/blog/punta-cana.jpg", // Cornerstone image
+        date: "2026-01-15",
+        author: {
+            name: "Equipo DescubreRD",
+            role: "Especialistas Locales",
+            avatar: "/logo.png"
+        },
+        category: "Guías Premium",
+        readTime: "12 min",
+        content: `
+            <p>Planificar unas vacaciones en el Caribe no es solo elegir un hotel; es decidir qué historias vas a contar al regresar. Si buscas <strong>tours y excursiones en República Dominicana</strong>, has llegado al lugar de los expertos locales.</p>
+            
+            <p>Nuestro país es mucho más que sol y playa. Es un continente en miniatura donde puedes escalar la montaña más alta del Caribe por la mañana y bañarte en una playa de arena blanca por la tarde. En esta guía definitiva para 2026, desglosamos las experiencias que <strong>no pueden faltar en tu itinerario</strong>.</p>
+
+            <h2>¿Por qué reservar excursiones con agencias locales en DescubreRD?</h2>
+            <p>La diferencia entre un viaje genérico y una aventura auténtica reside en quién te guía. Al usar <a href="/es" class="font-bold text-primary">DescubreRD</a>, te conectas directamente con <a href="/agencies" class="font-bold">agencias locales verificadas</a> que conocen cada rincón, cada historia y cada atajo del país.</p>
+
+            <h2>1. Punta Cana: El Epicentro de la Aventura</h2>
+            <p>Si tu base es Punta Cana, las opciones son casi infinitas. Sin embargo, hay tres clásicos que definen la zona:</p>
+            <ul>
+                <li><strong>Isla Saona:</strong> El "must-have". Navegar hacia una isla protegida con aguas turquesas que parecen irreales. <a href="/tours/isla-saona-vip-catamaran-y-lanchas">Reserva aquí la versión VIP</a> para evitar las multitudes.</li>
+                <li><strong>Buggies en Macao:</strong> Para los que no temen al lodo. Atravesar campos de arroz y plantaciones de café hasta llegar a la espectacular playa de Macao.</li>
+                <li><strong>Scape Park:</strong> Un parque natural con cenotes (Blue Hole) y tirolinas que te dejarán sin aliento.</li>
+            </ul>
+
+            <h2>2. Samaná: Naturaleza en Estado Puro</h2>
+            <p>Al noreste se encuentra la provincia más verde y salvaje. Samaná es el lugar ideal para el ecoturismo responsable.</p>
+            <h3>Temporada de Ballenas Jorobadas</h3>
+            <p>Entre enero y marzo, miles de ballenas vienen a procrear en nuestra bahía. Es una de las experiencias de <strong>observación de fauna más potentes del mundo</strong>. Puedes combinarlo con una visita a Cayo Levantado para el almuerzo.</p>
+            <h3>Salto del Limón</h3>
+            <p>Una cabalgata por la selva que culmina en una caída de agua de 40 metros. El baño bajo la cascada es pura revitalización. <a href="/tours/salto-del-limon-a-caballo">Ver detalles del tour aquí</a>.</p>
+
+            <h2>3. Puerto Plata: Novia del Atlántico</h2>
+            <p>La costa norte ofrece un vibe diferente, con vientos perfectos para deportes acuáticos y montañas imponentes.</p>
+            <p><strong>Los 27 Charcos de Damajagua:</strong> Si te gusta el barranquismo (canyoning), este es tu sitio. Saltarás y te deslizarás por toboganes naturales tallados en piedra durante milenios.</p>
+
+            <h2>4. Santo Domingo: Donde Todo Comenzó</h2>
+            <p>No se puede entender la República Dominicana sin visitar su capital, la ciudad primada de América. Un <a href="/tours/zona-colonial-historica">recorrido por la Zona Colonial</a> te transportará al siglo XVI mientras disfrutas de la mejor gastronomía moderna del Caribe.</p>
+
+            <h2>Consejos PRO para tu viaje</h2>
+            <ol>
+                <li><strong>Reserva con antelación:</strong> Los mejores tours se llenan rápido, especialmente en temporada alta (diciembre a abril).</li>
+                <li><strong>Seguro de viaje:</strong> Aunque nuestras agencias incluyen seguros básicos, siempre es bueno contar con cobertura adicional para actividades de aventura.</li>
+                <li><strong>Respeto al medio ambiente:</strong> Usa protector solar biodegradable para proteger nuestros arrecifes de coral.</li>
+            </ol>
+
+            <h2>Conclusión</h2>
+            <p>República Dominicana es un destino que se vive mejor fuera de las cuatro paredes de un resort. Ya sea que busques la adrenalina de los buggies o la paz de una isla virgen, en <strong>Descubre RD</strong> estamos aquí para que tu única preocupación sea disfrutar.</p>
+            
+            <div class="my-10 p-10 bg-gray-900 text-white rounded-[2rem] text-center shadow-2xl overflow-hidden relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent pointer-events-none"></div>
+                <h3 class="text-3xl font-black mb-6">¿Listo para tu próxima aventura?</h3>
+                <p class="text-gray-300 text-lg mb-8 max-w-xl mx-auto">Explora nuestro catálogo completo y reserva hoy mismo con los precios más competitivos del mercado.</p>
+                <a href="/es/tours" class="inline-block px-10 py-5 bg-primary text-white font-black rounded-2xl hover:scale-105 transition-transform shadow-xl">
+                    Ver todos los Tours en RD
+                </a>
+            </div>
+        `
     }
 ];
