@@ -30,6 +30,16 @@ export const PayPalPaymentButton = ({
     const [isLoaded, setIsLoaded] = useState(false);
     const [showFallback, setShowFallback] = useState(false);
 
+    // PayPal does not support DOP. Convert to USD if needed.
+    const isDOP = currency === "DOP";
+    const EXCHANGE_RATE = 60; // 1 USD = 60 DOP (Approx)
+
+    // Calculate final values for PayPal
+    const finalCurrency = isDOP ? "USD" : currency;
+    const finalAmount = isDOP
+        ? (parseFloat(amount.toString()) / EXCHANGE_RATE).toFixed(2)
+        : parseFloat(amount.toString()).toFixed(2);
+
     // Replace with your actual PayPal Client ID (Sandbox or Live)
     // IMPORTANT: For production, use environment variable: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
     const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
@@ -68,7 +78,7 @@ export const PayPalPaymentButton = ({
         <div className="w-full max-w-md mx-auto">
             <PayPalScriptProvider options={{
                 "clientId": clientId,
-                currency: currency,
+                currency: finalCurrency,
                 intent: "capture",
                 commit: true
             }}>
@@ -80,12 +90,12 @@ export const PayPalPaymentButton = ({
                             shape: "rect",
                             label: "pay"
                         }}
-                        forceReRender={[amount, currency, payeeEmail]}
+                        forceReRender={[finalAmount, finalCurrency, payeeEmail]}
                         createOrder={(data, actions) => {
                             const purchaseUnit: any = {
                                 amount: {
-                                    value: parseFloat(amount.toString()).toFixed(2),
-                                    currency_code: currency
+                                    value: finalAmount,
+                                    currency_code: finalCurrency
                                 },
                                 description: description,
                                 custom_id: JSON.stringify(metadata)
