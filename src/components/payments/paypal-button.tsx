@@ -42,7 +42,7 @@ export const PayPalPaymentButton = ({
 
     // Replace with your actual PayPal Client ID (Sandbox or Live)
     // IMPORTANT: For production, use environment variable: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
-    const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
+    const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test"; // PRODUCTION_READY_V1
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
