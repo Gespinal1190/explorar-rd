@@ -19,13 +19,32 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     const baseUrl = 'https://descubrerd.app';
     const canonicalUrl = `${baseUrl}/${locale}`;
 
+    // SEO translated content
+    const content = {
+        es: {
+            title: 'Tours y excursiones en República Dominicana | DescubreRD',
+            description: 'Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.'
+        },
+        en: {
+            title: 'Tours and Excursions in Dominican Republic | DescubreRD',
+            description: 'Discover and book the best tours and excursions in Dominican Republic. Punta Cana, Samana, Santo Domingo and more, with verified local agencies.'
+        },
+        fr: {
+            title: 'Tours et Excursions en République Dominicaine | DescubreRD',
+            description: 'Découvrez et réservez les mejores tours et excursions en République Dominicaine. Punta Cana, Samaná, Saint-Domingue et plus, avec des agences locales vérifiées.'
+        }
+    }[locale as 'es' | 'en' | 'fr'] || {
+        title: 'Tours y excursiones en República Dominicana | DescubreRD',
+        description: 'Descubre y reserva los mejores tours y excursiones en República Dominicana.'
+    };
+
     return {
         metadataBase: new URL(baseUrl),
         title: {
             template: '%s | DescubreRD',
-            default: 'Tours y excursiones en República Dominicana | DescubreRD',
+            default: content.title,
         },
-        description: "Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.",
+        description: content.description,
         alternates: {
             canonical: canonicalUrl,
             languages: {

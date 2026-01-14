@@ -23,8 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     const staticRoutes = [
-        { path: '', priority: 1 },
+        { path: '', priority: 1.0 },
         { path: '/tours', priority: 0.9 },
+        { path: '/login', priority: 0.1 },
     ];
 
     const staticUrls = staticRoutes.flatMap(route => {

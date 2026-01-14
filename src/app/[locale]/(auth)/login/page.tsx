@@ -5,6 +5,14 @@ import { Link } from "@/navigation";
 import Image from "next/image";
 import { Logo } from "@/components/ui/logo";
 import { useTranslations } from "next-intl";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: true,
+    },
+};
 
 export default function LoginPage() {
     const t = useTranslations('Login');
