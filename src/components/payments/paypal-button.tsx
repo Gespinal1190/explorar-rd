@@ -34,6 +34,15 @@ export const PayPalPaymentButton = ({
     // IMPORTANT: For production, use environment variable: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
     const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
 
+    useEffect(() => {
+        if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
+            console.warn("PayPal Client ID not found in environment variables");
+        }
+        if (payeeEmail) {
+            console.log("Initializing PayPal Button with Payee:", payeeEmail);
+        }
+    }, [payeeEmail]);
+
     if (showFallback && paypalMeLink) {
         return (
             <div className="w-full max-w-md mx-auto text-center p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
@@ -109,10 +118,12 @@ export const PayPalPaymentButton = ({
                                 setShowFallback(true);
                             }
                         }}
-                        onError={(err) => {
-                            console.error("PayPal Error", err);
+                        onError={(err: any) => {
+                            console.error("PayPal Error Details:", err);
+                            // Potentially more detailed error if available
+                            const errorMsg = err?.message || JSON.stringify(err);
+                            toast.error(`Error de PayPal: ${errorMsg}`);
                             if (onError) onError(err);
-                            toast.error("Ocurrió un error con PayPal.");
                             setShowFallback(true);
                         }}
                     />
