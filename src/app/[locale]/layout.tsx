@@ -14,30 +14,37 @@ const inter = Inter({
     display: "swap",
 });
 
-export const metadata: Metadata = {
-    metadataBase: new URL('https://descubrerd.app'),
-    title: {
-        template: '%s | DescubreRD',
-        default: 'Tours y excursiones en República Dominicana | DescubreRD',
-    },
-    description: "Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.",
-    alternates: {
-        canonical: '/',
-        languages: {
-            'es': '/es',
-            'en': '/en',
-            'fr': '/fr',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+    const { locale } = await params;
+    const baseUrl = 'https://descubrerd.app';
+    const canonicalUrl = `${baseUrl}/${locale}`;
+
+    return {
+        metadataBase: new URL(baseUrl),
+        title: {
+            template: '%s | DescubreRD',
+            default: 'Tours y excursiones en República Dominicana | DescubreRD',
         },
-    },
-    icons: {
-        icon: [
-            { url: '/favicon.png', type: 'image/png' },
-            { url: '/icon.png', type: 'image/png' },
-        ],
-        shortcut: '/favicon.png',
-        apple: '/apple-touch-icon.png',
-    },
-};
+        description: "Descubre y reserva los mejores tours y excursiones en República Dominicana. Punta Cana, Samaná, Santo Domingo y más, con agencias locales verificadas.",
+        alternates: {
+            canonical: canonicalUrl,
+            languages: {
+                'es': `${baseUrl}/es`,
+                'en': `${baseUrl}/en`,
+                'fr': `${baseUrl}/fr`,
+                'x-default': baseUrl,
+            },
+        },
+        icons: {
+            icon: [
+                { url: '/favicon.png', type: 'image/png' },
+                { url: '/icon.png', type: 'image/png' },
+            ],
+            shortcut: '/favicon.png',
+            apple: '/apple-touch-icon.png',
+        },
+    };
+}
 
 export default async function LocaleLayout({
     children,
