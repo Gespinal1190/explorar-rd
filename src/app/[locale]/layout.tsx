@@ -102,7 +102,7 @@ export default async function LocaleLayout({
                     height: '512'
                 },
                 sameAs: [
-                    'https://www.instagram.com/descubrerd.app', // Placeholder - actual values requested from user
+                    'https://www.instagram.com/descubre__rd/',
                     'https://www.facebook.com/descubrerd.app'
                 ],
                 contactPoint: {
