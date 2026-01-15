@@ -179,10 +179,10 @@ export const blogPosts: BlogPost[] = [
         `
     },
     {
-        slug: "guia-tours-excursiones-republica-dominicana",
-        title: "Guía Definitiva: Los mejores tours y excursiones en República Dominicana (2026)",
-        excerpt: "Descubre la selección más completa de aventuras y experiencias en RD. Desde playas vírgenes hasta rutas de montaña, te mostramos lo mejor de nuestra tierra.",
-        coverImage: "/images/blog/punta-cana.jpg", // Cornerstone image
+        slug: "los-mejores-tours-y-excursiones-dominicana-2026",
+        title: "Los mejores tours y excursiones en República Dominicana (2026) | DescubreRD",
+        excerpt: "Descubre los mejores tours y excursiones en República Dominicana 🇩🇴. Reserva experiencias auténticas en Punta Cana, Samaná y Santo Domingo con DescubreRD.",
+        coverImage: "/images/blog/punta-cana.jpg",
         date: "2026-01-15",
         author: {
             name: "Equipo DescubreRD",
@@ -190,55 +190,119 @@ export const blogPosts: BlogPost[] = [
             avatar: "/logo.png"
         },
         category: "Guías Premium",
-        readTime: "12 min",
+        readTime: "15 min",
         content: `
-            <p>Planificar unas vacaciones en el Caribe no es solo elegir un hotel; es decidir qué historias vas a contar al regresar. Si buscas <strong>tours y excursiones en República Dominicana</strong>, has llegado al lugar de los expertos locales.</p>
+            <h1>Tours y excursiones en República Dominicana</h1>
             
-            <p>Nuestro país es mucho más que sol y playa. Es un continente en miniatura donde puedes escalar la montaña más alta del Caribe por la mañana y bañarte en una playa de arena blanca por la tarde. En esta guía definitiva para 2026, desglosamos las experiencias que <strong>no pueden faltar en tu itinerario</strong>.</p>
+            <p>Planificar un viaje al paraíso caribeño va mucho más allá de elegir un buen resort. Si realmente quieres vivir la esencia de la isla, necesitas explorar su oferta de <strong>tours y excursiones en República Dominicana</strong>. Desde las playas de arena blanca de Punta Cana hasta las montañas nubladas de Jarabacoa, nuestro país ofrece una diversidad que pocos destinos en el mundo pueden igualar.</p>
+            
+            <p>En esta guía definitiva para 2026, te llevamos de la mano por las experiencias más auténticas, seguras y emocionantes que puedes reservar hoy mismo a través de <a href="/es/tours" class="font-bold text-primary">DescubreRD</a>.</p>
 
-            <h2>¿Por qué reservar excursiones con agencias locales en DescubreRD?</h2>
-            <p>La diferencia entre un viaje genérico y una aventura auténtica reside en quién te guía. Al usar <a href="/es" class="font-bold text-primary">DescubreRD</a>, te conectas directamente con <a href="/agencies" class="font-bold">agencias locales verificadas</a> que conocen cada rincón, cada historia y cada atajo del país.</p>
+            <h2>Tours en Punta Cana</h2>
+            <p>Punta Cana no necesita presentación. Es el destino turístico más visitado del Caribe, pero su magia real ocurre cuando dejas el "All-Inclusive" atrás para descubrir sus tesoros naturales y culturales.</p>
+            
+            <h3>Isla Saona: El Paraíso en la Tierra</h3>
+            <p>No existe búsqueda de <strong>excursiones en Dominicana</strong> que no mencione a Isla Saona. Ubicada dentro del Parque Nacional Cotubanamá, esta isla virgen es el epítome de la belleza tropical. Los tours suelen incluir navegación en catamarán, almuerzo buffet en la playa y una parada inolvidable en la "Piscina Natural", donde el agua te llega a la cintura a kilómetros de la costa. Es el lugar ideal para ver estrellas de mar (siempre respetando su entorno).</p>
 
-            <h2>1. Punta Cana: El Epicentro de la Aventura</h2>
-            <p>Si tu base es Punta Cana, las opciones son casi infinitas. Sin embargo, hay tres clásicos que definen la zona:</p>
+            <h3>Buggy Macao: Adrenalina y Lodo</h3>
+            <p>Para los que buscan acción, los buggies en Macao son obligatorios. Cruzarás caminos rurales, verás plantaciones de café y cacao, y terminarás bañándote en la cueva natural de "El Hoyo". Es, sin duda, una de las <strong>mejores actividades en Punta Cana</strong> para familias y grupos de amigos.</p>
+            
+            <p>Descubre todas nuestras opciones de <a href="/es/tours?search=Punta+Cana" class="font-bold text-primary italic underline">tours en Punta Cana aquí</a>.</p>
+
+            <h2>Excursiones en Samaná</h2>
+            <p>Samaná es la joya salvaje de la República Dominicana. Si buscas ecoturismo y paisajes que parecen sacados de una película, este es tu destino.</p>
+
+            <h3>Observación de Ballenas Jorobadas</h3>
+            <p>Cada año, entre enero y marzo, Samaná se convierte en el santuario de miles de ballenas jorobadas. Es una experiencia transformadora. Ver a estos majestuosos animales saltar y cortejar en su hábitat natural es algo que recordarás toda la vida. Es fundamental reservar con <strong>agencias verificadas por DescubreRD</strong> para asegurar un avistamiento ético y seguro.</p>
+
+            <h3>Salto del Limón y Cayo Levantado</h3>
+            <p>Imagina una caminata o cabalgata por la selva tropical que culmina en una imponente cascada de 50 metros. Ese es el Salto del Limón. Normalmente, este tour se combina con una tarde de relax en Cayo Levantado (también conocida como la isla Bacardí), brindándote lo mejor de la montaña y el mar en un solo día.</p>
+            
+            <p>Explora la magia de las <a href="/es/tours?search=Samana" class="font-bold text-primary italic underline">excursiones en Samaná aquí</a>.</p>
+
+            <h2>Tours culturales en Santo Domingo</h2>
+            <p>La capital de la República Dominicana es el corazón de la historia de América. Pasear por Santo Domingo es caminar por donde comenzó la civilización occidental en el Nuevo Mundo.</p>
+
+            <h3>La Zona Colonial: Un Viaje en el Tiempo</h3>
+            <p>Un tour cultural por la Zona Colonial te llevará a la Primera Catedral de América, el Alcázar de Colón y la Fortaleza Ozama. Pero no todo es piedras viejas; la zona está llena de cafés modernos, tiendas de artesanía de alta calidad y una vibrante vida nocturna. Es el lugar perfecto para entender la identidad dominicana.</p>
+
+            <h3>Los Tres Ojos y el Faro a Colón</h3>
+            <p>A pocos minutos del centro histórico, puedes visitar el Parque Nacional Los Tres Ojos, un sistema de cavernas con lagunas de agua dulce cristalina que te dejarán sin palabras. Es una parada técnica ideal si te interesa la geología y la naturaleza dentro de la ciudad.</p>
+            
+            <p>Consulta nuestra selección de <a href="/es/tours?search=Santo+Domingo" class="font-bold text-primary italic underline">tours en Santo Domingo</a>.</p>
+
+            <h2>Aventura y naturaleza en República Dominicana</h2>
+            <p>Si eres un "aventurero de corazón", te alegrará saber que RD es la capital de los deportes extremos en el Caribe.</p>
+            
+            <h3>27 Charcos de Damajagua</h3>
+            <p>Ubicados en Puerto Plata, estos saltos de agua son un parque acuático natural. Prepárate para deslizarte por toboganes de piedra y saltar a pozas profundas bajo la supervisión de guías expertos. Es adrenalina pura en estado líquido.</p>
+
+            <h3>Pico Duarte: El Techo del Caribe</h3>
+            <p>Para los senderistas serios, el ascenso al Pico Duarte (3,087 metros) es el desafío definitivo. Una expedición de 2 a 3 días que te llevará por bosques de pinos y temperaturas que pueden bajar de los cero grados, algo impensable para muchos cuando piensan en el Caribe.</p>
+
+            <h3>¿Por qué reservar con DescubreRD?</h3>
+            <p>Sabemos que hay muchas opciones para reservar tus vacaciones, pero en DescubreRD nos diferenciamos por tres pilares fundamentales:</p>
             <ul>
-                <li><strong>Isla Saona:</strong> El "must-have". Navegar hacia una isla protegida con aguas turquesas que parecen irreales. <a href="/tours/isla-saona-vip-catamaran-y-lanchas">Reserva aquí la versión VIP</a> para evitar las multitudes.</li>
-                <li><strong>Buggies en Macao:</strong> Para los que no temen al lodo. Atravesar campos de arroz y plantaciones de café hasta llegar a la espectacular playa de Macao.</li>
-                <li><strong>Scape Park:</strong> Un parque natural con cenotes (Blue Hole) y tirolinas que te dejarán sin aliento.</li>
+                <li><strong>Agencias Verificadas:</strong> No cualquier operador puede estar en nuestra plataforma. Verificamos licencias, seguros y calidad del servicio para tu tranquilidad.</li>
+                <li><strong>Precios Transparentes:</strong> Sin cargos ocultos. El precio que ves es el que pagas, apoyando directamente la economía local.</li>
+                <li><strong>Soporte Especializado:</strong> Somos dominicanos y conocemos nuestro terreno. Si surge un cambio de clima o necesitas una recomendación personalizada, estamos a un mensaje de distancia.</li>
             </ul>
 
-            <h2>2. Samaná: Naturaleza en Estado Puro</h2>
-            <p>Al noreste se encuentra la provincia más verde y salvaje. Samaná es el lugar ideal para el ecoturismo responsable.</p>
-            <h3>Temporada de Ballenas Jorobadas</h3>
-            <p>Entre enero y marzo, miles de ballenas vienen a procrear en nuestra bahía. Es una de las experiencias de <strong>observación de fauna más potentes del mundo</strong>. Puedes combinarlo con una visita a Cayo Levantado para el almuerzo.</p>
-            <h3>Salto del Limón</h3>
-            <p>Una cabalgata por la selva que culmina en una caída de agua de 40 metros. El baño bajo la cascada es pura revitalización. <a href="/tours/salto-del-limon-a-caballo">Ver detalles del tour aquí</a>.</p>
+            <h3>Preguntas frecuentes sobre tours en República Dominicana</h3>
+            
+            <div class="space-y-6 my-8">
+                <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <summary class="font-bold text-lg cursor-pointer list-none flex justify-between items-center text-gray-900">
+                        ¿Cuál es la mejor época para hacer excursiones en RD?
+                        <span class="transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="mt-4 text-gray-600 leading-relaxed">
+                        Aunque el clima es tropical todo el año, la época seca (de diciembre a abril) ofrece cielos despejados ideales para actividades al aire libre. Sin embargo, la temporada baja (mayo a noviembre) tiene mejores precios y menos multitudes.
+                    </p>
+                </details>
 
-            <h2>3. Puerto Plata: Novia del Atlántico</h2>
-            <p>La costa norte ofrece un vibe diferente, con vientos perfectos para deportes acuáticos y montañas imponentes.</p>
-            <p><strong>Los 27 Charcos de Damajagua:</strong> Si te gusta el barranquismo (canyoning), este es tu sitio. Saltarás y te deslizarás por toboganes naturales tallados en piedra durante milenios.</p>
+                <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <summary class="font-bold text-lg cursor-pointer list-none flex justify-between items-center text-gray-900">
+                        ¿Es seguro reservar tours online en DescubreRD?
+                        <span class="transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="mt-4 text-gray-600 leading-relaxed">
+                        Absolutamente. Utilizamos pasarelas de pago seguras (como PayPal) y trabajamos únicamente con operadores que cumplen con las normativas del Ministerio de Turismo de la República Dominicana.
+                    </p>
+                </details>
 
-            <h2>4. Santo Domingo: Donde Todo Comenzó</h2>
-            <p>No se puede entender la República Dominicana sin visitar su capital, la ciudad primada de América. Un <a href="/tours/zona-colonial-historica">recorrido por la Zona Colonial</a> te transportará al siglo XVI mientras disfrutas de la mejor gastronomía moderna del Caribe.</p>
-
-            <h2>Consejos PRO para tu viaje</h2>
-            <ol>
-                <li><strong>Reserva con antelación:</strong> Los mejores tours se llenan rápido, especialmente en temporada alta (diciembre a abril).</li>
-                <li><strong>Seguro de viaje:</strong> Aunque nuestras agencias incluyen seguros básicos, siempre es bueno contar con cobertura adicional para actividades de aventura.</li>
-                <li><strong>Respeto al medio ambiente:</strong> Usa protector solar biodegradable para proteger nuestros arrecifes de coral.</li>
-            </ol>
+                <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <summary class="font-bold text-lg cursor-pointer list-none flex justify-between items-center text-gray-900">
+                        ¿Debo dar propina en los tours?
+                        <span class="transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="mt-4 text-gray-600 leading-relaxed">
+                        Las propinas no son obligatorias pero sí muy valoradas. Si el guía y el personal del barco o bus hicieron un trabajo excepcional, una propina del 10-15% es una forma estándar de mostrar agradecimiento.
+                    </p>
+                </details>
+            </div>
 
             <h2>Conclusión</h2>
-            <p>República Dominicana es un destino que se vive mejor fuera de las cuatro paredes de un resort. Ya sea que busques la adrenalina de los buggies o la paz de una isla virgen, en <strong>Descubre RD</strong> estamos aquí para que tu única preocupación sea disfrutar.</p>
+            <p>La República Dominicana tiene algo para cada tipo de viajero. Ya sea que busques la paz absoluta en una playa virgen, la historia profunda de una ciudad colonial o la adrenalina de una montaña desconocida, el país te espera con los brazos abiertos y una sonrisa contagiosa.</p>
             
-            <div class="my-10 p-10 bg-gray-900 text-white rounded-[2rem] text-center shadow-2xl overflow-hidden relative">
-                <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent pointer-events-none"></div>
-                <h3 class="text-3xl font-black mb-6">¿Listo para tu próxima aventura?</h3>
-                <p class="text-gray-300 text-lg mb-8 max-w-xl mx-auto">Explora nuestro catálogo completo y reserva hoy mismo con los precios más competitivos del mercado.</p>
-                <a href="/es/tours" class="inline-block px-10 py-5 bg-primary text-white font-black rounded-2xl hover:scale-105 transition-transform shadow-xl">
-                    Ver todos los Tours en RD
-                </a>
+            <p>No dejes que tu viaje se quede en el hotel. <strong>Haz que cuente.</strong> Reserva hoy mismo tus experiencias y deja que nosotros nos encarguemos de los detalles.</p>
+
+            <div class="mt-12 text-center bg-primary p-10 rounded-[3rem] text-white shadow-2xl">
+                <h3 class="text-3xl font-black mb-4">Empieza tu aventura ahora</h3>
+                <p class="mb-8 font-medium">Explora cientos de opciones verificadas por todo el país.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/es/tours" class="px-8 py-4 bg-white text-primary font-black rounded-2xl hover:bg-gray-100 transition-colors shadow-lg">
+                        Ver Todos los Tours
+                    </a>
+                    <a href="/es/agencies" class="px-8 py-4 bg-primary-700 text-white font-black rounded-2xl hover:bg-primary-800 transition-colors border border-white/20">
+                        Ver Agencias Locales
+                    </a>
+                </div>
             </div>
+            
+            <p class="mt-20 text-gray-400 text-xs italic">
+                *Nota: Este artículo es una guía informativa. Los precios y disponibilidad de los tours pueden variar según la temporada y la demanda.*
+            </p>
         `
     }
 ];
