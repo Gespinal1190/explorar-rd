@@ -119,6 +119,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     </div>
                 </div>
             </div>
+
+            {/* JSON-LD Schema Injection */}
+            {post.structuredData && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(post.structuredData) }}
+                />
+            )}
         </article>
     );
 }
